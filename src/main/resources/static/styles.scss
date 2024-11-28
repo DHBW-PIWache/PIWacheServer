@@ -1,0 +1,14 @@
+
+$brown: #757763;
+$beige-light: #d0d1cd;
+$beige-lighter: #eff0eb;
+
+
+@use "bulma/sass" with (
+  $family-primary: '"SUSE", sans-serif',
+  $primary: hsl(263, 100%,69%),
+  $link:hsl(192, 91%, 64%),
+  $control-border-width: 2px,
+);
+
+@import url("https://fonts.googleapis.com/css2?family=SUSE:wght@100..800&display=swap'");

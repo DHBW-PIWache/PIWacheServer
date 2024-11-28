@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+  <meta charset="UTF-8">
+  <title>Header</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+
+<div th:fragment="header">
+
+  <nav class="navbar is-primary py-3" role="navigation" aria-label="main navigation">
+
+    <div class="navbar-brand">
+      <div class="navbar-start">
+        <div class="navbar-item">
+          <div class="buttons">
+            <a class="button is-link is-rounded" href="/">
+                <span class="icon">
+                  <i class="fas fa-home"></i>
+                </span>
+              <strong>Home</strong>
+            </a>
+
+            <a class="button is-link is-rounded" href="/features/live">
+                <span class="icon">
+                 <i class="fas fa-video"></i>
+                </span>
+              <p>Live-Überwachung</p>
+            </a>
+
+
+            <a class="button is-link is-rounded" href="/features/dataStorage">
+                <span class="icon">
+                 <i class="fas fa-database"></i>
+                </span>
+              <p>Dateiverwaltung</p>
+            </a>
+
+            <a class="button is-link is-rounded" href="/features/config">
+                <span class="icon">
+                 <i class="fas fa-wrench"></i>
+                </span>
+              <p>Konfiguration</p>
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </nav>
+
+
+
+
+</div>
+
+
+
+</body>
+</html>
