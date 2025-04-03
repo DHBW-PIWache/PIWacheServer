@@ -1,4 +1,4 @@
-package PiVideos.PiVideos.Controller;
+package PiVideos.Controller;
 
 
 import org.springframework.stereotype.Controller;
