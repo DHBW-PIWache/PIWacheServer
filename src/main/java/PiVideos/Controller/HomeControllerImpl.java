@@ -1,4 +1,4 @@
-package PiVideos.PiVideos.Controller;
+package PiVideos.Controller;
 
 
 import org.springframework.stereotype.Controller;
@@ -16,15 +16,8 @@ public class HomeControllerImpl implements HomeController{
 
     @GetMapping("/error")
     public String getError(Model model){
-        return "index.html";
-    }
 
-
-
-    @RequestMapping("/features")
-    @GetMapping("/config")
-    public String getConfig(Model model) {
-        return "configuration.html";
+        return "error.html";
     }
 
 

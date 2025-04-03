@@ -1,11 +1,9 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-
 <head>
-
   <meta charset="UTF-8">
   <title>Header</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="/styles.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
@@ -40,12 +38,25 @@
               <p>Dateiverwaltung</p>
             </a>
 
-            <a class="button is-link is-rounded" href="/features/config">
-                <span class="icon">
-                 <i class="fas fa-wrench"></i>
-                </span>
-              <p>Konfiguration</p>
-            </a>
+              <div class="dropdown is-hoverable">
+                  <div class="dropdown-trigger">
+                      <button class="button is-link is-rounded" aria-haspopup="true" aria-controls="dropdown-menu-config">
+                  <span class="icon">
+                    <i class="fas fa-wrench"></i>
+                  </span>
+                          <p>Konfiguration</p>
+                          <span class="icon is-small">
+                    <i class="fas fa-angle-down" aria-hidden="true"></i>
+                  </span>
+                      </button>
+                  </div>
+                  <div class="dropdown-menu" id="dropdown-menu-config" role="menu">
+                      <div class="dropdown-content">
+                          <a href="/features/config/network" class="dropdown-item has-text-black has-background-link">Netzwerk</a>
+                          <a href="/features/config/server" class="dropdown-item has-text-black has-background-link">Sicherheit</a>
+
+                      </div>
+                  </div>
           </div>
         </div>
       </div>

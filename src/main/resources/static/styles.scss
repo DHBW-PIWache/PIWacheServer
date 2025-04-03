@@ -9,11 +9,11 @@ $beige-lighter: #eff0eb;
   $family-primary: '"SUSE", sans-serif',
   $primary: hsl(343, 77%,44%),
   $link:hsl(103, 48%, 100%),
-
   $body-background-color: #ffffff,
   $body-color: $black,
   $title-color: $black,
 
+  $dropdown-content-background-color: hsl(103, 48%, 100%)
 );
 
 @import url("https://fonts.googleapis.com/css2?family=SUSE:wght@100..800&display=swap'");
