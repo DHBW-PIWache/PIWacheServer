@@ -28,10 +28,15 @@ public class Network {
     @OneToMany(mappedBy = "network", cascade = CascadeType.ALL, orphanRemoval = false)
     private List<ClientPi> clientPis;
 
+
+
     public Network(Integer _id, String name, String rootPath, List<ClientPi> clientPis) {
         this._id = _id;
         this.name = name;
         this.rootPath = rootPath;
         this.clientPis = clientPis;
+    }
+
+    public Network() {
     }
 }

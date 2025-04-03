@@ -35,4 +35,7 @@ public class ClientPi {
         this._id = _id;
 
     }
+
+    public ClientPi() {
+    }
 }

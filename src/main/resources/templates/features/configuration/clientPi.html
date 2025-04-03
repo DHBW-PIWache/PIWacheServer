@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Config</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+</head>
+<body>
+
+<div th:insert="~{fragments/header.html ::header }"></div>
+
+
+<div class="container pt-3">
+
+    <h2 class="title is-3"> Neuen Client Pi einrichten</h2>
+
+    <h2 class="title is-3" th:text="${message}"></h2>
+
+    <form class="" action="/features/config/client/save" method="POST">
+        <div>
+            <label for="location">Location:</label>
+            <input  class="input" type="text" id="location" name="location" required>
+        </div>
+        <div>
+            <label for="path">Root Path:</label>
+            <input class="input" type="text" id="path" name="path" placeholder="Gib den Pfad ein">
+        </div>
+        <div>
+            <label for="network">Netzwerk:</label>
+            <select class="input" id="network" name="network" required>
+                <option value="">Bitte ein Netzwerk wählen</option>
+                <option th:each="network : ${networks}" th:value="${network._id}" th:text="${network.name + ' (ID: ' + network._id + ')'} "></option>
+            </select>
+        </div>
+        <button class="button is-danger is-rounded pt-2" type="submit">Speichern</button>
+    </form>
+
+
+</div>
+
+</body>
+</html>

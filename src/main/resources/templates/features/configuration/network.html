@@ -12,14 +12,25 @@
 
 <div th:insert="~{fragments/header.html ::header }"></div>
 
+
 <div class="container pt-3">
-    <h1 class="title"> Neues Netzwerk anlegen</h1>
-    <form class="pt-3" action="/features/config/network/save" method="POST">
-        <button class="button is-danger is-rounded" type="submit">Speichern</button>
+
+    <h2 class="title is-3"> Neues Netzwerk anlegen</h2>
+    <h2 class="title is-3" th:text="${message}"></h2>
+    <form class="" action="/features/config/network/save" method="POST">
+        <div>
+            <label for="name">Name:</label>
+            <input  class="input" type="text" id="name" name="name" required>
+        </div>
+        <div>
+            <label for="rootPath">Root Path:</label>
+            <input class="input" type="text" id="rootPath" name="rootPath" placeholder="Gib den Pfad ein">
+        </div>
+        <button class="button is-danger is-rounded pt-2" type="submit">Speichern</button>
     </form>
 
-</div>
 
+</div>
 
 </body>
 </html>

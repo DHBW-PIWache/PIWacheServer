@@ -1,13 +1,14 @@
 package PiVideos.Controller;
 
+import PiVideos.Model.ClientPi;
 import PiVideos.Model.Network;
 import PiVideos.Service.ConfigService;
 import PiVideos.Service.SocketSerivce;
-import PiVideos.Service.SocketServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -32,8 +33,21 @@ public class ConfigControllerImpl implements ConfigController{
     @Override
     @GetMapping("/network")
     public String getConfigNetwork(Model model) {
+        model.addAttribute("network",new Network());
+
         return "features/configuration/network.html";
     }
+
+
+    @PostMapping("/network/save")
+    public String saveNetwork(@ModelAttribute Network network, Model model) {
+        configService.saveNetwork(network);
+        model.addAttribute("message","Neues Netwerk " + network.getName() + " angelegt!");
+        return "features/configuration/network.html";
+    }
+
+
+
     @Override
     @GetMapping("/server")
     public String getConfigServer(Model model) {
@@ -42,9 +56,25 @@ public class ConfigControllerImpl implements ConfigController{
     }
 
     @Override
-    public String saveNetwork(Model model) {
-        return "";
+    @GetMapping("/client")
+    public String getConfigClient(Model model) {
+
+        model.addAttribute("networks",configService.getAllNetworks());
+        model.addAttribute("clientPi",new ClientPi());
+
+        System.out.println(configService.getAllNetworks().get(1).get_id());
+        return "features/configuration/clientPi.html";
     }
+
+    @PostMapping("/client/save")
+    public String saveConfigClient(@ModelAttribute ClientPi clientPi, Model model) {
+        configService.saveClient(clientPi);
+        model.addAttribute("message","juhu");
+        model.addAttribute("networks",configService.getAllNetworks());
+
+        return "features/configuration/clientPi.html";
+    }
+
 
     @Override
     @PostMapping("/startServer")
