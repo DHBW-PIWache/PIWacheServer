@@ -1,76 +1,139 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>Header</title>
-  <link rel="stylesheet" href="/styles.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <meta charset="UTF-8">
+    <title>Header</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="/main.js"></script>
 </head>
 <body>
 
 <div th:fragment="header">
 
-  <nav class="navbar is-primary py-3" role="navigation" aria-label="main navigation">
+    <nav class="navbar is-primary py-3" role="navigation" aria-label="main navigation">
 
-    <div class="navbar-brand">
-      <div class="navbar-start">
-          <div class="navbar-item">
-              <div class="buttons">
-                  <a class="button is-link is-rounded" href="/">
-                <span class="icon">
-                  <i class="fas fa-home"></i>
-                </span>
-                      <strong>Home</strong>
-                  </a>
+        <div class="navbar-brand">
+            <!-- Linke Seite -->
+            <div class="navbar-start">
+                <div class="navbar-item">
+                    <div class="buttons">
+                        <a class="button is-link is-rounded" href="/">
+              <span class="icon">
+                <i class="fas fa-home"></i>
+              </span>
+                            <strong>Home</strong>
+                        </a>
 
-                  <a class="button is-link is-rounded" href="/features/live">
-                <span class="icon">
-                 <i class="fas fa-video"></i>
-                </span>
-                      <p>Live-Überwachung</p>
-                  </a>
+                        <a class="button is-link is-rounded" href="/features/live">
+              <span class="icon">
+                <i class="fas fa-video"></i>
+              </span>
+                            <p>Live-Überwachung</p>
+                        </a>
 
+                        <a class="button is-link is-rounded" href="/features/dataStorage">
+              <span class="icon">
+                <i class="fas fa-database"></i>
+              </span>
+                            <p>Dateiverwaltung</p>
+                        </a>
 
-                  <a class="button is-link is-rounded" href="/features/dataStorage">
-                <span class="icon">
-                 <i class="fas fa-database"></i>
-                </span>
-                      <p>Dateiverwaltung</p>
-                  </a>
-
-                  <div class="dropdown is-hoverable">
-                      <div class="dropdown-trigger">
-                          <button class="button is-link is-rounded" aria-haspopup="true" aria-controls="dropdown-menu-config">
+                        <div class="dropdown is-hoverable">
+                            <div class="dropdown-trigger">
+                                <button class="button is-link is-rounded" aria-haspopup="true" aria-controls="dropdown-menu-config">
                   <span class="icon">
                     <i class="fas fa-wrench"></i>
                   </span>
-                              <p>Konfiguration</p>
-                              <span class="icon is-small">
+                                    <p>Konfiguration</p>
+                                    <span class="icon is-small">
                     <i class="fas fa-angle-down" aria-hidden="true"></i>
                   </span>
-                          </button>
-                      </div>
-                      <div class="dropdown-menu" id="dropdown-menu-config" role="menu">
-                          <div class="dropdown-content">
-                              <a href="/features/config/network" class="dropdown-item has-text-black has-background-link">Netzwerk</a>
-                              <a href="/features/config/client" class="dropdown-item has-text-black has-background-link">Clients</a>
-                              <a href="/features/config/server" class="dropdown-item has-text-black has-background-link">Sicherheit</a>
+                                </button>
+                            </div>
+                            <div class="dropdown-menu" id="dropdown-menu-config" role="menu">
+                                <div class="dropdown-content">
+                                    <a href="/features/config/network" class="dropdown-item has-text-black has-background-link">Netzwerk</a>
+                                    <a href="/features/config/client" class="dropdown-item has-text-black has-background-link">Clients</a>
+                                    <a href="/features/config/server" class="dropdown-item has-text-black has-background-link">Sicherheit</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-                          </div>
-                      </div>
-                  </div>
-              </div>
 
-      </div>
+
+        <div th:if="${session.network ==null}" class="navbar-end">
+            <div class="navbar-item">
+                <div class="buttons">
+                    <a class="button is-danger is-rounded" data-open="#modal-login" href="#">
+                <span class="icon">
+                 <i class="fas fa-sign-in-alt"></i>
+                </span><strong>Netzwerk anmelden</strong>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div th:if="${session.network !=null}" class="navbar-end">
+            <div class="navbar-item">
+                <div>
+
+                </div>
+
+            </div>
+
+
+            <div class="navbar-item">
+                <div class="buttons">
+                    <a class="button is-danger is-rounded"  data-open="#modal-logout" href="#">
+                <span class="icon">
+                 <i class="fas fa-sign-out-alt"></i>
+                </span><strong>Netzwerk wechseln</strong>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="modal" id="modal-login">
+        <div class="modal-background"></div>
+        <div class="modal-card">
+            <header class="modal-card-head has-background-danger">
+                <p class="modal-card-title has-text-black">Netzwerkauswahl</p>
+                <button class="delete" aria-label="close" data-close="#modal-login"></button>
+            </header>
+            <section class="modal-card-body">
+                <div class="content">
+                    <form action="/features/config/network/login" method="post">
+                        <div class="field">
+                            <label class="has-text-white"for="network">Netzwerk:</label>
+                            <select class="input" id="network" name="network" required>
+                                <option value="">Bitte ein Netzwerk wählen</option>
+                                <option th:each="network : ${session.networks}" th:value="${network._id}" th:text="${network.name + ' (ID: ' + network._id + ')'} "></option>
+                            </select>
+                        </div>
+
+                        <div class="field">
+                            <div class="control">
+                                <button class="button is-link" type="submit">Auswählen</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <footer class="modal-card-foot">
+                <button class="button is-danger" data-close="#modal-login">Schließen</button>
+            </footer>
+        </div>
     </div>
-  </nav>
-
-
 
 
 </div>
-
-
 
 </body>
 </html>

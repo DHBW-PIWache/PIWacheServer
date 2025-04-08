@@ -2,8 +2,10 @@ package PiVideos.Controller;
 
 import PiVideos.Model.ClientPi;
 import PiVideos.Model.Network;
+import PiVideos.Repository.NetworkRepository;
 import PiVideos.Service.ConfigService;
 import PiVideos.Service.SocketSerivce;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,10 +25,14 @@ public class ConfigControllerImpl implements ConfigController{
     @Autowired
     ConfigService configService;
 
+    @Autowired
+    NetworkRepository networkRepository;
 
-    public ConfigControllerImpl(SocketSerivce socketSerivce, ConfigService configService) {
+
+    public ConfigControllerImpl(SocketSerivce socketSerivce, ConfigService configService, NetworkRepository networkRepository) {
         this.socketSerivce = socketSerivce;
         this.configService = configService;
+        this.networkRepository = networkRepository;
     }
 
 
@@ -46,7 +52,11 @@ public class ConfigControllerImpl implements ConfigController{
         return "features/configuration/network.html";
     }
 
-
+    @PostMapping("/network/login")
+    public String loginNetwork(@ModelAttribute Network network, HttpSession session){
+        session.setAttribute("network",networkRepository.findById(network.get_id()).get());
+        return "index.html";
+    }
 
     @Override
     @GetMapping("/server")
