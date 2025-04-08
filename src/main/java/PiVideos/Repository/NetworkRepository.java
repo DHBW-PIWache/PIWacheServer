@@ -12,4 +12,6 @@ public interface NetworkRepository extends CrudRepository<Network, Integer> {
     @Query(value = "SELECT * FROM network", nativeQuery = true)
     public List<Network> getAllNetworks();
 
+
+
 }

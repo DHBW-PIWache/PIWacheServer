@@ -31,9 +31,10 @@ public class Video {
 
 
 
-    public Video(Integer _id, String name, String path) {
-        this._id = _id;
+    public Video(String name, String path,ClientPi clientPi) {
+
         this.name = name;
         this.path = path;
+        this.clientPi = clientPi;
     }
 }

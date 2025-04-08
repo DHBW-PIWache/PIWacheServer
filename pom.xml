@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>PiVideos</groupId>
 	<artifactId>PiVideos</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.1.1-SNAPSHOT</version>
 	<name>PiVideos</name>
 	<description>PiVideos</description>
 	<properties>

@@ -6,4 +6,5 @@ public interface SocketSerivce {
     void startServer();
     void handleClient(Socket clientSocket);
     void stopServer();
+    void receiveVideo(Socket clientSocket);
 }
