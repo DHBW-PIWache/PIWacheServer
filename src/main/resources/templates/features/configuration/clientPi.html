@@ -11,9 +11,9 @@
 <body>
 
 <div th:insert="~{fragments/header.html ::header }"></div>
-
-
-<div class="container pt-3">
+<div class="columns is-fullheight">
+    <div th:insert="~{fragments/menu.html ::menu }"></div>
+    <main class="column m-4">
 
     <h2 class="title is-3"> Neuen Client Pi einrichten</h2>
 
@@ -39,6 +39,7 @@
     </form>
 
 
+    </main>
 </div>
 
 </body>

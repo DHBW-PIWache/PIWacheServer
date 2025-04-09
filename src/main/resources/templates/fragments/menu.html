@@ -9,25 +9,27 @@
 </head>
 <body>
 
-    <aside th:fragment="menu" class="column">
-        <nav class="menu is-primary">
-            
-            <p class="menu-label">
+    <aside th:fragment="menu" class="column aside">
+        <nav class="menu">
+            <div class="ml-5 mt-3">
+            <p class="menu-label ">
                 General
             </p>
-            <ul class="menu-list">
-                <li><a>Dashboard</a></li>
-                <li><a>Customers</a></li>
+            <ul class="menu-list has-background-info" >
+                <li><a class="has-text-black has-background-info" href="/">Dashboard</a></li>
+                <li><a class="has-text-black has-background-info" href="/features/live">Überwachung</a></li>
+                <li><a class="has-text-black has-background-info" href="/features/dataStorage">Dateiverwaltung</a></li>
             </ul>
             <p class="menu-label">
-                Administration
+                Konfiguration
             </p>
             <ul class="menu-list ">
-                <li><a>Team Settings</a></li>
-                <li><a>Invitations</a></li>
-                <li><a>Cloud Storage Environment Settings</a></li>
-                <li><a>Authentication</a></li>
+                <li><a class="has-text-black has-background-info" href="/features/config/network">Netzwerk</a></li>
+                <li><a class="has-text-black has-background-info" href="/features/config/client">Clients</a></li>
+                <li><a class="has-text-black has-background-info" href="/features/config/server">Server</a></li>
+
             </ul>
+            </div>
         </nav>
     </aside>
 

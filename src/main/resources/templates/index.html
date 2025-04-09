@@ -12,13 +12,10 @@
 <body>
 
     <div th:insert="~{fragments/header.html ::header }"></div>
-
-<div class="section">
-        <div class="columns">
-
+        <div class="columns is-fullheight">
             <div th:insert="~{fragments/menu.html ::menu }"></div>
+            <main class="column m-4">
 
-            <main class="column">
                 <div class="level">
                     <div class="level-left">
                         <div class="level-item">
@@ -194,7 +191,7 @@
                 </div>
             </main>
         </div>
-    </div>
+
     <!--<div th:if="${session.network !=null}">-->
     <!--    <div th:text="${session.network._id}">h</div>-->
     <!--</div>-->

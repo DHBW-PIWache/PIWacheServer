@@ -12,8 +12,11 @@
 <body>
 
 <div th:insert="~{fragments/header.html ::header }"></div>
+<div class="columns is-fullheight">
+  <div th:insert="~{fragments/menu.html ::menu }"></div>
+  <main class="column m-4">
 
-<div class="container pt-3">
+
   <h1 class="title"> Hier entsteht die Möglichkeit für die Konfiguration der Überwachungsapplikation</h1>
 
   <h3 class="subtitle is-3 has-text-black">Portverbindung eines Netzwerkes starten oder stoppen</h3>
@@ -26,6 +29,7 @@
   </form>
 
 
+  </main>
 </div>
 
 

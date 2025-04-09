@@ -1,0 +1,10 @@
+@use "../node_modules/bulma/sass/utilities" as *;
+@use "variables";
+
+aside.aside {
+  height: 100vh;
+  width: variables.$aside-width;
+  background-color: variables.$grey;
+  box-shadow: variables.$aside-box-shadow;
+
+}
