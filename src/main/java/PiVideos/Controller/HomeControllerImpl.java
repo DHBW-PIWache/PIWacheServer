@@ -22,7 +22,6 @@ public class HomeControllerImpl implements HomeController{
     @GetMapping("/")
     public String getHome(HttpSession session){
         session.setAttribute("networks",networkRepository.getAllNetworks());
-
         return "index.html";
     }
 

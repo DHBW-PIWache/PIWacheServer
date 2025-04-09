@@ -57,6 +57,11 @@ public class ConfigControllerImpl implements ConfigController{
         session.setAttribute("network",networkRepository.findById(network.get_id()).get());
         return "index.html";
     }
+    @PostMapping("/network/logout")
+    public String logoutNetwork(@ModelAttribute Network network, HttpSession session){
+        session.removeAttribute("network");
+        return "index.html";
+    }
 
     @Override
     @GetMapping("/server")
@@ -72,7 +77,7 @@ public class ConfigControllerImpl implements ConfigController{
         model.addAttribute("networks",configService.getAllNetworks());
         model.addAttribute("clientPi",new ClientPi());
 
-        System.out.println(configService.getAllNetworks().get(1).get_id());
+        ;
         return "features/configuration/clientPi.html";
     }
 

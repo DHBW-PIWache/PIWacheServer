@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Menu</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="/main.js"></script>
+</head>
+<body>
+
+    <aside th:fragment="menu" class="column">
+        <nav class="menu is-primary">
+            
+            <p class="menu-label">
+                General
+            </p>
+            <ul class="menu-list">
+                <li><a>Dashboard</a></li>
+                <li><a>Customers</a></li>
+            </ul>
+            <p class="menu-label">
+                Administration
+            </p>
+            <ul class="menu-list ">
+                <li><a>Team Settings</a></li>
+                <li><a>Invitations</a></li>
+                <li><a>Cloud Storage Environment Settings</a></li>
+                <li><a>Authentication</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+</body>
+</html>

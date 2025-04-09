@@ -10,7 +10,7 @@
 <body>
 
 <div th:fragment="header">
-
+<header>
     <nav class="navbar is-primary py-3" role="navigation" aria-label="main navigation">
 
         <div class="navbar-brand">
@@ -71,7 +71,7 @@
                 <div class="buttons">
                     <a class="button is-danger is-rounded" data-open="#modal-login" href="#">
                 <span class="icon">
-                 <i class="fas fa-sign-in-alt"></i>
+                 <i class="fas fa-wifi"></i>
                 </span><strong>Netzwerk anmelden</strong>
                     </a>
                 </div>
@@ -80,19 +80,11 @@
 
         <div th:if="${session.network !=null}" class="navbar-end">
             <div class="navbar-item">
-                <div>
-
-                </div>
-
-            </div>
-
-
-            <div class="navbar-item">
                 <div class="buttons">
                     <a class="button is-danger is-rounded"  data-open="#modal-logout" href="#">
                 <span class="icon">
                  <i class="fas fa-sign-out-alt"></i>
-                </span><strong>Netzwerk wechseln</strong>
+                </span><strong>Abmelden</strong>
                     </a>
                 </div>
             </div>
@@ -132,7 +124,31 @@
         </div>
     </div>
 
+    <div class="modal" id="modal-logout">
+        <div class="modal-background"></div>
+        <div class="modal-card">
+            <header class="modal-card-head has-background-danger">
+                <p class="modal-card-title has-text-black">Wollen Sie sich abmelden?</p>
+                <button class="delete" aria-label="close" data-close="#modal-login"></button>
+            </header>
+            <section class="modal-card-body">
+                <div class="content">
+                    <form action="/features/config/network/logout" method="post">
+                        <div class="field">
+                            <div class="control">
+                                <button class="button is-link" type="submit">Abmelden</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </section>
 
+            <footer class="modal-card-foot">
+                <button class="button is-danger" data-close="#modal-login">Schließen</button>
+            </footer>
+        </div>
+    </div>
+</header>
 </div>
 
 </body>

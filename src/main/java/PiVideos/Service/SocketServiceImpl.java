@@ -19,10 +19,6 @@ import java.util.concurrent.Executors;
 @Service
 public class SocketServiceImpl implements SocketSerivce {
 
-
-
-
-
     private final int port = 8081;
     private ServerSocket serverSocket;
     private ExecutorService executorService;
