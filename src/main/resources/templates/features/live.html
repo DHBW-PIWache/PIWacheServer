@@ -16,10 +16,23 @@
   <div th:insert="~{fragments/menu.html ::menu }"></div>
   <main class="column m-4">
 
+    <div class="level">
+      <div class="level-left">
+        <div class="level-item">
+          <div class="title">Hier wird die Übertragung von Videos möglich sein</div>
+        </div>
+      </div>
+      <div class="level-right">
+        <div class="level-item">
+          <button type="button" class="button is-small">
+            <a th:text="${session.currentDate}"></a>
+          </button>
+        </div>
+      </div>
+    </div>
 
 
 
-  <h1 class="title">Hier wird die Übertragung von Videos möglich sein</h1>
 
 
 

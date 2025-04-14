@@ -17,16 +17,16 @@
             </p>
             <ul class="menu-list has-background-info" >
                 <li><a class="has-text-black has-background-info" href="/">Dashboard</a></li>
-                <li><a class="has-text-black has-background-info" href="/features/live">Überwachung</a></li>
-                <li><a class="has-text-black has-background-info" href="/features/dataStorage">Dateiverwaltung</a></li>
+                <li><a th:if="${session.network != null}" class="has-text-black has-background-info" href="/features/live">Überwachung</a></li>
+                <li><a th:if="${session.network != null}" class="has-text-black has-background-info" href="/features/dataStorage">Dateiverwaltung</a></li>
             </ul>
             <p class="menu-label">
                 Konfiguration
             </p>
             <ul class="menu-list ">
-                <li><a class="has-text-black has-background-info" href="/features/config/network">Netzwerk</a></li>
-                <li><a class="has-text-black has-background-info" href="/features/config/client">Clients</a></li>
-                <li><a class="has-text-black has-background-info" href="/features/config/server">Server</a></li>
+                <li><a  class="has-text-black has-background-info" href="/features/config/network">Netzwerk</a></li>
+                <li><a th:if="${session.network != null}" class="has-text-black has-background-info" href="/features/config/client">Clients</a></li>
+                <li><a th:if="${session.network != null}"  class="has-text-black has-background-info" href="/features/config/server">Server</a></li>
 
             </ul>
             </div>

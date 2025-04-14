@@ -9,6 +9,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+
 @Controller
 public class HomeControllerImpl implements HomeController{
 
@@ -21,7 +25,9 @@ public class HomeControllerImpl implements HomeController{
 
     @GetMapping("/")
     public String getHome(HttpSession session){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         session.setAttribute("networks",networkRepository.getAllNetworks());
+        session.setAttribute("currentDate", LocalDate.now().format(formatter));
         return "index.html";
     }
 

@@ -25,13 +25,14 @@
                     <div class="level-right">
                         <div class="level-item">
                             <button type="button" class="button is-small">
-                                March 8, 2017 - April 6, 2017
+                                <a th:text="${session.currentDate}"></a>
                             </button>
                         </div>
                     </div>
                 </div>
 
-                <div class="columns is-multiline">
+            <div th:if="${session.network != null}">
+                <div  class="columns is-multiline">
                     <div class="column">
                         <div class="box">
                             <div class="heading">Top Seller Total</div>
@@ -187,6 +188,7 @@
                                 </figure>
                             </div>
                         </div>
+                    </div>
                     </div>
                 </div>
             </main>

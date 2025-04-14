@@ -12,7 +12,7 @@ public class FeatureControllerImpl implements FeatureController {
     @Override
     @GetMapping("/config")
     public String getConfig(Model model) {
-        return "features/configuration.html";
+        return  "features/configuration.html";
     }
 
     @Override

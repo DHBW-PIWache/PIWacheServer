@@ -13,47 +13,42 @@
 <header>
     <nav class="navbar is-primary py-3" role="navigation" aria-label="main navigation">
 
-        <div class="navbar-brand">
-            <!-- Linke Seite -->
-            <div class="navbar-start">
-                <div class="navbar-item">
-                    <div class="buttons">
-                        <a class="button is-link is-rounded" href="/">
-                        <span class="icon">
-                                <i class="fas fa-home"></i>
-                            </span>
-                            <strong>Home</strong>
-                        </a>
-
-                    </div>
+        <div class="navbar-start">
+            <div th:if="${session.network != null}" class="navbar-item">
+                <div class="button has-background-white">
+                    <a class="has-text-black" href="/">
+                        Aktuelles Netzwerk: <strong class="has-text-black" th:text="${session.network.name}"></strong>
+                    </a>
                 </div>
             </div>
         </div>
 
-        <div th:if="${session.network ==null}" class="navbar-end">
-            <div class="navbar-item">
+        <div class="navbar-end">
+            <div th:if="${session.network == null}" class="navbar-item">
                 <div class="buttons">
                     <a class="button is-link is-rounded" data-open="#modal-login" href="#">
-                <span class="icon">
-                 <i class="fas fa-wifi"></i>
-                </span><strong>Netzwerk anmelden</strong>
+                    <span class="icon">
+                        <i class="fas fa-wifi"></i>
+                    </span>
+                        <strong>Netzwerk anmelden</strong>
+                    </a>
+                </div>
+            </div>
+
+            <div th:if="${session.network != null}" class="navbar-item">
+                <div class="buttons">
+                    <a class="button is-link is-rounded" data-open="#modal-logout" href="#">
+                    <span class="icon">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </span>
+                        <strong>Abmelden</strong>
                     </a>
                 </div>
             </div>
         </div>
 
-        <div th:if="${session.network !=null}" class="navbar-end">
-            <div class="navbar-item">
-                <div class="buttons">
-                    <a class="button is-link is-rounded"  data-open="#modal-logout" href="#">
-                <span class="icon">
-                 <i class="fas fa-sign-out-alt"></i>
-                </span><strong>Abmelden</strong>
-                    </a>
-                </div>
-            </div>
-        </div>
     </nav>
+
 
     <div class="modal" id="modal-login">
         <div class="modal-background"></div>

@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
+import java.net.Inet4Address;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Optional;
@@ -52,6 +54,7 @@ public class SocketServiceImpl implements SocketSerivce {
             try {
                 serverSocket = new ServerSocket(port);
                 System.out.println("Socket-Server läuft auf Port " + port);
+                System.out.println(Inet4Address.getLocalHost());
 
                 while (!serverSocket.isClosed()) {
                     Socket clientSocket = serverSocket.accept();
