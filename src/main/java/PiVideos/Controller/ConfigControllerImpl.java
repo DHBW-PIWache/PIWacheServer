@@ -91,10 +91,11 @@ public class ConfigControllerImpl implements ConfigController{
     }
 
 
-    @Override
+
     @PostMapping("/startServer")
-    public String startServer(Model model) {
-         socketSerivce.startServer();
+    public String startServer(HttpSession session, Model model) {
+        Network network = (Network) session.getAttribute("network");
+         socketSerivce.startServer(network);
         return "redirect:/features/config";
     }
 

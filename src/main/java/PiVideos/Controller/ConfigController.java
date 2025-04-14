@@ -1,5 +1,6 @@
 package PiVideos.Controller;
 import PiVideos.Model.Network;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,7 +17,7 @@ public interface ConfigController {
 
     public String getConfigClient(Model model);
 
-    public String startServer(Model model);
+    public String startServer(HttpSession session, Model model );
     public String stopServer(Model Model);
 
 
