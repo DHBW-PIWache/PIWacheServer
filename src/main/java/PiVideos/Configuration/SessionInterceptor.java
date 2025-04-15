@@ -12,7 +12,7 @@ public class SessionInterceptor implements HandlerInterceptor {
 
         Object network = request.getSession().getAttribute("network");
         if (network == null) {
-            response.sendRedirect("/");
+            response.sendRedirect("/login");
             return false;
         }
         return true;

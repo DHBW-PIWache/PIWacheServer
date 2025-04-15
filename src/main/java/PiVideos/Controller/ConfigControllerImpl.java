@@ -4,6 +4,7 @@ import PiVideos.Model.ClientPi;
 import PiVideos.Model.Network;
 import PiVideos.Repository.NetworkRepository;
 import PiVideos.Service.ConfigService;
+import PiVideos.Service.ConfigServiceImpl;
 import PiVideos.Service.SocketSerivce;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,16 +53,6 @@ public class ConfigControllerImpl implements ConfigController{
         return "features/configuration/network.html";
     }
 
-    @PostMapping("/network/login")
-    public String loginNetwork(@ModelAttribute Network network, HttpSession session){
-        session.setAttribute("network",networkRepository.findById(network.get_id()).get());
-        return "index.html";
-    }
-    @PostMapping("/network/logout")
-    public String logoutNetwork(@ModelAttribute Network network, HttpSession session){
-        session.removeAttribute("network");
-        return "index.html";
-    }
 
     @Override
     @GetMapping("/server")
@@ -73,19 +64,21 @@ public class ConfigControllerImpl implements ConfigController{
     @Override
     @GetMapping("/client")
     public String getConfigClient(Model model) {
-
-        model.addAttribute("networks",configService.getAllNetworks());
+        model.addAttribute("clients", configService.getAllClientPis());
         model.addAttribute("clientPi",new ClientPi());
 
-        ;
+
         return "features/configuration/clientPi.html";
     }
 
     @PostMapping("/client/save")
-    public String saveConfigClient(@ModelAttribute ClientPi clientPi, Model model) {
+    public String saveConfigClient(@ModelAttribute ClientPi clientPi,HttpSession session ,Model model) {
+
+        clientPi.setNetwork((Network) session.getAttribute("network"));
         configService.saveClient(clientPi);
         model.addAttribute("message","juhu");
         model.addAttribute("networks",configService.getAllNetworks());
+        model.addAttribute("clients", configService.getAllClientPis());
 
         return "features/configuration/clientPi.html";
     }

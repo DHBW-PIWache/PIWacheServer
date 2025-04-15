@@ -25,8 +25,8 @@ public class ConfigServiceImpl implements ConfigService {
     }
 
     @Override
-    public Network saveNetwork(Network network) {
-        return networkRepository.save(network);
+    public void saveNetwork(Network network) {
+        networkRepository.save(network);
     }
 
 
@@ -34,9 +34,13 @@ public class ConfigServiceImpl implements ConfigService {
         return networkRepository.getAllNetworks();
     }
 
-    @Override
-    public ClientPi saveClient(ClientPi clientPi) {
+    public List<ClientPi> getAllClientPis(){return clientPiRepository.getAllClientPis();}
 
-        return clientPiRepository.save(clientPi);
+    @Override
+    public void saveClient(ClientPi clientPi) {
+
+        clientPiRepository.save(clientPi);
     }
+
+
 }

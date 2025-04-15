@@ -34,7 +34,7 @@
             <div th:if="${session.network != null}">
                 <div  class="columns is-multiline">
                     <div class="column">
-                        <div class="box">
+                        <div class="box" style="max-width: 500px; margin: auto;">
                             <div class="heading">Aktuelles Netzwerk</div>
                             <div class="title" th:text="${session.network.name + ' (ID: ' + session.network._id + ')'}">{netzwerkID}</div>
                             <div class="level">
@@ -47,7 +47,7 @@
                     </div>
 
                     <div class="column">
-                        <div class="box">
+                        <div class="box" style="max-width: 500px; margin: auto;">
                             <div class="heading">Speicherbelastung</div>
                             <div class="title"></div>
                             <div class="level">
@@ -79,11 +79,11 @@
                     <div class="column is-6">
                         <div class="panel">
                             <p class="panel-heading">
-                                Expenses: Daily - $700
+                                Aktuellstes Video:
                             </p>
                             <div class="panel-block">
                                 <figure class="image is-16x9">
-                                    <img src="https://placehold.it/1280x720">
+
                                 </figure>
                             </div>
                         </div>

@@ -8,8 +8,10 @@ import java.util.List;
 
 public interface ConfigService {
 
-   public Network saveNetwork(Network network);
+   public void saveNetwork(Network network);
    public List<Network> getAllNetworks();
 
-   public ClientPi saveClient(ClientPi clientPi);
+   public void saveClient(ClientPi clientPi);
+
+   public List<ClientPi> getAllClientPis();
 }

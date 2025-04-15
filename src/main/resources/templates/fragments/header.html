@@ -34,17 +34,6 @@
 
 
         <div class="navbar-end">
-            <div th:if="${session.network == null}" class="navbar-item">
-                <div class="buttons">
-                    <a class="button is-link is-rounded" data-open="#modal-login" href="#">
-                    <span class="icon">
-                        <i class="fas fa-wifi"></i>
-                    </span>
-                        <strong>Netzwerk anmelden</strong>
-                    </a>
-                </div>
-            </div>
-
             <div th:if="${session.network != null}" class="navbar-item">
                 <div class="buttons">
                     <a class="button is-link is-rounded" data-open="#modal-logout" href="#">
@@ -60,49 +49,16 @@
     </nav>
 
 
-    <div class="modal" id="modal-login">
-        <div class="modal-background"></div>
-        <div class="modal-card">
-            <header class="modal-card-head has-background-danger">
-                <p class="modal-card-title has-text-black">Netzwerkauswahl</p>
-                <button class="delete" aria-label="close" data-close="#modal-login"></button>
-            </header>
-            <section class="modal-card-body">
-                <div class="content">
-                    <form action="/features/config/network/login" method="post">
-                        <div class="field">
-                            <label class="has-text-white"for="network">Netzwerk:</label>
-                            <select class="input" id="network" name="network" required>
-                                <option value="">Bitte ein Netzwerk wählen</option>
-                                <option th:each="network : ${session.networks}" th:value="${network._id}" th:text="${network.name + ' (ID: ' + network._id + ')'} "></option>
-                            </select>
-                        </div>
-
-                        <div class="field">
-                            <div class="control">
-                                <button class="button is-link" type="submit">Auswählen</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </section>
-
-            <footer class="modal-card-foot">
-                <button class="button is-danger" data-close="#modal-login">Schließen</button>
-            </footer>
-        </div>
-    </div>
-
     <div class="modal" id="modal-logout">
         <div class="modal-background"></div>
         <div class="modal-card">
             <header class="modal-card-head has-background-danger">
-                <p class="modal-card-title has-text-black">Wollen Sie sich abmelden?</p>
+                <p class="modal-card-title has-text-black">Wollen Sie das Netzwerk abmelden?</p>
                 <button class="delete" aria-label="close" data-close="#modal-login"></button>
             </header>
             <section class="modal-card-body">
                 <div class="content">
-                    <form action="/features/config/network/logout" method="post">
+                    <form action="/logout" method="post">
                         <div class="field">
                             <div class="control">
                                 <button class="button is-link" type="submit">Abmelden</button>

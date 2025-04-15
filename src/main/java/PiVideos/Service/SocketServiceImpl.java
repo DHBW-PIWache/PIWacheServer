@@ -15,8 +15,11 @@ import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -114,9 +117,9 @@ public class SocketServiceImpl implements SocketSerivce {
 
     public void receiveVideo(Socket clientSocket, String piName, Network network) {
         File videoDir = new File(network.getRootPath() +"\\" +piName);
-
         String localDateTime = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE);
 
+        Video video = new Video();
 
         if (!videoDir.exists()) {
             videoDir.mkdirs();
@@ -136,7 +139,15 @@ public class SocketServiceImpl implements SocketSerivce {
                 fileOutputStream.write(buffer, 0, bytesRead);
             }
 
-            videoRepository.save(new Video(videoFile.getName(), videoFile.getPath(), clientPiRepository.findById(1).get()));
+            video.setName(videoFile.getName());
+            video.setDate(LocalDateTime.now());
+            video.setBytes(videoFile.length());
+            video.setPath(videoFile.getPath());
+            video.setClientPi(clientPiRepository.findByName(piName));
+            video.setTimestamp(Timestamp.from(Instant.now()));
+            video.setFavorite(false);
+
+            videoRepository.save(video);
 
             System.out.println("Video wurde gespeichert unter: " + videoFile.getAbsolutePath());
 
@@ -152,7 +163,6 @@ public class SocketServiceImpl implements SocketSerivce {
             System.out.println("Server ist bereits gestoppt!");
             return;
         }
-
         try {
             if (serverSocket != null && !serverSocket.isClosed()) {
                 serverSocket.close();

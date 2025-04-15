@@ -5,6 +5,10 @@ import jdk.jfr.Enabled;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.Date;
+
 @Setter
 @Getter
 @Entity
@@ -19,10 +23,14 @@ public class Video {
 
     private String path;
 
+    private LocalDateTime date;
 
-    //Hier sollten noch Meta daten eingebaut werden
-    // datum, zeitstempel, videoLänge, Trigger(ob audio oder video trigger), usw.
-//
+    private Timestamp timestamp;
+
+    private long bytes;
+
+    private boolean favorite;
+
 
 
     @ManyToOne
@@ -30,11 +38,17 @@ public class Video {
     private ClientPi clientPi;
 
 
+    public Video() {
+    }
 
-    public Video(String name, String path,ClientPi clientPi) {
-
+    public Video(Integer _id, String name, String path, LocalDateTime date, Timestamp timestamp, long bytes, boolean favorite, ClientPi clientPi) {
+        this._id = _id;
         this.name = name;
         this.path = path;
+        this.date = date;
+        this.timestamp = timestamp;
+        this.bytes = bytes;
+        this.favorite = favorite;
         this.clientPi = clientPi;
     }
 }

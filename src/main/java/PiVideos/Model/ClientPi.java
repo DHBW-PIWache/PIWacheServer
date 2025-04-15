@@ -16,9 +16,9 @@ public class ClientPi {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer _id;
 
-    private String location;
+    @Column(unique = true, nullable = false)
+    private String name;
 
-    private String path;
 
     @ManyToOne
     @JoinColumn(name = "network_id", nullable = false)
@@ -29,13 +29,13 @@ public class ClientPi {
 
 
 
-    public ClientPi(String location, String path, Integer _id) {
-        this.location = location;
-        this.path = path;
-        this._id = _id;
-
+    public ClientPi() {
     }
 
-    public ClientPi() {
+    public ClientPi(Integer _id, String name, Network network, List<Video> videos) {
+        this._id = _id;
+        this.name = name;
+        this.network = network;
+        this.videos = videos;
     }
 }
