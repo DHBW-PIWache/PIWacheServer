@@ -7,7 +7,6 @@
   <link rel="stylesheet" href="/styles.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   <script src="/main.js"></script>
-
 </head>
 <body>
 
@@ -15,28 +14,132 @@
 <div class="columns is-fullheight">
   <div th:insert="~{fragments/menu.html ::menu }"></div>
   <main class="column m-4">
-
-
-
-    <div class="level">
-    <div class="level-left">
-      <div class="level-item">
-        <div class="title">Dateiverwaltung</div>
+    <section class="hero is-small">
+      <div class="hero-body">
+        <p class="title">Dateiverwaltung</p>
       </div>
-    </div>
-    <div class="level-right">
-      <div class="level-item">
-        <button type="button" class="button is-small">
-          <a th:text="${session.currentDate}"></a>
-        </button>
+    </section>
+
+    <div class="box">
+      <div class="is-flex is-justify-content-space-between is-align-items-center mb-4">
+        <h2 class="title has-text-black">Vorhandene Videos</h2>
+
+        <div class="field is-grouped">
+          <div class="control">
+            <div class="select is-rounded">
+              <select id="clientSelect" onchange="filterVideosByClient()">
+                <option value="all">Alle Clients</option>
+                <option th:each="client : ${clients}"
+                        th:value="${client._id}"
+                        th:text="${client.name}">Client A</option>
+              </select>
+            </div>
+          </div>
+        </div>
       </div>
+
+      <div class="table-container">
+        <table class="table is-fullwidth is-striped is-hoverable" id="videoTable">
+          <thead class="has-background-black">
+          <tr class="has-text-black">
+            <th>ID</th>
+            <th>Name</th>
+            <th>Pfad</th>
+            <th>Datum</th>
+            <th>Größe</th>
+            <th>Favorit</th>
+            <th>Client</th>
+            <th>Aktionen</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr class="has-background-white"
+              th:each="video : ${videos}"
+              th:data-client-id="${video.clientPi._id}">
+            <td class="has-text-black" th:text="${video._id}">1</td>
+            <td class="has-text-black" th:text="${video.name}">Beispielvideo.mp4</td>
+            <td class="has-text-black" th:text="${video.path}">/media/video.mp4</td>
+            <td class="has-text-black" th:text="${#temporals.format(video.date, 'dd.MM.yyyy HH:mm')}">01.01.2024</td>
+            <td class="has-text-black" th:text="${video.bytes} + ' Bytes'">1048576</td>
+            <td class="has-text-black" th:text="${video.favorite ? 'Ja' : 'Nein'}">Ja</td>
+            <td class="has-text-black" th:text="${video.clientPi.name}">ClientPi01</td>
+            <td>
+              <button class="button is-small is-info mr-2"
+                      th:attr="onclick=|document.getElementById('modal-edit-${video._id}').classList.add('is-active')|">
+                <span class="icon"><i class="fas fa-edit"></i></span>
+              </button>
+              <button class="button is-small is-danger"
+                      th:attr="onclick=|document.getElementById('modal-delete-${video._id}').classList.add('is-active')|">
+                <span class="icon"><i class="fas fa-trash"></i></span>
+              </button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Modals außerhalb der Tabelle -->
+      <div th:each="video : ${videos}">
+        <!-- Edit Modal -->
+        <div class="modal" th:attr="id='modal-edit-' + ${video._id}">
+          <div class="modal-background"
+               th:attr="onclick=|document.getElementById('modal-edit-${video._id}').classList.remove('is-active')|"></div>
+          <div class="modal-card">
+            <header class="modal-card-head has-background-info">
+              <p class="modal-card-title has-text-black">Video bearbeiten</p>
+              <button class="delete" aria-label="close"
+                      th:attr="onclick=|document.getElementById('modal-edit-${video._id}').classList.remove('is-active')|"></button>
+            </header>
+            <section class="modal-card-body">
+              <p class="has-text-white">ID des Videos: <strong th:text="${video._id}"></strong></p>
+            </section>
+            <footer class="modal-card-foot">
+              <button class="button is-info">Speichern</button>
+              <button class="button"
+                      th:attr="onclick=|document.getElementById('modal-edit-${video._id}').classList.remove('is-active')|">Abbrechen</button>
+            </footer>
+          </div>
+        </div>
+
+        <!-- Delete Modal -->
+        <div class="modal" th:attr="id='modal-delete-' + ${video._id}">
+          <div class="modal-background"
+               th:attr="onclick=|document.getElementById('modal-delete-${video._id}').classList.remove('is-active')|"></div>
+          <div class="modal-card">
+            <header class="modal-card-head has-background-danger">
+              <p class="modal-card-title has-text-black">Video löschen</p>
+              <button class="delete" aria-label="close"
+                      th:attr="onclick=|document.getElementById('modal-delete-${video._id}').classList.remove('is-active')|"></button>
+            </header>
+            <section class="modal-card-body">
+              <p class="has-text-white">Möchtest du Video mit ID <strong th:text="${video._id}"></strong> wirklich löschen?</p>
+            </section>
+            <footer class="modal-card-foot">
+              <form th:action="@{/features/dataStorage/{id}(id=${video._id})}" method="post">
+                <button class="button is-danger" type="submit">Löschen</button>
+              </form>
+              <button class="button"
+                      th:attr="onclick=|document.getElementById('modal-delete-${video._id}').classList.remove('is-active')|">Abbrechen</button>
+            </footer>
+          </div>
+        </div>
+      </div>
+
     </div>
-  </div>
-
-
-
   </main>
-  </div>
+</div>
+
+<script>
+  function filterVideosByClient() {
+    const selectedClientId = document.getElementById("clientSelect").value;
+    const rows = document.querySelectorAll("#videoTable tbody tr");
+
+    rows.forEach(row => {
+      const clientId = row.getAttribute("data-client-id");
+      row.style.display = (selectedClientId === "all" || clientId === selectedClientId) ? "" : "none";
+    });
+  }
+</script>
 
 </body>
 </html>

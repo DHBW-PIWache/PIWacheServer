@@ -16,55 +16,44 @@
     <main class="column m-4">
         <section class="hero is-small">
             <div class="hero-body">
-                <p class="title">
-                    Client Konfiguration
-                </p>
+                <p class="title">Client Konfiguration</p>
             </div>
         </section>
 
-        <!-- Nachricht -->
-        <h2 class="title is-3" th:text="${message}"></h2>
 
-        <!-- Clients-Tabelle und Button -->
-        <section class="section pt-0">
-            <div class="container">
-                <div class="box">
-                    <!-- Titel + Button nebeneinander -->
-                    <div class="is-flex is-justify-content-space-between is-align-items-center mb-4">
-                        <h2 class="title has-text-black">Bestehende Clients</h2>
-                        <a class="button is-danger is-rounded" data-open="#modal-client">
-                            <span class="icon">
-                                <i class="fas fa-plus"></i>
-                            </span>
-                            <strong>Neuer Client</strong>
-                        </a>
-                    </div>
-
-                    <div class="table-container">
-                        <table class="table is-fullwidth is-striped is-hoverable is-bordered">
-                            <thead class="has-background-black">
-                            <tr class="has-text-black">
-                                <th>ClientID</th>
-                                <th>Name</th>
-                                <th>Location</th>
-                                <th>AnzahlVideos</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr class="has-background-white" th:each="client : ${clients}">
-                                <td class="has-text-black" th:text="${client._id}">1</td>
-                                <td class="has-text-black" th:text="${client.name}">Beispielname</td>
-                                <td class="has-text-black">location</td>
-                                <td class="has-text-black">0</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+        <div class="box">
+            <div class="is-flex is-justify-content-space-between is-align-items-center mb-4">
+                <h2 class="title has-text-black">Bestehende Clients</h2>
+                <a class="button is-danger is-rounded" data-open="#modal-client">
+                    <span class="icon">
+                        <i class="fas fa-plus"></i>
+                    </span>
+                    <strong>Neuer Client</strong>
+                </a>
             </div>
-        </section>
 
-        <!-- Modal für neues Client-Formular -->
+            <div class="table-container">
+                <table class="table is-fullwidth is-striped is-hoverable">
+                    <thead class="has-background-black">
+                    <tr class="has-text-black">
+                        <th>ClientID</th>
+                        <th>Name</th>
+                        <th>Location</th>
+                        <th>AnzahlVideos</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr class="has-background-white" th:each="client : ${clients}">
+                        <td class="has-text-black" th:text="${client._id}">1</td>
+                        <td class="has-text-black" th:text="${client.name}">Beispielname</td>
+                        <td class="has-text-black">location</td>
+                        <td class="has-text-black">0</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
         <div class="modal" id="modal-client">
             <div class="modal-background"></div>
             <div class="modal-card">
@@ -75,20 +64,20 @@
                 <section class="modal-card-body">
                     <form class="form" action="/features/config/client/save" method="POST">
                         <div class="field">
-                            <label class="label has-text-black" for="name">Hostname des Clients:</label>
+                            <label class="label has-text-white" for="name">Hostname des Clients:</label>
                             <div class="control">
                                 <input class="input" type="text" id="name" name="name" required placeholder="ClientPi...">
                             </div>
                         </div>
                         <div class="field is-grouped is-grouped-right mt-5">
                             <div class="control">
-                                <button class="button is-danger is-rounded" type="submit">Speichern</button>
+                                <button class="button is-link is-rounded" type="submit">Speichern</button>
                             </div>
                         </div>
                     </form>
                 </section>
                 <footer class="modal-card-foot">
-                    <button class="button is-light" data-close="#modal-client">Schließen</button>
+                    <button class="button is-danger" data-close="#modal-client">Schließen</button>
                 </footer>
             </div>
         </div>

@@ -4,6 +4,7 @@ function openModal(modalId) {
 function closeModal(modalId) {
     document.querySelector(modalId).classList.remove('is-active');
 }
+
 document.addEventListener('click', function(event) {
     const openModalButton = event.target.closest('[data-open]');
     if (openModalButton) {

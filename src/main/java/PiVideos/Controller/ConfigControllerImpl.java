@@ -3,8 +3,7 @@ package PiVideos.Controller;
 import PiVideos.Model.ClientPi;
 import PiVideos.Model.Network;
 import PiVideos.Repository.NetworkRepository;
-import PiVideos.Service.ConfigService;
-import PiVideos.Service.ConfigServiceImpl;
+import PiVideos.Service.FeatureService;
 import PiVideos.Service.SocketSerivce;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,15 +23,15 @@ public class ConfigControllerImpl implements ConfigController{
     SocketSerivce socketSerivce;
 
     @Autowired
-    ConfigService configService;
+    FeatureService featureService;
 
     @Autowired
     NetworkRepository networkRepository;
 
 
-    public ConfigControllerImpl(SocketSerivce socketSerivce, ConfigService configService, NetworkRepository networkRepository) {
+    public ConfigControllerImpl(SocketSerivce socketSerivce, FeatureService featureService, NetworkRepository networkRepository) {
         this.socketSerivce = socketSerivce;
-        this.configService = configService;
+        this.featureService = featureService;
         this.networkRepository = networkRepository;
     }
 
@@ -48,7 +47,7 @@ public class ConfigControllerImpl implements ConfigController{
 
     @PostMapping("/network/save")
     public String saveNetwork(@ModelAttribute Network network, Model model) {
-        configService.saveNetwork(network);
+        featureService.saveNetwork(network);
         model.addAttribute("message","Neues Netwerk " + network.getName() + " angelegt!");
         return "features/configuration/network.html";
     }
@@ -64,7 +63,7 @@ public class ConfigControllerImpl implements ConfigController{
     @Override
     @GetMapping("/client")
     public String getConfigClient(Model model) {
-        model.addAttribute("clients", configService.getAllClientPis());
+        model.addAttribute("clients", featureService.getAllClientPis());
         model.addAttribute("clientPi",new ClientPi());
 
 
@@ -75,10 +74,10 @@ public class ConfigControllerImpl implements ConfigController{
     public String saveConfigClient(@ModelAttribute ClientPi clientPi,HttpSession session ,Model model) {
 
         clientPi.setNetwork((Network) session.getAttribute("network"));
-        configService.saveClient(clientPi);
+        featureService.saveClient(clientPi);
         model.addAttribute("message","juhu");
-        model.addAttribute("networks",configService.getAllNetworks());
-        model.addAttribute("clients", configService.getAllClientPis());
+        model.addAttribute("networks", featureService.getAllNetworks());
+        model.addAttribute("clients", featureService.getAllClientPis());
 
         return "features/configuration/clientPi.html";
     }

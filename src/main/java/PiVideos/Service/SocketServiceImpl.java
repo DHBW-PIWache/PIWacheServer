@@ -116,22 +116,33 @@ public class SocketServiceImpl implements SocketSerivce {
     }
 
     public void receiveVideo(Socket clientSocket, String piName, Network network) {
-        File videoDir = new File(network.getRootPath() +"\\" +piName);
-        String localDateTime = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE);
 
-        Video video = new Video();
+        //Hier Sollte noch Fehlerbehandlung rein!!!!!!
+
+        File videoDir = new File(network.getRootPath() + "\\" + piName);
+        String localDate = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE);
 
         if (!videoDir.exists()) {
             videoDir.mkdirs();
         }
-        if (piName == null || piName.isBlank()) {
-            piName = "empfangenesVideo.mp4";
-        }
 
-        File videoFile = new File(videoDir,   localDateTime +".mp4");
+        if (piName == null || piName.isBlank()) {
+            piName = "null";
+        }
+        Video video = new Video();
+        video.setDate(LocalDateTime.now());
+        video.setClientPi(clientPiRepository.findByName(piName));
+        video.setFavorite(false);
+
+        videoRepository.save(video);
+
+
+        String finalName = video.get_id() + ".mp4";
+        File finalFile = new File(videoDir, finalName);
+
         try (
                 InputStream inputStream = clientSocket.getInputStream();
-                FileOutputStream fileOutputStream = new FileOutputStream(videoFile)
+                FileOutputStream fileOutputStream = new FileOutputStream(finalFile)
         ) {
             byte[] buffer = new byte[4096];
             int bytesRead;
@@ -139,17 +150,13 @@ public class SocketServiceImpl implements SocketSerivce {
                 fileOutputStream.write(buffer, 0, bytesRead);
             }
 
-            video.setName(videoFile.getName());
-            video.setDate(LocalDateTime.now());
-            video.setBytes(videoFile.length());
-            video.setPath(videoFile.getPath());
-            video.setClientPi(clientPiRepository.findByName(piName));
-            video.setTimestamp(Timestamp.from(Instant.now()));
-            video.setFavorite(false);
 
+            video.setName(finalName);
+            video.setPath(finalFile.getPath());
+            video.setBytes(finalFile.length());
             videoRepository.save(video);
 
-            System.out.println("Video wurde gespeichert unter: " + videoFile.getAbsolutePath());
+            System.out.println("Video gespeichert unter: " + finalFile.getAbsolutePath());
 
         } catch (IOException e) {
             e.printStackTrace();

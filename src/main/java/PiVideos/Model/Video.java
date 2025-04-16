@@ -25,7 +25,7 @@ public class Video {
 
     private LocalDateTime date;
 
-    private Timestamp timestamp;
+
 
     private long bytes;
 
@@ -41,12 +41,11 @@ public class Video {
     public Video() {
     }
 
-    public Video(Integer _id, String name, String path, LocalDateTime date, Timestamp timestamp, long bytes, boolean favorite, ClientPi clientPi) {
+    public Video(Integer _id, String name, String path, LocalDateTime date,   long bytes, boolean favorite, ClientPi clientPi) {
         this._id = _id;
         this.name = name;
         this.path = path;
         this.date = date;
-        this.timestamp = timestamp;
         this.bytes = bytes;
         this.favorite = favorite;
         this.clientPi = clientPi;
