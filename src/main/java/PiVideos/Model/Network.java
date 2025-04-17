@@ -22,21 +22,22 @@ public class Network {
 
     private String rootPath;
 
+    private int port;
+
     //Maybe noch IP adresse direkt im netzwerk, je nach dem ob es möglich ist
 //    private InetAddress inetAddress;
 
     @OneToMany(mappedBy = "network", cascade = CascadeType.ALL, orphanRemoval = false)
     private List<ClientPi> clientPis;
 
+    public Network() {
+    }
 
-
-    public Network(Integer _id, String name, String rootPath, List<ClientPi> clientPis) {
+    public Network(Integer _id, String name, String rootPath, int port, List<ClientPi> clientPis) {
         this._id = _id;
         this.name = name;
         this.rootPath = rootPath;
+        this.port = port;
         this.clientPis = clientPis;
-    }
-
-    public Network() {
     }
 }

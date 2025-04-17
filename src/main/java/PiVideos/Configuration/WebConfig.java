@@ -12,6 +12,6 @@ public class WebConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new SessionInterceptor())
                 .addPathPatterns("/**")
-                .excludePathPatterns("/css/**", "/js/**","/login","/error"); // Seiten, die frei zugänglich sein sollen
+                .excludePathPatterns("/css/**", "/js/**","/login","/register","/error"); // Seiten, die frei zugänglich sein sollen
     }
 }

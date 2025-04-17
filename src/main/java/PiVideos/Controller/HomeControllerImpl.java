@@ -28,9 +28,16 @@ public class HomeControllerImpl implements HomeController{
 
     @GetMapping("/login")
     public String getLogin(Model model){
+
         model.addAttribute("networks",networkRepository.getAllNetworks());
         model.addAttribute("network",new Network());
         return "login.html";
+    }
+
+    @GetMapping("/register")
+    public String getRegister(@ModelAttribute Network network,Model model){
+
+        return "register.html";
     }
 
     @PostMapping("/login")

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Register</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="/main.js"></script>
+
+</head>
+<body>
+
+<div th:insert="~{fragments/header.html ::header }"></div>
+
+
+<main>
+    <section class="section">
+        <div class="container">
+            <div class="box" style="max-width: 500px; margin: auto;">
+                <h1 class="title has-text-centered has-text-black">Neues Netzwerk anlegen</h1>
+
+                <form action="/register" method="post">
+
+                        <div>
+                            <label for="name">Name:</label>
+                            <input  class="input" type="text" id="name" name="name" required>
+                        </div>
+
+                        <div>
+                            <label for="rootPath">Root Path:</label>
+                            <input class="input" type="text" id="rootPath" name="rootPath" placeholder="Gib den Pfad ein">
+                        </div>
+                        <div>
+                            <label for="port">Socket Port:</label>
+                            <input class="input" type="text" id="port" name="port" placeholder="Port...">
+                        </div>
+
+
+                        <div class="field is-grouped is-grouped-right">
+                        <p class="control">
+                            <button class="button is-link" type="submit">Auswählen</button>
+                        </p>
+                        <p class="control">
+                            <a class="button is-danger" href="#">Abbrechen</a>
+                        </p>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </section>
+
+
+</main>
+
+
+
+</body>
+</html>
