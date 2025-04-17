@@ -18,5 +18,9 @@ public interface FeatureService {
 
    public List<Video> getAllVideos();
 
-   public void deleteVideoByID(Integer id);
+   public void deleteVideoByID(Integer _id);
+
+   public void updateVideo(Video video);
+
+   public Video getVideoBy_id(Integer _id);
 }

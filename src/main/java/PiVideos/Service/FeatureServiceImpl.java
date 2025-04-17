@@ -8,6 +8,7 @@ import PiVideos.Repository.VideoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.util.List;
 
 
@@ -47,8 +48,20 @@ public class FeatureServiceImpl implements FeatureService {
     }
 
     @Override
-    public void deleteVideoByID(Integer id) {
-         videoRepository.deleteById(id);
+    public void deleteVideoByID(Integer _id) {
+        File file = new File(videoRepository.findById(_id).get().getPath());
+        if(file.exists()){
+            file.delete();
+        } else{
+            System.out.println("No video found");
+        }
+
+        videoRepository.deleteById(_id);
+    }
+
+    @Override
+    public void updateVideo(Video video) {
+        videoRepository.save(video);
     }
 
     @Override
@@ -57,5 +70,8 @@ public class FeatureServiceImpl implements FeatureService {
         clientPiRepository.save(clientPi);
     }
 
-
+    @Override
+    public Video getVideoBy_id(Integer _id) {
+        return videoRepository.findById(_id).get();
+    }
 }

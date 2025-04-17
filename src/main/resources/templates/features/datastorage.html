@@ -53,34 +53,40 @@
           </tr>
           </thead>
           <tbody>
-          <tr class="has-background-white"
-              th:each="video : ${videos}"
-              th:data-client-id="${video.clientPi._id}">
-            <td class="has-text-black" th:text="${video._id}">1</td>
-            <td class="has-text-black" th:text="${video.name}">Beispielvideo.mp4</td>
-            <td class="has-text-black" th:text="${video.path}">/media/video.mp4</td>
-            <td class="has-text-black" th:text="${#temporals.format(video.date, 'dd.MM.yyyy HH:mm')}">01.01.2024</td>
-            <td class="has-text-black" th:text="${video.bytes} + ' Bytes'">1048576</td>
-            <td class="has-text-black" th:text="${video.favorite ? 'Ja' : 'Nein'}">Ja</td>
-            <td class="has-text-black" th:text="${video.clientPi.name}">ClientPi01</td>
-            <td>
-              <button class="button is-small is-info mr-2"
-                      th:attr="onclick=|document.getElementById('modal-edit-${video._id}').classList.add('is-active')|">
-                <span class="icon"><i class="fas fa-edit"></i></span>
-              </button>
-              <button class="button is-small is-danger"
-                      th:attr="onclick=|document.getElementById('modal-delete-${video._id}').classList.add('is-active')|">
-                <span class="icon"><i class="fas fa-trash"></i></span>
-              </button>
-            </td>
-          </tr>
+          <th:block th:each="video : ${videos}">
+            <!-- Hauptdatenzeile -->
+            <tr class="has-background-white" th:data-client-id="${video.clientPi._id}">
+              <td class="has-text-black" th:text="${video._id}">1</td>
+              <td class="has-text-black" th:text="${video.name}">Beispielvideo.mp4</td>
+              <td class="has-text-black" th:text="${video.path}">/media/video.mp4</td>
+              <td class="has-text-black" th:text="${#temporals.format(video.date, 'dd.MM.yyyy HH:mm')}">01.01.2024</td>
+              <td class="has-text-black" th:text="${video.bytes} + ' Bytes'">1048576</td>
+              <td class="has-text-black" th:text="${video.favorite ? 'Ja' : 'Nein'}">Ja</td>
+              <td class="has-text-black" th:text="${video.clientPi.name}">ClientPi01</td>
+              <td>
+                <button class="button is-small is-info mr-2"
+                        th:attr="onclick=|document.getElementById('modal-edit-${video._id}').classList.add('is-active')|">
+                  <span class="icon"><i class="fas fa-edit"></i></span>
+                </button>
+                <button class="button is-small is-danger"
+                        th:attr="onclick=|document.getElementById('modal-delete-${video._id}').classList.add('is-active')|">
+                  <span class="icon"><i class="fas fa-trash"></i></span>
+                </button>
+              </td>
+            </tr>
+
+            <tr class="has-background-light" th:data-client-id="${video.clientPi._id}">
+              <td colspan="8" class="has-text-black">
+                <strong class="has-text-black">Kommentar:</strong> <span class="has-text-black" th:text="${video.comment}">Kein Kommentar vorhanden</span>
+              </td>
+            </tr>
+          </th:block>
           </tbody>
         </table>
       </div>
 
-      <!-- Modals außerhalb der Tabelle -->
       <div th:each="video : ${videos}">
-        <!-- Edit Modal -->
+
         <div class="modal" th:attr="id='modal-edit-' + ${video._id}">
           <div class="modal-background"
                th:attr="onclick=|document.getElementById('modal-edit-${video._id}').classList.remove('is-active')|"></div>
@@ -90,14 +96,28 @@
               <button class="delete" aria-label="close"
                       th:attr="onclick=|document.getElementById('modal-edit-${video._id}').classList.remove('is-active')|"></button>
             </header>
-            <section class="modal-card-body">
-              <p class="has-text-white">ID des Videos: <strong th:text="${video._id}"></strong></p>
-            </section>
-            <footer class="modal-card-foot">
-              <button class="button is-info">Speichern</button>
-              <button class="button"
-                      th:attr="onclick=|document.getElementById('modal-edit-${video._id}').classList.remove('is-active')|">Abbrechen</button>
-            </footer>
+            <form th:action="@{/features/dataStorage/update/{_id}(_id=${video._id})}" method="post">
+                  <section class="modal-card-body">
+                    <input type="hidden" name="id" th:value="${video._id}"/>
+                    <div class="field">
+                      <label class="label has-text-white" for="comment_${video._id}">Kommentar</label>
+                      <div class="control">
+                        <textarea id="comment_${video._id}" class="textarea" name="comment" placeholder="Kommentar eingeben..." th:text="${video.comment}"></textarea>
+                      </div>
+                    </div>
+                    <div class="field">
+                      <label class="checkbox has-text-white">
+                        <input type="checkbox" name="favorite" th:checked="${video.favorite}"> Als Favorit markieren
+                      </label>
+                </div>
+              </section>
+
+              <footer class="modal-card-foot">
+                <button class="button is-info" type="submit">Speichern</button>
+                <button class="button" type="button"
+                        th:attr="onclick=|document.getElementById('modal-edit-${video._id}').classList.remove('is-active')|">Abbrechen</button>
+              </footer>
+            </form>
           </div>
         </div>
 
@@ -115,7 +135,7 @@
               <p class="has-text-white">Möchtest du Video mit ID <strong th:text="${video._id}"></strong> wirklich löschen?</p>
             </section>
             <footer class="modal-card-foot">
-              <form th:action="@{/features/dataStorage/{id}(id=${video._id})}" method="post">
+              <form th:action="@{/features/dataStorage/delete/{_id}(_id=${video._id})}" method="post">
                 <button class="button is-danger" type="submit">Löschen</button>
               </form>
               <button class="button"
@@ -124,7 +144,6 @@
           </div>
         </div>
       </div>
-
     </div>
   </main>
 </div>
