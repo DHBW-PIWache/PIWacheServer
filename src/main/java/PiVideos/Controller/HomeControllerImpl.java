@@ -34,11 +34,13 @@ public class HomeControllerImpl implements HomeController{
         return "login.html";
     }
 
+    //Test
     @GetMapping("/register")
     public String getRegister(@ModelAttribute Network network,Model model){
 
         return "register.html";
     }
+
     @PostMapping("/register")
     public String postRegister(@ModelAttribute Network network,Model model){
 
