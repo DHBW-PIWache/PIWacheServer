@@ -39,6 +39,11 @@ public class HomeControllerImpl implements HomeController{
 
         return "register.html";
     }
+    @PostMapping("/register")
+    public String postRegister(@ModelAttribute Network network,Model model){
+
+        return "register.html";
+    }
 
     @PostMapping("/login")
     public String postLogin(@ModelAttribute Network network, HttpSession session){

@@ -19,6 +19,8 @@ public class ClientPi {
     @Column(unique = true, nullable = false)
     private String name;
 
+    private String location;
+
 
     @ManyToOne
     @JoinColumn(name = "network_id", nullable = false)
