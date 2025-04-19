@@ -19,6 +19,13 @@
         <p class="title">Dateiverwaltung</p>
       </div>
     </section>
+    
+  <div th:if="${error}" class="notification is-danger mt-3">
+      <span th:text="${error}"></span>
+  </div>
+  <div th:if="${message}" class="notification is-success mt-3">
+    <span th:text="${message}"></span>
+  </div>
 
     <div class="box">
       <div class="is-flex is-justify-content-space-between is-align-items-center mb-4">
@@ -64,6 +71,10 @@
               <td class="has-text-black" th:text="${video.favorite ? 'Ja' : 'Nein'}">Ja</td>
               <td class="has-text-black" th:text="${video.clientPi.name}">ClientPi01</td>
               <td>
+                <a class="button is-small is-success mr-2"
+                   th:href="@{/features/live/{id}(id=${video._id})}">
+                  <span class="icon"><i class="fas fa-play"></i></span>
+                </a>
                 <button class="button is-small is-info mr-2"
                         th:attr="onclick=|document.getElementById('modal-edit-${video._id}').classList.add('is-active')|">
                   <span class="icon"><i class="fas fa-edit"></i></span>
@@ -73,6 +84,7 @@
                   <span class="icon"><i class="fas fa-trash"></i></span>
                 </button>
               </td>
+              
             </tr>
 
             <tr class="has-background-light" th:data-client-id="${video.clientPi._id}">

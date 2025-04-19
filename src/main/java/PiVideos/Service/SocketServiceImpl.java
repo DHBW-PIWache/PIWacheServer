@@ -6,21 +6,13 @@ import PiVideos.Repository.ClientPiRepository;
 import PiVideos.Repository.NetworkRepository;
 import PiVideos.Repository.VideoRepository;
 import jakarta.annotation.PreDestroy;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
-import java.net.Inet4Address;
-import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.sql.Timestamp;
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -60,13 +52,12 @@ public class SocketServiceImpl implements SocketSerivce {
             try {
                 serverSocket = new ServerSocket(port);
                 System.out.println("Socket-Server läuft auf Port " + port);
-                System.out.println(Inet4Address.getLocalHost());
 
                 while (!serverSocket.isClosed()) {
                     Socket clientSocket = serverSocket.accept();
                     System.out.println("Neuer Client verbunden: " + clientSocket.getInetAddress());
 
-                    executorService.submit(() -> handleClient(clientSocket,network));
+                    executorService.submit(() -> handleClient(clientSocket, network));
                 }
             } catch (IOException e) {
                 if (!serverSocket.isClosed()) {
@@ -76,32 +67,34 @@ public class SocketServiceImpl implements SocketSerivce {
         });
     }
 
-
-
-
-    public void handleClient(Socket clientSocket,Network network) {
+    public void handleClient(Socket clientSocket, Network network) {
         try (
-                BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-                PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true)
+            DataInputStream dataIn = new DataInputStream(clientSocket.getInputStream());
+            DataOutputStream dataOut = new DataOutputStream(clientSocket.getOutputStream())
         ) {
-            String clientMessage = in.readLine();
-            System.out.println("Empfangen: " + clientMessage);
+            String command = dataIn.readUTF();
+            System.out.println("Empfangen: " + command);
 
-            if ("SEND_VIDEO".equalsIgnoreCase(clientMessage)) {
-                out.println("READY_TO_RECEIVE");
+            if ("SEND_VIDEO".equalsIgnoreCase(command)) {
+                dataOut.writeUTF("READY_TO_RECEIVE");
 
-                // Lies die Metadaten (also den Dateinamen)
-                String videoName = null;
-                String line;
-                while ((line = in.readLine()) != null && !line.equals("END_HEADER")) {
+                String piName = "unknown";
+                long fileSize = 0;
+
+                // Header verarbeiten
+                while (true) {
+                    String line = dataIn.readUTF();
+                    if ("END_HEADER".equals(line)) break;
+
                     if (line.startsWith("PI_NAME:")) {
-                        videoName = line.substring("PI_NAME:".length());
+                        piName = line.substring("PI_NAME:".length());
+                    } else if (line.startsWith("FILE_SIZE:")) {
+                        fileSize = Long.parseLong(line.substring("FILE_SIZE:".length()));
                     }
                 }
 
-                receiveVideo(clientSocket, videoName,network); // Übergib den Namen
-
-                out.println("VIDEO_RECEIVED");
+                receiveVideo(dataIn, piName, fileSize, network);
+                dataOut.writeUTF("VIDEO_RECEIVED");
             }
 
         } catch (IOException e) {
@@ -115,54 +108,48 @@ public class SocketServiceImpl implements SocketSerivce {
         }
     }
 
-    public void receiveVideo(Socket clientSocket, String piName, Network network) {
+    public void receiveVideo(DataInputStream dataIn, String piName, long fileSize, Network network) {
+        if (piName == null || piName.isBlank()) {
+            piName = "unknown";
+        }
 
-        //Hier Sollte noch Fehlerbehandlung rein!!!!!!
-
-        File videoDir = new File(network.getRootPath() + "\\" + piName);
-        String localDate = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE);
-
+        File videoDir = new File(network.getRootPath() + piName);
         if (!videoDir.exists()) {
             videoDir.mkdirs();
         }
 
-        if (piName == null || piName.isBlank()) {
-            piName = "null";
-        }
         Video video = new Video();
         video.setDate(LocalDateTime.now());
         video.setClientPi(clientPiRepository.findByName(piName));
         video.setFavorite(false);
-
         videoRepository.save(video);
-
 
         String finalName = video.get_id() + ".mp4";
         File finalFile = new File(videoDir, finalName);
 
-        try (
-                InputStream inputStream = clientSocket.getInputStream();
-                FileOutputStream fileOutputStream = new FileOutputStream(finalFile)
-        ) {
+        try (FileOutputStream fileOut = new FileOutputStream(finalFile)) {
             byte[] buffer = new byte[4096];
-            int bytesRead;
-            while ((bytesRead = inputStream.read(buffer)) != -1) {
-                fileOutputStream.write(buffer, 0, bytesRead);
+            long totalRead = 0;
+
+            while (totalRead < fileSize) {
+                int bytesRead = dataIn.read(buffer, 0, (int) Math.min(buffer.length, fileSize - totalRead));
+                if (bytesRead == -1) break;
+                fileOut.write(buffer, 0, bytesRead);
+                totalRead += bytesRead;
             }
 
-
             video.setName(finalName);
-            video.setPath(finalFile.getPath());
+            video.setPath(finalFile.getAbsolutePath());
+            video.setRelativePath(piName + "/" + finalName);
             video.setBytes(finalFile.length());
             videoRepository.save(video);
 
-            System.out.println("Video gespeichert unter: " + finalFile.getAbsolutePath());
+            System.out.println("📁 Video gespeichert unter: " + finalFile.getAbsolutePath());
 
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
 
     @PreDestroy
     public synchronized void stopServer() {

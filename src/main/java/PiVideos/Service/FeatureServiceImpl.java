@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -48,20 +49,20 @@ public class FeatureServiceImpl implements FeatureService {
     }
 
     @Override
-    public void deleteVideoByID(Integer _id) {
+    public boolean deleteVideoByID(Integer _id) {
         File file = new File(videoRepository.findById(_id).get().getPath());
         if(file.exists()){
-            file.delete();
-        } else{
-            System.out.println("No video found");
-        }
-
         videoRepository.deleteById(_id);
+        return file.delete();
+        } else{
+            return false;
+        }
     }
 
     @Override
-    public void updateVideo(Video video) {
-        videoRepository.save(video);
+    public boolean updateVideo(Video video) {
+        
+        return videoRepository.save(video).equals(video);
     }
 
     @Override
@@ -71,7 +72,7 @@ public class FeatureServiceImpl implements FeatureService {
     }
 
     @Override
-    public Video getVideoBy_id(Integer _id) {
-        return videoRepository.findById(_id).get();
+    public Optional<Video> getVideoBy_id(Integer _id) {
+        return videoRepository.findById(_id);
     }
 }

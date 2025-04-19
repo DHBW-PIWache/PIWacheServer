@@ -6,6 +6,7 @@ import PiVideos.Model.Network;
 import PiVideos.Model.Video;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface FeatureService {
 
@@ -18,9 +19,9 @@ public interface FeatureService {
 
    public List<Video> getAllVideos();
 
-   public void deleteVideoByID(Integer _id);
+   public boolean deleteVideoByID(Integer _id);
 
-   public void updateVideo(Video video);
+   public boolean updateVideo(Video video);
 
-   public Video getVideoBy_id(Integer _id);
+   public Optional<Video> getVideoBy_id(Integer _id);
 }

@@ -23,6 +23,8 @@ public class Video {
 
     private String path;
 
+    private String relativePath;
+
     private LocalDateTime date;
 
 
