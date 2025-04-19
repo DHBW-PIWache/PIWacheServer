@@ -18,7 +18,7 @@ public interface ConfigController {
     public String getConfigClient(Model model);
 
     public String startServer(HttpSession session, Model model );
-    public String stopServer(Model Model);
+    public String stopServer(HttpSession session, Model Model);
 
 
 }

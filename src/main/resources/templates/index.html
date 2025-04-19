@@ -45,19 +45,34 @@
                             </div>
                         </div>
                     </div>
-                    <div class="column">
-                        <div class="box" style="max-width: 500px; margin: auto;">
-                            <div class="heading">Socketstatus: </div>
-                            <div class="title">Status des Sockets </div>
-                            <div class="level">
-                                <div class="level-item">
-                                    <div class="notification is-primary"><p>Aktiv</p>   </div>
-                                </div>
 
+                    <div class="column is-6">
+                    <div class="box">
+                        <p class="heading">Socketstatus</p>
+                        <p class="title is-5">Verbindungsstatus</p>
+                        <div th:if="${session.socket == true}">
+                            <div class="notification is-success has-text-centered mt-4">
+                                <span class="icon"><i class="fas fa-check-circle"></i></span>
+                                <strong>Aktiv</strong>
                             </div>
                         </div>
-                    </div>
+                        <div th:if="${session.socket != true}">
+                            <div class="notification is-danger has-text-centered mt-4">
+                                <span class="icon"><i class="fas fa-ban"></i></span>
+                                <strong>Inaktiv</strong>
+                            </div>
+                        </div>
 
+                        <div class="buttons mt-4">
+                            <form action="/features/config/startServer" method="POST" style="margin-bottom: 0.5rem;">
+                                <button class="button is-link is-rounded is-fullwidth" type="submit">Server starten</button>
+                            </form>
+                            <form action="/features/config/stopServer" method="POST">
+                                <button class="button is-danger is-rounded is-fullwidth" type="submit">Server stoppen</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
                     <div class="column">
                         <div class="box" style="max-width: 500px; margin: auto;">
                             <div class="heading">Speicherbelastung</div>
@@ -106,8 +121,6 @@
             </main>
         </div>
 
-    <!--<div th:if="${session.network !=null}">-->
-    <!--    <div th:text="${session.network._id}">h</div>-->
-    <!--</div>-->
+   
 </body>
 </html>

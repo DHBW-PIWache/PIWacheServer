@@ -87,16 +87,19 @@ public class ConfigControllerImpl implements ConfigController{
     @PostMapping("/startServer")
     public String startServer(HttpSession session, Model model) {
         Network network = (Network) session.getAttribute("network");
-         socketSerivce.startServer(network);
-        return "redirect:/features/config";
+
+        socketSerivce.startServer(network);
+        session.setAttribute("socket", true);
+        return "index.html";
     }
 
 
     @Override
     @PostMapping("/stopServer")
-    public String stopServer(Model Model) {
+    public String stopServer(HttpSession session, Model Model) {
         socketSerivce.stopServer();
-        return "redirect:/features/config";
+        session.setAttribute("socket", false);
+        return "index.html";
     }
 
 

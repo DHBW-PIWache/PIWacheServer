@@ -1,6 +1,11 @@
-FROM openjdk:21-jdk-slim
-RUN mkdir app
-WORKDIR app/
-COPY target/*.jar app.jar
+
+FROM openjdk:17-jdk-slim
+
+WORKDIR /app
+
+COPY target/*.jar /app/app.jar
+
 EXPOSE 8080
-CMD ["java","-jar","app.jar"]
+
+
+ENTRYPOINT ["java", "-jar", "app.jar"]

@@ -1,0 +1,16 @@
+services:
+  piwache:
+    image: piwache  
+        
+    container_name: piwache
+    network_mode: "host"
+    
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mariadb://localhost:3306/piVideos
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=Raspberry
+    volumes:
+      - /home/berry/videostorage:/home/berry/videostorage 
+    ports:
+      - "8080:8080"  
+    restart: always  
