@@ -15,6 +15,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 
+/******************************************************************************************************* 
+Autor: Julian Hecht
+Datum letzte Änderung: 21.04.2025
+Änderung: Kommentare hinzugefügt + Refactoring
+*******************************************************************************************************/
+
 @Controller
 @RequestMapping("features/config")
 public class ConfigControllerImpl implements ConfigController{
@@ -35,31 +41,7 @@ public class ConfigControllerImpl implements ConfigController{
         this.networkRepository = networkRepository;
     }
 
-
-    @Override
-    @GetMapping("/network")
-    public String getConfigNetwork(Model model) {
-        model.addAttribute("network",new Network());
-
-        return "features/configuration/network.html";
-    }
-
-
-    @PostMapping("/network/save")
-    public String saveNetwork(@ModelAttribute Network network, Model model) {
-        featureService.saveNetwork(network);
-        model.addAttribute("message","Neues Netwerk " + network.getName() + " angelegt!");
-        return "features/configuration/network.html";
-    }
-
-
-    @Override
-    @GetMapping("/server")
-    public String getConfigServer(Model model) {
-
-        return "features/configuration/server.html";
-    }
-
+    
     @Override
     @GetMapping("/client")
     public String getConfigClient(Model model) {

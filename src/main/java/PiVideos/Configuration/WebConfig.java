@@ -7,23 +7,26 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+/******************************************************************************************************* 
+Autor: Julian Hecht
+Datum letzte Änderung: 21.04.2025
+Änderung: Kommentare hinzugefügt 
+*******************************************************************************************************/
+
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
+
+    //SessionInterceptor leitet alles auf Login seite weiter außer angegebene Seiten
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new SessionInterceptor())
                 .addPathPatterns("/**")
-                .excludePathPatterns("/css/**", "/js/**","/login","/register","/error"); // Seiten, die frei zugänglich sein sollen
+                .excludePathPatterns("/*.css", "/*.js", "/login", "/register", "/error"); // Seiten, die frei zugänglich sein sollen
     }
+   
 
-     @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry
-            .addResourceHandler("/videos/**") 
-            .addResourceLocations("file:/home/berry/videostorage/"); 
-    }
-
+    //Cors fehler -> noch keine Auswirkung bis jetzt gehabt
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")  
@@ -33,4 +36,13 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedHeaders("*")  
                 .exposedHeaders("Authorization");  
     }
+    
+    // Resource Mapper für die Videos, damit sie auf der Website integrierbar sind 
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry
+            .addResourceHandler("/videos/**") 
+            .addResourceLocations("file:/home/berry/videostorage/"); 
+    }
+                
 }

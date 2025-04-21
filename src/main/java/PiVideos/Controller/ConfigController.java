@@ -5,15 +5,14 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
+/******************************************************************************************************* 
+Autor: Julian Hecht
+Datum letzte Änderung: 21.04.2025
+Änderung: Kommentare hinzugefügt 
+*******************************************************************************************************/
 public interface ConfigController {
 
-    //Website Gets
-    public String getConfigNetwork(Model model);
-
-    @PostMapping("/network/save")
-    String saveNetwork(@ModelAttribute Network network, Model model);
-
-    public String getConfigServer(Model model);
+    
 
     public String getConfigClient(Model model);
 

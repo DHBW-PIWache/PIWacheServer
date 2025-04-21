@@ -26,6 +26,8 @@ public class HomeControllerImpl implements HomeController{
         this.networkRepository = networkRepository;
     }
 
+    
+
     @GetMapping("/login")
     public String getLogin(Model model){
 
