@@ -31,76 +31,71 @@
                     </div>
                 </div>
 
-            <div th:if="${session.network != null}">
-                <div  class="columns is-multiline">
-                    <div class="column">
-                        <div class="box" style="max-width: 500px; margin: auto;">
-                            <div class="heading">Aktuelles Netzwerk</div>
-                            <div class="title" th:text="${session.network.name + ' (ID: ' + session.network._id + ')'}">{netzwerkID}</div>
-                            <div class="level">
-                                <div class="level-item">
-
+                <div th:if="${session.network != null}">
+                    <div class="columns is-multiline">
+                        
+                        <div class="column is-6">
+                            <div class="box mb-4"> 
+                                <div class="heading">Aktuelles Netzwerk</div>
+                                <div class="title" th:text="${session.network.name + ' (ID: ' + session.network._id + ')'}">{netzwerkID}</div>
+                            </div>
+                
+                            <div class="box">
+                                <div class="heading">Speicherbelastung</div>
+                                <div class="level">
+                                    <div class="level-item">
+                                        <div>
+                                            <div class="heading">Rev Prod $</div>
+                                            <div class="title is-5">30%</div>
+                                        </div>
+                                    </div>
+                                    <div class="level-item">
+                                        <div>
+                                            <div class="heading">Rev Serv $</div>
+                                            <div class="title is-5">25%</div>
+                                        </div>
+                                    </div>
+                                    <div class="level-item">
+                                        <div>
+                                            <div class="heading">Exp %</div>
+                                            <div class="title is-5">45%</div>
+                                        </div>
+                                    </div>
                                 </div>
-
                             </div>
                         </div>
-                    </div>
-
-                    <div class="column is-6">
-                    <div class="box">
-                        <p class="heading">Socketstatus</p>
-                        <p class="title is-5">Verbindungsstatus</p>
-                        <div th:if="${session.socket == true}">
-                            <div class="notification is-success has-text-centered mt-4">
-                                <span class="icon"><i class="fas fa-check-circle"></i></span>
-                                <strong>Aktiv</strong>
+                
+                        
+                        <div class="column is-6">
+                            <div class="box">
+                                <p class="heading">Socketstatus</p>
+                                <p class="title is-5">Verbindungsstatus</p>
+                                <div th:if="${session.socket == true}">
+                                    <div class="notification is-success has-text-centered mt-4">
+                                        <span class="icon"><i class="fas fa-check-circle"></i></span>
+                                        <strong>Aktiv</strong>
+                                    </div>
+                                </div>
+                                <div th:if="${session.socket != true}">
+                                    <div class="notification is-danger has-text-centered mt-4">
+                                        <span class="icon"><i class="fas fa-ban"></i></span>
+                                        <strong>Inaktiv</strong>
+                                    </div>
+                                </div>
+                
+                                <div class="buttons mt-4">
+                                    <form action="/features/config/startServer" method="POST" style="margin-bottom: 0.5rem;">
+                                        <button class="button is-link is-rounded is-fullwidth" type="submit">Server starten</button>
+                                    </form>
+                                    <form action="/features/config/stopServer" method="POST">
+                                        <button class="button is-danger is-rounded is-fullwidth" type="submit">Server stoppen</button>
+                                    </form>
+                                </div>
                             </div>
-                        </div>
-                        <div th:if="${session.socket != true}">
-                            <div class="notification is-danger has-text-centered mt-4">
-                                <span class="icon"><i class="fas fa-ban"></i></span>
-                                <strong>Inaktiv</strong>
-                            </div>
-                        </div>
-
-                        <div class="buttons mt-4">
-                            <form action="/features/config/startServer" method="POST" style="margin-bottom: 0.5rem;">
-                                <button class="button is-link is-rounded is-fullwidth" type="submit">Server starten</button>
-                            </form>
-                            <form action="/features/config/stopServer" method="POST">
-                                <button class="button is-danger is-rounded is-fullwidth" type="submit">Server stoppen</button>
-                            </form>
                         </div>
                     </div>
                 </div>
-                    <div class="column">
-                        <div class="box" style="max-width: 500px; margin: auto;">
-                            <div class="heading">Speicherbelastung</div>
-                            <div class="title"></div>
-                            <div class="level">
-                                <div class="level-item">
-                                    <div class="">
-                                        <div class="heading">Rev Prod $</div>
-                                        <div class="title is-5">30%</div>
-                                    </div>
-                                </div>
-                                <div class="level-item">
-                                    <div class="">
-                                        <div class="heading">Rev Serv $</div>
-                                        <div class="title is-5">25%</div>
-                                    </div>
-                                </div>
-                                <div class="level-item">
-                                    <div class="">
-                                        <div class="heading">Exp %</div>
-                                        <div class="title is-5">45%</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
+                
 
                 <div class="columns is-multiline">
                     <div class="column is-6">
