@@ -24,8 +24,7 @@ public class Network {
 
     private int port;
 
-    //Maybe noch IP adresse direkt im netzwerk, je nach dem ob es möglich ist
-//    private InetAddress inetAddress;
+
 
     @OneToMany(mappedBy = "network", cascade = CascadeType.ALL, orphanRemoval = false)
     private List<ClientPi> clientPis;

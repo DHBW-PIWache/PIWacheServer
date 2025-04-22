@@ -15,7 +15,7 @@ public interface FeatureService {
 
    public void saveClient(ClientPi clientPi);
 
-   public List<ClientPi> getAllClientPis();
+   public List<ClientPi> getAllClientPis(Network network);
 
    public List<Video> getAllVideos();
 

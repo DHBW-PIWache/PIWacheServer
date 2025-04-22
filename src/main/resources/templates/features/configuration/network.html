@@ -1,37 +1,32 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Config</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <script src="/main.js"></script>
+  <title>Client</title>
+  <link rel="icon" type="image/png" href="https://img.icons8.com/color/48/raspberry-pi.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <script src="/main.js"></script>
 </head>
 <body>
 
 <div th:insert="~{fragments/header.html ::header }"></div>
 <div class="columns is-fullheight">
-    <div th:insert="~{fragments/menu.html ::menu }"></div>
-    <main class="column m-4">
+  <div th:insert="~{fragments/menu.html ::menu }"></div>
+  <main class="column m-4">
+    <section class="hero is-small">
+      <div class="hero-body">
+        <p class="title">Aktuelles Netzwerk konfigurieren</p>
+      </div>
+    </section>
 
-    <h2 class="title is-3"> Neues Netzwerk anlegen</h2>
-    <h2 class="title is-3" th:text="${message}"></h2>
-    <form class="" action="/features/config/network/save" method="POST">
-        <div>
-            <label for="name">Name:</label>
-            <input  class="input" type="text" id="name" name="name" required>
-        </div>
-        <div>
-            <label for="rootPath">Root Path:</label>
-            <input class="input" type="text" id="rootPath" name="rootPath" placeholder="Gib den Pfad ein">
-        </div>
-        <button class="button is-danger is-rounded pt-2" type="submit">Speichern</button>
-    </form>
 
-    </main>
+
+
+
+  </main>
 </div>
-
 
 </body>
 </html>

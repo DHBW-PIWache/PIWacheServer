@@ -10,5 +10,6 @@ public interface SocketSerivce {
     void startServer(Network network);
     void handleClient(Socket clientSocket,Network network);
     void stopServer();
+    boolean  isServerRunning();
 
 }

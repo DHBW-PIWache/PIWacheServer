@@ -2,17 +2,16 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Register</title>
+    <link rel="icon" type="image/png" href="https://img.icons8.com/color/48/raspberry-pi.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <script src="/main.js"></script>
-
 </head>
 <body>
 
-<div th:insert="~{fragments/header.html ::header }"></div>
-
+<div th:insert="~{fragments/header.html :: header}"></div>
 
 <main>
     <section class="section">
@@ -20,41 +19,42 @@
             <div class="box" style="max-width: 500px; margin: auto;">
                 <h1 class="title has-text-centered has-text-black">Neues Netzwerk anlegen</h1>
 
-                <form action="/register" method="post">
-
-                        <div>
-                            <label for="name">Name:</label>
-                            <input  class="input" type="text" id="name" name="name" required>
+                <form action="/register" method="post" th:object="${network}">
+                    <div class="field">
+                        <label class="label has-text-black" for="name">Name:</label>
+                        <div class="control">
+                            <input class="input" type="text" id="name" name="name" th:field="*{name}" placeholder="Netzwerkname" required>
                         </div>
+                    </div>
 
-                        <div>
-                            <label for="rootPath">Root Path:</label>
-                            <input class="input" type="text" id="rootPath" name="rootPath" placeholder="Gib den Pfad ein">
+                    <div class="field">
+                        <label class="label has-text-black" for="rootPath">Root Path:</label>
+                        <div class="control">
+                            <input class="input" type="text" id="rootPath" name="rootPath" th:field="*{rootPath}" placeholder="z. B. /home/pi/videos">
                         </div>
-                        <div>
-                            <label for="port">Socket Port:</label>
-                            <input class="input" type="text" id="port" name="port" placeholder="Port...">
+                    </div>
+
+                    <div class="field">
+                        <label class="label has-text-black" for="port">Socket Port:</label>
+                        <div class="control">
+                            <input class="input" type="number" id="port" name="port" th:field="*{port}" placeholder="z. B. 8080" required>
                         </div>
+                    </div>
 
-
-                        <div class="field is-grouped is-grouped-right">
+                    <div class="field is-grouped is-grouped-right">
                         <p class="control">
-                            <button class="button is-link" type="submit">Auswählen</button>
+                            <button class="button is-link" type="submit">Anlegen</button>
                         </p>
                         <p class="control">
                             <a class="button is-danger" href="/">Abbrechen</a>
                         </p>
                     </div>
-
                 </form>
+
             </div>
         </div>
     </section>
-
-
 </main>
-
-
 
 </body>
 </html>

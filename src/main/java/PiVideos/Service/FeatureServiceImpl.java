@@ -12,6 +12,11 @@ import java.io.File;
 import java.util.List;
 import java.util.Optional;
 
+/*******************************************************************************************************
+ Autor: Julian Hecht
+ Datum letzte Änderung: 22.04.2025
+ Änderung: Kommentare hinzugefügt
+ *******************************************************************************************************/
 
 @Service
 public class FeatureServiceImpl implements FeatureService {
@@ -31,6 +36,7 @@ public class FeatureServiceImpl implements FeatureService {
         this.clientPiRepository = clientPiRepository;
     }
 
+    // Netzwerk anlegen
     @Override
     public void saveNetwork(Network network) {
         networkRepository.save(network);
@@ -42,11 +48,14 @@ public class FeatureServiceImpl implements FeatureService {
         return networkRepository.getAllNetworks();
     }
 
-    public List<ClientPi> getAllClientPis(){return clientPiRepository.getAllClientPis();}
+    public List<ClientPi> getAllClientPis(Network network){
+        return clientPiRepository.findAllByNetworkId(network.get_id());
+    }
 
     public List<Video> getAllVideos(){
         return videoRepository.getAllVideos();
     }
+
 
     @Override
     public boolean deleteVideoByID(Integer _id) {
@@ -61,7 +70,6 @@ public class FeatureServiceImpl implements FeatureService {
 
     @Override
     public boolean updateVideo(Video video) {
-        
         return videoRepository.save(video).equals(video);
     }
 

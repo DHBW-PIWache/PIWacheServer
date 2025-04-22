@@ -6,6 +6,7 @@ import PiVideos.Repository.ClientPiRepository;
 import PiVideos.Repository.NetworkRepository;
 import PiVideos.Repository.VideoRepository;
 import jakarta.annotation.PreDestroy;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,11 +16,17 @@ import java.net.Socket;
 import java.time.LocalDateTime;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+/*******************************************************************************************************
+ Autor: Julian Hecht
+ Datum letzte Änderung: 22.04.2025
+ Änderung: Kommentare hinzugefügt
+ *******************************************************************************************************/
 
 @Service
 public class SocketServiceImpl implements SocketSerivce {
 
-    private final int port = 8081;
+    // port sollte dynamsich gemacht werden, je nach netzwerk
+    private int port;
     private ServerSocket serverSocket;
     private ExecutorService executorService;
     private boolean running = false;
@@ -39,15 +46,18 @@ public class SocketServiceImpl implements SocketSerivce {
         this.videoRepository = videoRepository;
     }
 
+
+    /// Socket Server starten, mit port des Netzwerkes
+    /// !!!!!! Falls der Port schon belegt ist, fehlermeldung ausgeben
+    /// !!!!!! Mussw noch eingebaut werden
     public synchronized void startServer(Network network) {
         if (running) {
             System.out.println("Server läuft bereits!");
             return;
         }
-
         executorService = Executors.newFixedThreadPool(10);
         running = true;
-
+        int port = network.getPort();
         executorService.submit(() -> {
             try {
                 serverSocket = new ServerSocket(port);
@@ -67,6 +77,8 @@ public class SocketServiceImpl implements SocketSerivce {
         });
     }
 
+
+    //Client Anfrage annehmen
     public void handleClient(Socket clientSocket, Network network) {
         try (
             DataInputStream dataIn = new DataInputStream(clientSocket.getInputStream());
@@ -81,7 +93,7 @@ public class SocketServiceImpl implements SocketSerivce {
                 String piName = "unknown";
                 long fileSize = 0;
 
-                // Header verarbeiten
+                // Header verarbeiten -> PiName ist notwendig für Dateiverwaltung
                 while (true) {
                     String line = dataIn.readUTF();
                     if ("END_HEADER".equals(line)) break;
@@ -108,16 +120,13 @@ public class SocketServiceImpl implements SocketSerivce {
         }
     }
 
+    ///  Video annehmen, auf datenbank speichern und auf storage
+    ///  Metadaten verwenden um File richtig zu speichern
     public void receiveVideo(DataInputStream dataIn, String piName, long fileSize, Network network) {
-        if (piName == null || piName.isBlank()) {
-            piName = "unknown";
-        }
-
         File videoDir = new File(network.getRootPath() + piName);
         if (!videoDir.exists()) {
             videoDir.mkdirs();
         }
-
         Video video = new Video();
         video.setDate(LocalDateTime.now());
         video.setClientPi(clientPiRepository.findByName(piName));
@@ -169,4 +178,10 @@ public class SocketServiceImpl implements SocketSerivce {
             running = false;
         }
     }
+
+    // Ping server
+    public synchronized boolean isServerRunning() {
+        return running && serverSocket != null && !serverSocket.isClosed();
+    }
+
 }

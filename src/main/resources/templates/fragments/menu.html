@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Menu</title>
+    <link rel="icon" type="image/png" href="https://img.icons8.com/color/48/raspberry-pi.png">
     <link rel="stylesheet" href="/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <script src="/main.js"></script>
@@ -25,6 +26,7 @@
             </p>
             <ul class="menu-list ">
                 <li><a th:if="${session.network != null}" class="has-text-black has-background-info" href="/features/config/client">Clients</a></li>
+                <li><a th:if="${session.network != null}" class="has-text-black has-background-info" href="/features/config/network">Netzwerk</a></li>
             </ul>
             </div>
         </nav>

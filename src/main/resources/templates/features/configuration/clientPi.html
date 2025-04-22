@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Config</title>
+    <title>Client</title>
+    <link rel="icon" type="image/png" href="https://img.icons8.com/color/48/raspberry-pi.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/styles.css">
@@ -46,7 +47,7 @@
                     <tr class="has-background-white" th:each="client : ${clients}">
                         <td class="has-text-black" th:text="${client._id}">1</td>
                         <td class="has-text-black" th:text="${client.name}">Beispielname</td>
-                        <td class="has-text-black">location</td>
+                        <td class="has-text-black"  th:text="${client.location}">location</td>
                         <td class="has-text-black">0</td>
                     </tr>
                     </tbody>
@@ -68,7 +69,14 @@
                             <div class="control">
                                 <input class="input" type="text" id="name" name="name" required placeholder="ClientPi...">
                             </div>
+                         </div>
+                        <div class="field">
+                            <label class="label has-text-white" for="location">Location:</label>
+                            <div class="control">
+                                <input class="input" type="text" id="location" name="location" required placeholder="Wo steht der Pi...?">
+                            </div>
                         </div>
+
                         <div class="field is-grouped is-grouped-right mt-5">
                             <div class="control">
                                 <button class="button is-link is-rounded" type="submit">Speichern</button>
