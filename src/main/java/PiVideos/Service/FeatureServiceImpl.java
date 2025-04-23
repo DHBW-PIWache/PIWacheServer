@@ -55,7 +55,9 @@ public class FeatureServiceImpl implements FeatureService {
     public List<Video> getAllVideos(){
         return videoRepository.getAllVideos();
     }
-
+    public List<Video> getAllVideosForNetwork(Network network){
+        return videoRepository.findAllVideosByNetzwerkId(network.get_id());
+    }
 
     @Override
     public boolean deleteVideoByID(Integer _id) {
@@ -82,5 +84,13 @@ public class FeatureServiceImpl implements FeatureService {
     @Override
     public Optional<Video> getVideoBy_id(Integer _id) {
         return videoRepository.findById(_id);
+    }
+
+    public Video getNewestVideo(Network network){
+        return videoRepository.findNewestVideo(network.get_id());
+    }
+
+    public int countVids(Network network){
+        return videoRepository.countAllVids(network.get_id());
     }
 }

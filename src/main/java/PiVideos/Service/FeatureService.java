@@ -18,10 +18,15 @@ public interface FeatureService {
    public List<ClientPi> getAllClientPis(Network network);
 
    public List<Video> getAllVideos();
+   public List<Video> getAllVideosForNetwork(Network network);
 
    public boolean deleteVideoByID(Integer _id);
 
    public boolean updateVideo(Video video);
 
    public Optional<Video> getVideoBy_id(Integer _id);
+
+   public Video getNewestVideo(Network network);
+
+   public int countVids(Network network);
 }

@@ -11,7 +11,7 @@ import org.springframework.ui.Model;
  *******************************************************************************************************/
 public interface HomeController {
 
-    public String getHome(HttpSession session);
+    public String getHome(HttpSession session, Model model);
     public String getError(Model model);
 
 

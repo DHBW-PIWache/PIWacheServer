@@ -25,14 +25,14 @@ Datum letzte Änderung: 22.04.2025
 @RequestMapping("features/config")
 public class ConfigControllerImpl implements ConfigController{
 
-    @Autowired
+
     SocketSerivce socketSerivce;
 
-    @Autowired
+
     FeatureService featureService;
 
     //!!!! Sollte mit einem Service ersetzt werden
-    @Autowired
+
     NetworkRepository networkRepository;
 
 

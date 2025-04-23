@@ -3,6 +3,7 @@ package PiVideos.Controller;
 
 import PiVideos.Model.Network;
 import PiVideos.Repository.NetworkRepository;
+import PiVideos.Service.FeatureService;
 import PiVideos.Service.SocketSerivce;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,16 +30,16 @@ public class HomeControllerImpl implements HomeController{
 
 
     // !!!! Sollte mit einem Service Ersetzt werden!
-    @Autowired
+
     NetworkRepository networkRepository;
-
-    @Autowired
     SocketSerivce socketSerivce;
+    FeatureService featureService;
 
 
-    public HomeControllerImpl(NetworkRepository networkRepository, SocketSerivce socketSerivce) {
+    public HomeControllerImpl(NetworkRepository networkRepository, SocketSerivce socketSerivce, FeatureService featureService) {
         this.networkRepository = networkRepository;
         this.socketSerivce = socketSerivce;
+        this.featureService = featureService;
     }
 
     // Login Seite holen
@@ -46,6 +47,7 @@ public class HomeControllerImpl implements HomeController{
     public String getLogin(Model model){
         model.addAttribute("networks",networkRepository.getAllNetworks());
         model.addAttribute("network",new Network());
+
         return "login.html";
     }
 
@@ -71,12 +73,11 @@ public class HomeControllerImpl implements HomeController{
     ///  Netzwerk wird in einer HTTP Session gespeichert
     ///
     @PostMapping("/login")
-    public String postLogin(@ModelAttribute Network network, HttpSession session){
-        session.setAttribute("network",networkRepository.findById(network.get_id()).get());
+    public String postLogin(@ModelAttribute Network networkOpt, HttpSession session, Model model){
+        Network network = networkRepository.findById(networkOpt.get_id()).get();
+        session.setAttribute("network",network);
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        session.setAttribute("currentDate", LocalDate.now().format(formatter));
-        return "index.html";
+        return "redirect:/";
     }
 
     @PostMapping("/logout")
@@ -90,10 +91,18 @@ public class HomeControllerImpl implements HomeController{
 
     //Index seite
     @GetMapping("/")
-    public String getHome(HttpSession session){
+    public String getHome(HttpSession session, Model model){
+        Network network = (Network) session.getAttribute("network");
+
+        model.addAttribute("video", featureService.getNewestVideo(network));
+        model.addAttribute("countVids", featureService.countVids(network));
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        session.setAttribute("currentDate", LocalDate.now().format(formatter));
+
 
         if(socketSerivce.isServerRunning()){
-            session.setAttribute("socket",true);
+            session.setAttribute("socket", true);
         } else{
             session.setAttribute("socket",false);
         }

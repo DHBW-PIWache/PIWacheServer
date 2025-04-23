@@ -181,7 +181,7 @@ public class SocketServiceImpl implements SocketSerivce {
 
     // Ping server
     public synchronized boolean isServerRunning() {
-        return running && serverSocket != null && !serverSocket.isClosed();
+        return running;
     }
 
 }

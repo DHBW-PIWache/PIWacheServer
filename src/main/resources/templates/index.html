@@ -8,115 +8,147 @@
     <link rel="stylesheet" href="/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <script src="/main.js"></script>
-
 </head>
 <body>
 
-    <div th:insert="~{fragments/header.html ::header }"></div>
-        <div class="columns is-fullheight">
-            <div th:insert="~{fragments/menu.html ::menu }"></div>
-            <main class="column m-4">
+<div th:insert="~{fragments/header.html ::header }"></div>
 
-                <div class="level">
-                    <div class="level-left">
-                        <div class="level-item">
-                            <div class="title">Dashboard</div>
-                        </div>
-                    </div>
-                    <div class="level-right">
-                        <div class="level-item">
-                            <button type="button" class="button is-small">
-                                <a th:text="${session.currentDate}"></a>
-                            </button>
-                        </div>
-                    </div>
+<div class="columns is-fullheight">
+    <div th:insert="~{fragments/menu.html ::menu }"></div>
+
+    <main class="column m-4">
+        <!-- Dashboard Header -->
+        <div class="level mb-5">
+            <div class="level-left">
+                <div class="level-item">
+                    <div class="title">Dashboard</div>
                 </div>
-
-                <div th:if="${session.network != null}">
-                    <div class="columns is-multiline">
-                        
-                        <div class="column is-6">
-                            <div class="box mb-4"> 
-                                <div class="heading">Aktuelles Netzwerk</div>
-                                <div class="title" th:text="${session.network.name + ' (ID: ' + session.network._id + ')'}">{netzwerkID}</div>
-                            </div>
-                
-                            <div class="box">
-                                <div class="heading">Speicherbelastung</div>
-                                <div class="level">
-                                    <div class="level-item">
-                                        <div>
-                                            <div class="heading">Rev Prod $</div>
-                                            <div class="title is-5">30%</div>
-                                        </div>
-                                    </div>
-                                    <div class="level-item">
-                                        <div>
-                                            <div class="heading">Rev Serv $</div>
-                                            <div class="title is-5">25%</div>
-                                        </div>
-                                    </div>
-                                    <div class="level-item">
-                                        <div>
-                                            <div class="heading">Exp %</div>
-                                            <div class="title is-5">45%</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                
-                        
-                        <div class="column is-6">
-                            <div class="box">
-                                <p class="heading">Socketstatus</p>
-                                <p class="title is-5">Verbindungsstatus</p>
-                                <div th:if="${session.socket == true}">
-                                    <div class="notification is-success has-text-centered mt-4">
-                                        <span class="icon"><i class="fas fa-check-circle"></i></span>
-                                        <strong>Aktiv</strong>
-                                    </div>
-                                </div>
-                                <div th:if="${session.socket != true}">
-                                    <div class="notification is-danger has-text-centered mt-4">
-                                        <span class="icon"><i class="fas fa-ban"></i></span>
-                                        <strong>Inaktiv</strong>
-                                    </div>
-                                </div>
-                
-                                <div class="buttons mt-4">
-                                    <form action="/features/config/startServer" method="POST" style="margin-bottom: 0.5rem;">
-                                        <button class="button is-link is-rounded is-fullwidth" type="submit">Server starten</button>
-                                    </form>
-                                    <form action="/features/config/stopServer" method="POST">
-                                        <button class="button is-danger is-rounded is-fullwidth" type="submit">Server stoppen</button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+            </div>
+            <div class="level-right">
+                <div class="level-item">
+                    <button type="button" class="button is-small is-info is-light">
+                        <span class="icon"><i class="fas fa-calendar-alt"></i></span>
+                        <span th:text="${session.currentDate}">Datum</span>
+                    </button>
                 </div>
-                
-
-                <div class="columns is-multiline">
-                    <div class="column is-6">
-                        <div class="panel">
-                            <p class="panel-heading">
-                                Aktuellstes Video:
-                            </p>
-                            <div class="panel-block">
-                                <figure class="image is-16x9">
-
-                                </figure>
-                            </div>
-                        </div>
-                    </div>
-
-                    </div>
-                </div>
-            </main>
+            </div>
         </div>
 
-   
+        <!-- Netzwerk + Speicherbelastung + Socket -->
+        <div th:if="${session.network != null}">
+            <div class="columns is-multiline">
+                <!-- Netzwerk & Speicher -->
+                <div class="column is-6">
+                    <div class="box mb-4">
+                        <p class="heading">Aktuelles Netzwerk</p>
+                        <p class="title is-6" th:text="${session.network.name + ' (ID: ' + session.network._id + ')'}">Netzwerkname</p>
+                    </div>
+
+                    <div class="box">
+                        <p class="heading">Speicherbelastung</p>
+                        <div class="level">
+                            <div class="level-item">
+                                <div>
+                                    <p class="heading">Anzahl Videos</p>
+                                    <p class="title is-5" th:text="${countVids}"></p>
+                                </div>
+                            </div>
+                            <div class="level-item">
+                                <div>
+                                    <p class="heading">Belegter Speicher</p>
+                                    <p class="title is-5"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Socketstatus -->
+                <div class="column is-6">
+                    <div class="box">
+                        <p class="heading">Socketstatus</p>
+                        <p class="title is-5">Verbindungsstatus</p>
+
+                        <div th:if="${session.socket == true}">
+                            <div class="notification is-success has-text-centered mt-4">
+                                <span class="icon"><i class="fas fa-check-circle"></i></span>
+                                <strong>Aktiv</strong>
+                            </div>
+                        </div>
+                        <div th:if="${session.socket != true}">
+                            <div class="notification is-danger has-text-centered mt-4">
+                                <span class="icon"><i class="fas fa-ban"></i></span>
+                                <strong>Inaktiv</strong>
+                            </div>
+                        </div>
+
+                        <div class="buttons mt-4">
+                            <form action="/features/config/startServer" method="POST" class="mb-2">
+                                <button class="button is-link is-rounded is-fullwidth" type="submit">Server starten</button>
+                            </form>
+                            <form action="/features/config/stopServer" method="POST">
+                                <button class="button is-danger is-rounded is-fullwidth" type="submit">Server stoppen</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Aktuellstes Video -->
+        <div class="columns is-multiline">
+            <div class="column is-6">
+                <div class="panel is-primary has-background-light">
+                    <p class="panel-heading is-flex is-align-items-center">
+                        <span class="icon mr-2"><i class="fas fa-video"></i></span>
+                        <span>Aktuellstes Video</span>
+                    </p>
+                    <div class="panel-block is-block p-4" th:if="${video!= null}">
+                        <h2 class="title is-5 mb-3 has-text-primary">
+                            <span class="icon mr-2"><i class="fas fa-info-circle"></i></span>
+                            Metadaten
+                        </h2>
+                        <table class="table is-fullwidth is-striped is-hoverable">
+                            <tbody>
+                            <tr>
+                                <th class="has-background-primary">ID</th>
+                                <td th:text="${video._id}">1</td>
+                            </tr>
+                            <tr>
+                                <th class="has-background-primary">Name</th>
+                                <td th:text="${video.name}">Beispielvideo.mp4</td>
+                            </tr>
+                            <tr>
+                                <th class="has-background-primary">Pfad</th>
+                                <td th:text="${video.path}">/media/video.mp4</td>
+                            </tr>
+                            <tr>
+                                <th class="has-background-primary">Datum</th>
+                                <td th:text="${#temporals.format(video.date, 'dd.MM.yyyy HH:mm')}">01.01.2024 12:00</td>
+                            </tr>
+                            <tr>
+                                <th class="has-background-primary">Größe</th>
+                                <td th:text="${video.bytes} + ' Bytes'">1048576 Bytes</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div th:if="${video == null}">
+                        <h2 class="title is-5 mb-3 has-text-primary">
+                            <span class="icon mr-2"><i class="fas fa-info-circle"></i></span>
+                            Noch kein Video vorhanden!
+                        </h2>
+                    </div>
+
+
+
+
+                </div>
+            </div>
+        </div>
+
+    </main>
+</div>
+
 </body>
 </html>

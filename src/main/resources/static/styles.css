@@ -8091,7 +8091,7 @@ a.navbar-item.is-active, a.navbar-item.is-selected,
   --bulma-panel-margin: var(--bulma-block-spacing);
   --bulma-panel-item-border: 1px solid var(--bulma-border-weak);
   --bulma-panel-radius: var(--bulma-radius-large);
-  --bulma-panel-shadow: var(--bulma-shadow);
+  --bulma-panel-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   --bulma-panel-heading-line-height: 1.25;
   --bulma-panel-heading-padding: 1em 1.25em;
   --bulma-panel-heading-radius: var(--bulma-radius);

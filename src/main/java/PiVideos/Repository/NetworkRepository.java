@@ -1,9 +1,11 @@
 package PiVideos.Repository;
 
+import PiVideos.Model.ClientPi;
 import PiVideos.Model.Network;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 

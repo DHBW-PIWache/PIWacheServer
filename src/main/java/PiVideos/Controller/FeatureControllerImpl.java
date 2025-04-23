@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/features")
 public class FeatureControllerImpl implements FeatureController {
 
-    @Autowired
+
     FeatureService featureService;
 
     public FeatureControllerImpl(FeatureService featureService) {
@@ -35,7 +35,8 @@ public class FeatureControllerImpl implements FeatureController {
 
 
     @GetMapping("/live/{_id}")
-    public String getLiveById(@PathVariable("_id") String _id, Model model) {
+    public String getLiveById(@PathVariable("_id") String _id, Model model, HttpSession session) {
+        Network network = (Network) session.getAttribute("network");
         try {
             Integer id = Integer.parseInt(_id);
             Optional<Video> existingVideo = featureService.getVideoBy_id(id);
@@ -51,15 +52,16 @@ public class FeatureControllerImpl implements FeatureController {
             model.addAttribute("error", "Ungültige Video-ID im Pfad: " + _id);
         }
     
-        model.addAttribute("allVideos", featureService.getAllVideos());
+        model.addAttribute("allVideos", featureService.getAllVideosForNetwork(network));
         return "features/live.html";
     }
     
 
     
     @GetMapping("/live")
-    public String getLive(Model model, @RequestParam(value = "_id", required = false) String _id) {
-    
+    public String getLive(Model model, HttpSession session,@RequestParam(value = "_id", required = false) String _id) {
+        Network network = (Network) session.getAttribute("network");
+
         if (_id != null && !_id.isBlank()) {
             try {
                 Integer id = Integer.parseInt(_id);
@@ -78,13 +80,14 @@ public class FeatureControllerImpl implements FeatureController {
             }
         }
     
-        model.addAttribute("allVideos", featureService.getAllVideos());
+        model.addAttribute("allVideos", featureService.getAllVideosForNetwork(network));
         return "features/live.html";
     }
     
 
    @PostMapping("/live/delete/{_id}")
-    public String liveDeleteVideo(@PathVariable("_id") String _id, Model model) {
+    public String liveDeleteVideo(@PathVariable("_id") String _id, Model model,HttpSession session) {
+       Network network = (Network) session.getAttribute("network");
 
     try {
         Integer id = Integer.parseInt(_id);
@@ -101,14 +104,14 @@ public class FeatureControllerImpl implements FeatureController {
         model.addAttribute("error", "Ungültige Video-ID im Pfad: " + _id);
     }
 
-    model.addAttribute("allVideos", featureService.getAllVideos());
+    model.addAttribute("allVideos", featureService.getAllVideosForNetwork(network));
     return "features/live.html";
 }
 
 
      @PostMapping("/live/update/{_id}")
-    public String liveUpdateVideo(@PathVariable("_id") String _id, Model model, @RequestParam String comment, @RequestParam(required = false) Boolean favorite) {
-
+    public String liveUpdateVideo(@PathVariable("_id") String _id, Model model, @RequestParam String comment, @RequestParam(required = false) Boolean favorite, HttpSession session) {
+         Network network = (Network) session.getAttribute("network");
 
         try {
         Integer id = Integer.parseInt(_id);
@@ -132,7 +135,7 @@ public class FeatureControllerImpl implements FeatureController {
         model.addAttribute("error", "Ungültige Video-ID im Pfad: " + _id);
     }
 
-    model.addAttribute("allVideos", featureService.getAllVideos());
+    model.addAttribute("allVideos", featureService.getAllVideosForNetwork(network));
     return "features/live.html";
     }
 
@@ -147,7 +150,7 @@ public class FeatureControllerImpl implements FeatureController {
         Network network = (Network) session.getAttribute("network");
 
         model.addAttribute("clients", featureService.getAllClientPis(network));
-        model.addAttribute("videos", featureService.getAllVideos());
+        model.addAttribute("videos", featureService.getAllVideosForNetwork(network));
         return "features/datastorage.html";
     }
 
@@ -161,8 +164,8 @@ public class FeatureControllerImpl implements FeatureController {
             model.addAttribute("error", "Video mit der ID " + _id + " konnte nicht gelöscht werden (nicht gefunden?).");
         }
 
-        model.addAttribute("clients", featureService.getAllClientPis((Network) session.getAttribute("network")));
-        model.addAttribute("videos", featureService.getAllVideos());
+        model.addAttribute("clients", featureService.getAllClientPis(network));
+        model.addAttribute("videos", featureService.getAllVideosForNetwork(network));
         return "features/datastorage.html";
     }
 
@@ -184,7 +187,7 @@ public class FeatureControllerImpl implements FeatureController {
 
         }
         model.addAttribute("clients", featureService.getAllClientPis(network));
-        model.addAttribute("videos", featureService.getAllVideos());
+        model.addAttribute("videos", featureService.getAllVideosForNetwork(network));
         return "features/datastorage.html";
     }
 
