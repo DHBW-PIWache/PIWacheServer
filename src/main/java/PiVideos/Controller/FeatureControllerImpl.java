@@ -26,16 +26,12 @@ public class FeatureControllerImpl implements FeatureController {
         this.featureService = featureService;
     }
 
-    @Override
-    @GetMapping("/config")
-    public String getConfig(Model model) {
 
-        return  "features/configuration.html";
-    }
 
 
     @GetMapping("/live/{_id}")
     public String getLiveById(@PathVariable("_id") String _id, Model model, HttpSession session) {
+
         Network network = (Network) session.getAttribute("network");
         try {
             Integer id = Integer.parseInt(_id);
@@ -61,7 +57,7 @@ public class FeatureControllerImpl implements FeatureController {
     @GetMapping("/live")
     public String getLive(Model model, HttpSession session,@RequestParam(value = "_id", required = false) String _id) {
         Network network = (Network) session.getAttribute("network");
-
+        model.addAttribute("video", session.getAttribute("video"));
         if (_id != null && !_id.isBlank()) {
             try {
                 Integer id = Integer.parseInt(_id);
@@ -79,6 +75,7 @@ public class FeatureControllerImpl implements FeatureController {
                 model.addAttribute("error", "Ungültige Eingabe: Bitte gib eine gültige VideoID ein.");
             }
         }
+
     
         model.addAttribute("allVideos", featureService.getAllVideosForNetwork(network));
         return "features/live.html";

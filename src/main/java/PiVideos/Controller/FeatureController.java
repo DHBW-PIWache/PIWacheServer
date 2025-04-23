@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 public interface FeatureController {
 
 
-    public String getConfig(Model model);
+
 
     public String getDataStorage(HttpSession session, Model model);
 
