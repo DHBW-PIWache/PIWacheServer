@@ -13,4 +13,4 @@ services:
       - /home/berry/videostorage:/home/berry/videostorage 
     ports:
       - "8080:8080"  
-    restart: always  
+  

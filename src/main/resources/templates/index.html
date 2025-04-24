@@ -53,12 +53,7 @@
 
                                 </div>
                             </div>
-                            <div class="level-item">
-                                <div>
-                                    <p class="heading">Belegter Speicher</p>
-                                    <p class="title is-5"></p>
-                                </div>
-                            </div>
+                           
                         </div>
                     </div>
                 </div>
@@ -94,57 +89,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- Aktuellstes Video -->
-        <div class="columns is-multiline">
-            <div class="column is-6">
-                <div class="panel is-primary has-background-light">
-                    <p class="panel-heading is-flex is-align-items-center">
-                        <span class="icon mr-2"><i class="fas fa-video"></i></span>
-                        <span>Aktuellstes Video</span>
-                    </p>
-                    <div class="panel-block is-block p-4" th:if="${video!= null}">
-                        <h2 class="title is-5 mb-3 has-text-primary">
-                            <span class="icon mr-2"><i class="fas fa-info-circle"></i></span>
-                            Metadaten
-                        </h2>
-                        <table class="table is-fullwidth is-striped is-hoverable">
-                            <tbody>
-                            <tr>
-                                <th class="has-background-primary">ID</th>
-                                <td th:text="${video._id}">1</td>
-                            </tr>
-                            <tr>
-                                <th class="has-background-primary">Name</th>
-                                <td th:text="${video.name}">Beispielvideo.mp4</td>
-                            </tr>
-                            <tr>
-                                <th class="has-background-primary">Pfad</th>
-                                <td th:text="${video.path}">/media/video.mp4</td>
-                            </tr>
-                            <tr>
-                                <th class="has-background-primary">Datum</th>
-                                <td th:text="${#temporals.format(video.date, 'dd.MM.yyyy HH:mm')}">01.01.2024 12:00</td>
-                            </tr>
-                            <tr>
-                                <th class="has-background-primary">Größe</th>
-                                <td th:text="${video.bytes} + ' Bytes'">1048576 Bytes</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div th:if="${video == null}">
-                        <h2 class="title is-5 mb-3 has-text-primary">
-                            <span class="icon mr-2"><i class="fas fa-info-circle"></i></span>
-                            Noch kein Video vorhanden!
-                        </h2>
-                    </div>
-
-
-
-
-                </div>
-            </div>
         </div>
 
     </main>

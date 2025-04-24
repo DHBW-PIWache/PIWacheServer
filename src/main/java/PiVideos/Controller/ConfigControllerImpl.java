@@ -122,6 +122,8 @@ public class ConfigControllerImpl implements ConfigController{
     @PostMapping("/startServer")
     public String startServer(HttpSession session, Model model) {
         Network network = (Network) session.getAttribute("network");
+        model.addAttribute("countVids", featureService.countVids(network));
+
         socketSerivce.startServer(network);
         session.setAttribute("socket", true);
         return "index.html";
@@ -129,8 +131,12 @@ public class ConfigControllerImpl implements ConfigController{
 
     @Override
     @PostMapping("/stopServer")
-    public String stopServer(HttpSession session, Model Model) {
+    public String stopServer(HttpSession session, Model model) {
+        Network network = (Network) session.getAttribute("network");
+
         socketSerivce.stopServer();
+        model.addAttribute("countVids", featureService.countVids(network));
+
         session.setAttribute("socket", false);
         return "index.html";
     }

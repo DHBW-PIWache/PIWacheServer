@@ -14,6 +14,7 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 /*******************************************************************************************************
@@ -128,7 +129,7 @@ public class SocketServiceImpl implements SocketSerivce {
             videoDir.mkdirs();
         }
         Video video = new Video();
-        video.setDate(LocalDateTime.now());
+        video.setDate(LocalDateTime.now(ZoneId.of("GMT+02:00")));
         video.setClientPi(clientPiRepository.findByName(piName));
         video.setFavorite(false);
         videoRepository.save(video);

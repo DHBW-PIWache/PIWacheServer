@@ -56,15 +56,24 @@ public class FeatureControllerImpl implements FeatureController {
     
     @GetMapping("/live")
     public String getLive(Model model, HttpSession session,@RequestParam(value = "_id", required = false) String _id) {
+
         Network network = (Network) session.getAttribute("network");
-        model.addAttribute("video", session.getAttribute("video"));
+
+        Video video = featureService.getNewestVideo(network);
+        if(video != null){
+            model.addAttribute("video", video);
+            model.addAttribute("videopath", "/videos/" + video.getRelativePath());
+        } else{
+            model.addAttribute("error", "Noch kein Video vorhanden.");
+        }
+        
         if (_id != null && !_id.isBlank()) {
             try {
                 Integer id = Integer.parseInt(_id);
                 Optional<Video> existingVideo = featureService.getVideoBy_id(id);
     
                 if (existingVideo.isPresent()) {
-                    Video video = existingVideo.get();    
+                    video = existingVideo.get();    
                     model.addAttribute("video", video);
                     model.addAttribute("videopath", "/videos/" + video.getRelativePath());
                     
