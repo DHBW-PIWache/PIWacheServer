@@ -21,16 +21,16 @@
             </div>
         </section>
 
+        <div th:if="${error}" class="notification is-danger mt-3">
+            <span th:text="${error}"></span>
+        </div>
+        <div th:if="${message}" class="notification is-success mt-3">
+            <span th:text="${message}"></span>
+        </div>
 
         <div class="box">
             <div class="is-flex is-justify-content-space-between is-align-items-center mb-4">
                 <h2 class="title has-text-black">Bestehende Clients</h2>
-                <a class="button is-danger is-rounded" data-open="#modal-client">
-                    <span class="icon">
-                        <i class="fas fa-plus"></i>
-                    </span>
-                    <strong>Neuer Client</strong>
-                </a>
             </div>
 
             <div class="table-container">
@@ -41,53 +41,103 @@
                         <th>Name</th>
                         <th>Location</th>
                         <th>AnzahlVideos</th>
+                        <th>Aktionen</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr class="has-background-white" th:each="client : ${clients}">
-                        <td class="has-text-black" th:text="${client._id}">1</td>
-                        <td class="has-text-black" th:text="${client.name}">Beispielname</td>
-                        <td class="has-text-black"  th:text="${client.location}">location</td>
-                        <td class="has-text-black">0</td>
-                    </tr>
+                    <th:block th:each="client : ${clients}">
+                        <!-- Hauptdatenzeile -->
+                        <tr class="has-background-white">
+                            <td class="has-text-black" th:text="${client._id}">1</td>
+                            <td class="has-text-black" th:text="${client.name}">Beispielname</td>
+                            <td class="has-text-black" th:text="${client.location}">location</td>
+                            <td class="has-text-black">0</td>
+                            <td>
+                                <button class="button is-small is-info mr-2"
+                                        th:attr="onclick=|document.getElementById('modal-edit-client-${client._id}').classList.add('is-active')|">
+                                    <span class="icon"><i class="fas fa-edit"></i></span>
+                                </button>
+                                <button class="button is-small is-danger"
+                                        th:attr="onclick=|document.getElementById('modal-delete-client-${client._id}').classList.add('is-active')|">
+                                    <span class="icon"><i class="fas fa-trash"></i></span>
+                                </button>
+                            </td>
+                        </tr>
+                        <!-- Kommentarzeile -->
+                        <tr class="has-background-light">
+                            <td colspan="5" class="has-text-black">
+                                <strong class="has-text-black">Kommentar:</strong>
+                                <span class="has-text-black" th:text="${client.comment}">Kein Kommentar vorhanden</span>
+                            </td>
+                        </tr>
+                    </th:block>
                     </tbody>
+
                 </table>
             </div>
         </div>
 
-        <div class="modal" id="modal-client">
-            <div class="modal-background"></div>
-            <div class="modal-card">
-                <header class="modal-card-head has-background-danger">
-                    <p class="modal-card-title has-text-black">Neuen Client anlegen</p>
-                    <button class="delete" aria-label="close" data-close="#modal-client"></button>
-                </header>
-                <section class="modal-card-body">
-                    <form class="form" action="/features/config/client/save" method="POST">
-                        <div class="field">
-                            <label class="label has-text-white" for="name">Hostname des Clients:</label>
-                            <div class="control">
-                                <input class="input" type="text" id="name" name="name" required placeholder="ClientPi...">
-                            </div>
-                         </div>
-                        <div class="field">
-                            <label class="label has-text-white" for="location">Location:</label>
-                            <div class="control">
-                                <input class="input" type="text" id="location" name="location" required placeholder="Wo steht der Pi...?">
-                            </div>
-                        </div>
+        <!-- Modale für alle Clients -->
+        <div th:each="client : ${clients}">
 
-                        <div class="field is-grouped is-grouped-right mt-5">
-                            <div class="control">
-                                <button class="button is-link is-rounded" type="submit">Speichern</button>
+            <!-- Edit Modal -->
+            <div class="modal" th:attr="id='modal-edit-client-' + ${client._id}">
+                <div class="modal-background"
+                     th:attr="onclick=|document.getElementById('modal-edit-client-${client._id}').classList.remove('is-active')|"></div>
+                <div class="modal-card">
+                    <header class="modal-card-head has-background-info">
+                        <p class="modal-card-title has-text-black">Client bearbeiten</p>
+                        <button class="delete" aria-label="close"
+                                th:attr="onclick=|document.getElementById('modal-edit-client-${client._id}').classList.remove('is-active')|"></button>
+                    </header>
+                    <form th:action="@{/features/config/client/update/{id}(id=${client._id})}" method="post">
+                        <section class="modal-card-body">
+                            <input type="hidden" name="id" th:value="${client._id}" />
+                            <div class="field">
+                                <label class="label has-text-white" for="comment_${client._id}">Kommentar</label>
+                                <div class="control">
+                                    <textarea id="comment_${client._id}" class="textarea" name="comment" placeholder="Kommentar eingeben..." th:text="${client.comment}"></textarea>
+                                </div>
                             </div>
-                        </div>
+                            <div class="field">
+                                <label class="label has-text-white" for="location_${client._id}">Location</label>
+                                <div class="control">
+                                    <input class="input" id="location_${client._id}" name="location" type="text" th:value="${client.location}" required />
+                                </div>
+                            </div>
+                        </section>
+                        <footer class="modal-card-foot">
+                            <button class="button is-info" type="submit">Speichern</button>
+                            <button class="button" type="button"
+                                    th:attr="onclick=|document.getElementById('modal-edit-client-${client._id}').classList.remove('is-active')|">Abbrechen</button>
+                        </footer>
                     </form>
-                </section>
-                <footer class="modal-card-foot">
-                    <button class="button is-danger" data-close="#modal-client">Schließen</button>
-                </footer>
+                </div>
             </div>
+
+            <!-- Delete Modal -->
+            <div class="modal" th:attr="id='modal-delete-client-' + ${client._id}">
+                <div class="modal-background"
+                     th:attr="onclick=|document.getElementById('modal-delete-client-${client._id}').classList.remove('is-active')|"></div>
+                <div class="modal-card">
+                    <header class="modal-card-head has-background-danger">
+                        <p class="modal-card-title has-text-black">Client löschen</p>
+                        <button class="delete" aria-label="close"
+                                th:attr="onclick=|document.getElementById('modal-delete-client-${client._id}').classList.remove('is-active')|"></button>
+                    </header>
+                    <section class="modal-card-body">
+                        <p class="has-text-white">Möchtest du den Client <strong th:text="${client.name}">Client</strong> wirklich löschen?</p>
+                    </section>
+                    <footer class="modal-card-foot">
+                        <form th:action="@{/features/config/client/delete/{id}(id=${client._id})}" method="post">
+                            <button class="button is-danger" type="submit">Löschen</button>
+                        </form>
+                        <button class="button"
+                                th:attr="onclick=|document.getElementById('modal-delete-client-${client._id}').classList.remove('is-active')|">Abbrechen</button>
+                    </footer>
+                </div>
+            </div>
+
         </div>
 
     </main>

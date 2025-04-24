@@ -29,4 +29,11 @@ public interface FeatureService {
    public Video getNewestVideo(Network network);
 
    public int countVids(Network network);
+
+   public void deleteClientPiById(Integer id);
+
+   public Optional<ClientPi> getClientBy_id(Integer _id);
+
+   public boolean updateClient(ClientPi clientPi);
+
 }

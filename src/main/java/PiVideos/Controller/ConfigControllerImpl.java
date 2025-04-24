@@ -7,18 +7,19 @@ import PiVideos.Service.FeatureService;
 import PiVideos.Service.SocketSerivce;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.Optional;
 
 
 /******************************************************************************************************* 
 Autor: Julian Hecht
-Datum letzte Änderung: 22.04.2025
-Änderung: Kommentare hinzugefügt + Refactoring
+Datum letzte Änderung: 24.04.2025
+Änderung: Clients anlegen + löschen
 *******************************************************************************************************/
 
 @Controller
@@ -48,8 +49,9 @@ public class ConfigControllerImpl implements ConfigController{
     @Override
     @GetMapping("/client")
     public String getConfigClient(HttpSession session, Model model) {
+        Network network = (Network) session.getAttribute("network");
 
-        model.addAttribute("clients", featureService.getAllClientPis((Network) session.getAttribute("network")));
+        model.addAttribute("clients", featureService.getAllClientPis(network));
         model.addAttribute("clientPi",new ClientPi());
         return "features/configuration/clientPi.html";
     }
@@ -58,19 +60,60 @@ public class ConfigControllerImpl implements ConfigController{
     @Override
     @PostMapping("/client/save")
     public String saveConfigClient(@ModelAttribute ClientPi clientPi,HttpSession session ,Model model) {
-        clientPi.setNetwork((Network) session.getAttribute("network"));
+        Network network = (Network) session.getAttribute("network");
+
+        clientPi.setNetwork(network);
         featureService.saveClient(clientPi);
-        model.addAttribute("message","juhu");
+
         model.addAttribute("networks", featureService.getAllNetworks());
-        model.addAttribute("clients", featureService.getAllClientPis((Network) session.getAttribute("network")));
+        model.addAttribute("clients", featureService.getAllClientPis(network));
         return "features/configuration/clientPi.html";
     }
+
+
+    @PostMapping("/client/delete/{_id}")
+    public String deleteConfigClient(@PathVariable("_id") Integer _id, RedirectAttributes redirectAttributes) {
+        featureService.deleteClientPiById(_id);
+        redirectAttributes.addFlashAttribute(   "message", "ClientPi mit ID: " +_id +"  und alle zugehörigen Videos gelöscht");
+        return "redirect:/features/config/client";
+    }
+
+    @PostMapping("/client/update/{_id}")
+    public String updateConfigClient(@PathVariable("_id") Integer _id,RedirectAttributes redirectAttributes, @RequestParam String location, @RequestParam String comment){
+        Optional<ClientPi> optClient = featureService.getClientBy_id(_id);
+
+        if(optClient.isPresent()){
+            ClientPi clientPi = optClient.get();
+            clientPi.setLocation(location);
+            clientPi.setComment(comment);
+
+            if(featureService.updateClient(clientPi)){
+                redirectAttributes.addAttribute("message", "Client mit der ID " + _id + " wurde geändert.");
+            } else{
+                redirectAttributes.addAttribute("error", "Client mit der ID " + _id + " konnte nicht geändert werden (nicht gefunden?).");
+            }
+
+        }
+
+        return "redirect:/features/config/client";
+    }
+
+
+
+
+
+
 
     @Override
     @GetMapping("/network")
     public String getNetworkConifg(Model model) {
         return "features/configuration/network.html";
     }
+
+
+
+
+
 
 
     // Socket für das Netzwerk Starten und Stoppen

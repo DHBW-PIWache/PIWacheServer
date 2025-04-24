@@ -5,6 +5,7 @@ import PiVideos.Model.Video;
 import PiVideos.Repository.ClientPiRepository;
 import PiVideos.Repository.NetworkRepository;
 import PiVideos.Repository.VideoRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -92,5 +93,25 @@ public class FeatureServiceImpl implements FeatureService {
 
     public int countVids(Network network){
         return videoRepository.countAllVids(network.get_id());
+    }
+
+
+    //Noch vielleicht als Boolean umschreiben
+    @Override
+    public void deleteClientPiById(Integer id) {
+
+        ClientPi client = clientPiRepository.findById(id).orElseThrow();
+        client.getVideos().clear();
+        clientPiRepository.delete(client);
+
+    }
+
+    public Optional<ClientPi> getClientBy_id(Integer _id){
+        return clientPiRepository.findById(_id);
+    }
+
+
+    public boolean updateClient(ClientPi clientPi){
+        return clientPiRepository.save(clientPi).equals(clientPi);
     }
 }
