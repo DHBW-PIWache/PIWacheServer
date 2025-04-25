@@ -1,5 +1,6 @@
 package PiVideos.Service;
 
+import PiVideos.Model.ClientPi;
 import PiVideos.Model.Network;
 import PiVideos.Model.Video;
 import PiVideos.Repository.ClientPiRepository;
@@ -15,6 +16,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 /*******************************************************************************************************
@@ -105,6 +107,16 @@ public class SocketServiceImpl implements SocketSerivce {
                         fileSize = Long.parseLong(line.substring("FILE_SIZE:".length()));
                     }
                 }
+                
+
+                //Client prüfen und anlegen
+                if(!checkClient(piName, network)){
+                    ClientPi clientPi = new ClientPi();
+                    clientPi.setName(piName);
+                    clientPi.setNetwork(network);
+                    clientPi.setLocation("unknown");
+                    clientPiRepository.save(clientPi);
+                } 
 
                 receiveVideo(dataIn, piName, fileSize, network);
                 dataOut.writeUTF("VIDEO_RECEIVED");
@@ -130,7 +142,7 @@ public class SocketServiceImpl implements SocketSerivce {
         }
         Video video = new Video();
         video.setDate(LocalDateTime.now(ZoneId.of("GMT+02:00")));
-        video.setClientPi(clientPiRepository.findByName(piName));
+        video.setClientPi(clientPiRepository.findByNameAndNetwork(piName, network).get());
         video.setFavorite(false);
         videoRepository.save(video);
 
@@ -154,7 +166,7 @@ public class SocketServiceImpl implements SocketSerivce {
             video.setBytes(finalFile.length());
             videoRepository.save(video);
 
-            System.out.println("📁 Video gespeichert unter: " + finalFile.getAbsolutePath());
+            System.out.println("Video gespeichert unter: " + finalFile.getAbsolutePath());
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -178,6 +190,10 @@ public class SocketServiceImpl implements SocketSerivce {
         } finally {
             running = false;
         }
+    }
+
+    public boolean checkClient(String clientName, Network network){
+        return clientPiRepository.findByNameAndNetwork(clientName, network).isPresent();
     }
 
     // Ping server

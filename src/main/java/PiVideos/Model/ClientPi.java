@@ -23,7 +23,7 @@ public class ClientPi {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer _id;
 
-    @Column(unique = true, nullable = false)
+    
     private String name;
 
     private String location;

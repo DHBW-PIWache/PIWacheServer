@@ -40,7 +40,8 @@
                         <th>ClientID</th>
                         <th>Name</th>
                         <th>Location</th>
-                        <th>AnzahlVideos</th>
+                        <th>Anzahl Videos</th>
+                        <th>Letzte Aufnahme</th>
                         <th>Aktionen</th>
                     </tr>
                     </thead>
@@ -51,6 +52,7 @@
                             <td class="has-text-black" th:text="${client._id}">1</td>
                             <td class="has-text-black" th:text="${client.name}">Beispielname</td>
                             <td class="has-text-black" th:text="${client.location}">location</td>
+                            <td class="has-text-black">0</td>
                             <td class="has-text-black">0</td>
                             <td>
                                 <button class="button is-small is-info mr-2"
@@ -63,9 +65,9 @@
                                 </button>
                             </td>
                         </tr>
-                        <!-- Kommentarzeile -->
+                          <!-- Kommentarzeile -->
                         <tr class="has-background-light">
-                            <td colspan="5" class="has-text-black">
+                            <td colspan="6" class="has-text-black">
                                 <strong class="has-text-black">Kommentar:</strong>
                                 <span class="has-text-black" th:text="${client.comment}">Kein Kommentar vorhanden</span>
                             </td>
@@ -127,6 +129,7 @@
                     </header>
                     <section class="modal-card-body">
                         <p class="has-text-white">Möchtest du den Client <strong th:text="${client.name}">Client</strong> wirklich löschen?</p>
+                        <p class="has-text-danger"><strong>Achtung: </strong>Alle Videos des Clients werden gelöscht!</p>
                     </section>
                     <footer class="modal-card-foot">
                         <form th:action="@{/features/config/client/delete/{id}(id=${client._id})}" method="post">
