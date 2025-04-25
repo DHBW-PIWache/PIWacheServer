@@ -36,4 +36,6 @@ public interface FeatureService {
 
    public boolean updateClient(ClientPi clientPi);
 
+   public void deleteNetworkByID(Integer id);
+
 }

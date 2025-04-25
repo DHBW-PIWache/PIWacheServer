@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -62,9 +63,9 @@ public class HomeControllerImpl implements HomeController{
     /// Register Network Seite
     /// !!! Noch nicht fertig, muss noch Netzwerke registieren können
     @PostMapping("/register")
-    public String postRegister(@ModelAttribute Network network,Model model, HttpSession session){
+    public String postRegister(@ModelAttribute Network network,Model model, RedirectAttributes redirectAttributes){
         networkRepository.save(network);
-        session.setAttribute("message","Netzwerk mit ID:" + network.get_id() + " angelegt");
+        redirectAttributes.addFlashAttribute("message","Netzwerk mit ID:" + network.get_id() + " angelegt");
         return "redirect:/login";
     }
 

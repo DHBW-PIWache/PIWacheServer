@@ -4,6 +4,8 @@ package PiVideos.Model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.net.InetAddress;
 import java.util.List;
@@ -26,7 +28,8 @@ public class Network {
 
 
 
-    @OneToMany(mappedBy = "network", cascade = CascadeType.ALL, orphanRemoval = false)
+    @OneToMany(mappedBy = "network",cascade = CascadeType.ALL, orphanRemoval = true)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private List<ClientPi> clientPis;
 
     public Network() {

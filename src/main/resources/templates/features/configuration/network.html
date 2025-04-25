@@ -21,9 +21,88 @@
       </div>
     </section>
 
+    <div th:if="${error}" class="notification is-danger mt-3">
+      <span th:text="${error}"></span>
+    </div>
+    <div th:if="${message}" class="notification is-success mt-3" >
+      <span th:text="${message}"></span>
+    </div>
 
 
 
+      <div class="box">
+        <h2 class="title">Netzwerk bearbeiten</h2>
+
+        <form action="/features/config/network/update" method="POST">
+          <div class="field">
+            <label class="label has-text-black">Name</label>
+            <div class="control">
+              <input class="input" type="text" name="name" th:value="${session.network.name}" required>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="label has-text-black">Root Path</label>
+            <div class="control">
+              <input class="input" type="text" name="rootPath" th:value="${session.network.rootPath}" required>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="label has-text-black">Port</label>
+            <div class="control">
+              <input class="input" type="number" name="port" min="1" max="65535" th:value="${session.network.port}" required>
+            </div>
+          </div>
+
+          <input type="hidden" name="id" th:value="${session.network._id}"/>
+
+          <div class="field is-grouped mt-4">
+            <div class="control">
+              <button class="button is-primary" type="submit">
+                <span class="icon"><i class="fas fa-save"></i></span>
+                <span>Speichern</span>
+              </button>
+            </div>
+          </div>
+        </form>
+
+        <!-- Unterteilung -->
+        <hr class="my-5">
+
+        <h3 class="title is-6 has-text-danger">Netzwerk löschen</h3>
+        <p >Achtung: Diese Aktion kann nicht rückgängig gemacht werden.</p>
+        <p class="mb-3 has-text-danger">Es werden <strong class="has-text-danger">Alle Clients und Videos</strong> gelöscht!</p>
+
+        <!-- Button zum Öffnen des Modals -->
+        <button class="button is-danger" onclick="document.getElementById('modal-delete-network').classList.add('is-active')">
+          <span class="icon"><i class="fas fa-trash"></i></span>
+          <span>Löschen</span>
+        </button>
+
+        <!-- Modal zum Löschen -->
+        <div id="modal-delete-network" class="modal">
+          <div class="modal-background" onclick="document.getElementById('modal-delete-network').classList.remove('is-active')"></div>
+          <div class="modal-card">
+            <header class="modal-card-head has-background-danger">
+              <p class="modal-card-title has-text-black">Netzwerk löschen</p>
+              <button class="delete" aria-label="close" onclick="document.getElementById('modal-delete-network').classList.remove('is-active')"></button>
+            </header>
+            <section class="modal-card-body">
+              <p class="has-text-white">Möchtest du das Netzwerk <strong th:text="${session.network.name}">Netzwerk</strong> wirklich löschen?</p>
+              <p class="has-text-danger"><strong>Achtung: </strong>Diese Aktion ist nicht umkehrbar!</p>
+            </section>
+            <footer class="modal-card-foot">
+              <form action="/features/config/network/delete" method="POST">
+                <input type="hidden" name="id" th:value="${session.network._id}"/>
+                <button class="button is-danger" type="submit">Löschen</button>
+              </form>
+              <button class="button" onclick="document.getElementById('modal-delete-network').classList.remove('is-active')">Abbrechen</button>
+            </footer>
+          </div>
+        </div>
+
+      </div>
 
   </main>
 </div>

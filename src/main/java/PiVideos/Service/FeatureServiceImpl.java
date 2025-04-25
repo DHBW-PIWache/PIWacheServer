@@ -43,7 +43,16 @@ public class FeatureServiceImpl implements FeatureService {
         networkRepository.save(network);
     }
 
+    public void deleteNetworkByID(Integer id){
 
+        Network network = networkRepository.findById(id).orElseThrow();
+        for(ClientPi c : network.getClientPis()){
+            deleteClientPiById(c.get_id());
+        }
+        network.getClientPis().clear();
+        networkRepository.deleteById(id);
+
+    }
 
     public List<Network> getAllNetworks(){
         return networkRepository.getAllNetworks();
@@ -99,11 +108,11 @@ public class FeatureServiceImpl implements FeatureService {
     //Noch vielleicht als Boolean umschreiben
     @Override
     public void deleteClientPiById(Integer id) {
-
         ClientPi client = clientPiRepository.findById(id).orElseThrow();
-        client.getVideos().clear();
+        for(Video v : client.getVideos()){
+            deleteVideoByID(v.get_id());
+        }
         clientPiRepository.delete(client);
-
     }
 
     public Optional<ClientPi> getClientBy_id(Integer _id){

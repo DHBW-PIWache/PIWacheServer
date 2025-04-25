@@ -92,17 +92,9 @@ public class ConfigControllerImpl implements ConfigController{
             } else{
                 redirectAttributes.addAttribute("error", "Client mit der ID " + _id + " konnte nicht geändert werden (nicht gefunden?).");
             }
-
         }
-
         return "redirect:/features/config/client";
     }
-
-
-
-
-
-
 
     @Override
     @GetMapping("/network")
@@ -111,7 +103,32 @@ public class ConfigControllerImpl implements ConfigController{
     }
 
 
+    @PostMapping("/network/update")
+    public String updateNetwork(@RequestParam Integer id,
+                                @RequestParam String name,
+                                @RequestParam String rootPath,
+                                @RequestParam int port,
+                                HttpSession session,
+                                RedirectAttributes redirectAttributes) {
+        Network net = networkRepository.findById(id).orElseThrow();
+        net.setName(name);
+        net.setRootPath(rootPath);
+        net.setPort(port);
+        networkRepository.save(net);
+        session.setAttribute("network", net);
 
+        redirectAttributes.addFlashAttribute("message","Netzwerk mit ID: "+ id+ " geändert");
+
+        return "redirect:/features/config/network";
+    }
+
+    @PostMapping("/network/delete")
+    public String deleteNetwork(@RequestParam Integer id, HttpSession session, RedirectAttributes redirectAttributes) {
+        featureService.deleteNetworkByID(id);
+        session.setAttribute("network", null);
+        redirectAttributes.addFlashAttribute("message","Netzwerk mit ID: "+ id+ " gelöscht");
+        return "redirect:/login";
+    }
 
 
 

@@ -14,14 +14,19 @@
 
 <div th:insert="~{fragments/header.html ::header }"></div>
 
-
+<div th:if="${error}" class="notification is-danger mt-3" style="max-width: 500px; margin: auto;">
+    <span th:text="${error}"></span>
+</div>
+<div th:if="${message}" class="notification is-success mt-3" style="max-width: 500px; margin: auto;">
+    <span th:text="${message}"></span>
+</div>
 
     <main>
         <section class="section">
             <div class="container">
-                <div th:if="${session.message}" class="notification is-success mt-3 mb-3" style="max-width: 500px; margin: auto;">
-                    <span th:text="${session.message}"></span>
-                </div>
+
+
+
                 <div class="box" style="max-width: 500px; margin: auto;">
                     <h1 class="title has-text-centered has-text-black">Netzwerkauswahl</h1>
 
