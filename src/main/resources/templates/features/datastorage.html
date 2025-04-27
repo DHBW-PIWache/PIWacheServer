@@ -21,12 +21,12 @@
       </div>
     </section>
     
-  <div th:if="${error}" class="notification is-danger mt-3">
+    <div th:if="${error}" class="notification is-danger mt-3">
       <span th:text="${error}"></span>
-  </div>
-  <div th:if="${message}" class="notification is-success mt-3">
-    <span th:text="${message}"></span>
-  </div>
+    </div>
+    <div th:if="${message}" class="notification is-success mt-3">
+      <span th:text="${message}"></span>
+    </div>
 
     <div class="box">
       <div class="is-flex is-justify-content-space-between is-align-items-center mb-4">
@@ -37,9 +37,7 @@
             <div class="select is-rounded">
               <select id="clientSelect" onchange="filterVideosByClient()">
                 <option value="all">Alle Clients</option>
-                <option th:each="client : ${clients}"
-                        th:value="${client._id}"
-                        th:text="${client.name}">Client A</option>
+                <option th:each="client : ${clients}" th:value="${client._id}" th:text="${client.name}">Client A</option>
               </select>
             </div>
           </div>
@@ -47,9 +45,16 @@
       </div>
 
       <div class="table-container">
+        <button class="button is-danger mb-4" id="massDeleteButton">Ausgewählte löschen</button>
+
+        <form id="massDeleteForm" th:action="@{/features/dataStorage/deleteMultiple}" method="post" style="display: none;">
+          <input type="hidden" name="ids" id="massDeleteIds">
+        </form>
+
         <table class="table is-fullwidth is-striped is-hoverable" id="videoTable">
           <thead class="has-background-black">
           <tr class="has-text-black">
+            <th></th>
             <th>ID</th>
             <th>Name</th>
             <th>Pfad</th>
@@ -62,8 +67,8 @@
           </thead>
           <tbody>
           <th:block th:each="video : ${videos}">
-            <!-- Hauptdatenzeile -->
             <tr class="has-background-white" th:data-client-id="${video.clientPi._id}">
+              <td><input type="checkbox" name="selectedVideos" th:value="${video._id}"></td>
               <td class="has-text-black" th:text="${video._id}">1</td>
               <td class="has-text-black" th:text="${video.name}">Beispielvideo.mp4</td>
               <td class="has-text-black" th:text="${video.path}">/media/video.mp4</td>
@@ -72,63 +77,75 @@
               <td class="has-text-black" th:text="${video.favorite ? 'Ja' : 'Nein'}">Ja</td>
               <td class="has-text-black" th:text="${video.clientPi.name}">ClientPi01</td>
               <td>
-                <a class="button is-small is-success mr-2"
-                   th:href="@{/features/live/{id}(id=${video._id})}">
+                <a class="button is-small is-success mr-2" th:href="@{/features/live/{id}(id=${video._id})}">
                   <span class="icon"><i class="fas fa-play"></i></span>
                 </a>
-                <button class="button is-small is-info mr-2"
-                        th:attr="onclick=|document.getElementById('modal-edit-${video._id}').classList.add('is-active')|">
+                <button class="button is-small is-info mr-2" th:attr="onclick=|document.getElementById('modal-edit-${video._id}').classList.add('is-active')|">
                   <span class="icon"><i class="fas fa-edit"></i></span>
                 </button>
-                <button class="button is-small is-danger"
-                        th:attr="onclick=|document.getElementById('modal-delete-${video._id}').classList.add('is-active')|">
+                <button class="button is-small is-danger" th:attr="onclick=|document.getElementById('modal-delete-${video._id}').classList.add('is-active')|">
                   <span class="icon"><i class="fas fa-trash"></i></span>
                 </button>
               </td>
-              
             </tr>
 
             <tr class="has-background-light" th:data-client-id="${video.clientPi._id}">
-              <td colspan="8" class="has-text-black">
-                <strong class="has-text-black">Kommentar:</strong> <span class="has-text-black" th:text="${video.comment}">Kein Kommentar vorhanden</span>
+              <td colspan="9" class="has-text-black">
+                <strong>Kommentar:</strong> <span th:text="${video.comment}">Kein Kommentar vorhanden</span>
               </td>
             </tr>
           </th:block>
           </tbody>
         </table>
+
+        <!-- Massenlöschung Modal -->
+        <div id="modal-mass-delete" class="modal">
+          <div class="modal-background"></div>
+          <div class="modal-card">
+            <header class="modal-card-head has-background-danger">
+              <p class="modal-card-title has-text-black">Ausgewählte Videos löschen</p>
+              <button class="delete" aria-label="close"></button>
+            </header>
+            <section class="modal-card-body">
+              <p class="has-text-white">Möchtest du die ausgewählten Videos wirklich löschen?</p>
+            </section>
+            <footer class="modal-card-foot">
+              <button class="button is-danger" id="confirmMassDeleteButton">Löschen</button>
+              <button class="button">Abbrechen</button>
+            </footer>
+          </div>
+        </div>
+
       </div>
 
       <div th:each="video : ${videos}">
 
+        <!-- Edit Modal -->
         <div class="modal" th:attr="id='modal-edit-' + ${video._id}">
-          <div class="modal-background"
-               th:attr="onclick=|document.getElementById('modal-edit-${video._id}').classList.remove('is-active')|"></div>
+          <div class="modal-background"></div>
           <div class="modal-card">
             <header class="modal-card-head has-background-info">
               <p class="modal-card-title has-text-black">Video bearbeiten</p>
-              <button class="delete" aria-label="close"
-                      th:attr="onclick=|document.getElementById('modal-edit-${video._id}').classList.remove('is-active')|"></button>
+              <button class="delete" aria-label="close"></button>
             </header>
             <form th:action="@{/features/dataStorage/update/{_id}(_id=${video._id})}" method="post">
-                  <section class="modal-card-body">
-                    <input type="hidden" name="id" th:value="${video._id}"/>
-                    <div class="field">
-                      <label class="label has-text-white" for="comment_${video._id}">Kommentar</label>
-                      <div class="control">
-                        <textarea id="comment_${video._id}" class="textarea" name="comment" placeholder="Kommentar eingeben..." th:text="${video.comment}"></textarea>
-                      </div>
-                    </div>
-                    <div class="field">
-                      <label class="checkbox has-text-white">
-                        <input type="checkbox" name="favorite" th:checked="${video.favorite}"> Als Favorit markieren
-                      </label>
+              <section class="modal-card-body">
+                <input type="hidden" name="id" th:value="${video._id}"/>
+                <div class="field">
+                  <label class="label has-text-white" for="comment_${video._id}">Kommentar</label>
+                  <div class="control">
+                    <textarea id="comment_${video._id}" class="textarea" name="comment" placeholder="Kommentar eingeben..." th:text="${video.comment}"></textarea>
+                  </div>
+                </div>
+                <div class="field">
+                  <label class="checkbox has-text-white">
+                    <input type="checkbox" name="favorite" th:checked="${video.favorite}"> Als Favorit markieren
+                  </label>
                 </div>
               </section>
-
               <footer class="modal-card-foot">
                 <button class="button is-info" type="submit">Speichern</button>
-                <button class="button" type="button"
-                        th:attr="onclick=|document.getElementById('modal-edit-${video._id}').classList.remove('is-active')|">Abbrechen</button>
+                <button class="button" type="button">Abbrechen</button>
               </footer>
             </form>
           </div>
@@ -136,13 +153,11 @@
 
         <!-- Delete Modal -->
         <div class="modal" th:attr="id='modal-delete-' + ${video._id}">
-          <div class="modal-background"
-               th:attr="onclick=|document.getElementById('modal-delete-${video._id}').classList.remove('is-active')|"></div>
+          <div class="modal-background"></div>
           <div class="modal-card">
             <header class="modal-card-head has-background-danger">
               <p class="modal-card-title has-text-black">Video löschen</p>
-              <button class="delete" aria-label="close"
-                      th:attr="onclick=|document.getElementById('modal-delete-${video._id}').classList.remove('is-active')|"></button>
+              <button class="delete" aria-label="close"></button>
             </header>
             <section class="modal-card-body">
               <p class="has-text-white">Möchtest du Video mit ID <strong th:text="${video._id}"></strong> wirklich löschen?</p>
@@ -151,12 +166,13 @@
               <form th:action="@{/features/dataStorage/delete/{_id}(_id=${video._id})}" method="post">
                 <button class="button is-danger" type="submit">Löschen</button>
               </form>
-              <button class="button"
-                      th:attr="onclick=|document.getElementById('modal-delete-${video._id}').classList.remove('is-active')|">Abbrechen</button>
+              <button class="button" type="button">Abbrechen</button>
             </footer>
           </div>
         </div>
+
       </div>
+
     </div>
   </main>
 </div>

@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/features")
@@ -195,6 +196,26 @@ public class FeatureControllerImpl implements FeatureController {
         model.addAttribute("clients", featureService.getAllClientPis(network));
         model.addAttribute("videos", featureService.getAllVideosForNetwork(network));
         return "features/datastorage.html";
+    }
+
+    @PostMapping("/dataStorage/deleteMultiple")
+    public String massDeleteVideos(@RequestParam("ids") String ids, RedirectAttributes model, HttpSession session) {
+
+    String[] idArray = ids.split(",");
+    int deletedCount = 0;
+
+    for(String idStr : idArray) {
+        try {
+            Integer id = Integer.parseInt(idStr);
+            if (featureService.deleteVideoByID(id)) {
+                deletedCount++;
+            }
+        } catch (NumberFormatException ignored) {}
+    }
+
+    model.addFlashAttribute("message", deletedCount + " Videos wurden gelöscht.");
+
+    return "redirect:/features/datastorage";
     }
 
 
