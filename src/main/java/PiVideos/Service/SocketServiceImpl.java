@@ -100,9 +100,10 @@ public class SocketServiceImpl implements SocketSerivce {
                 while (true) {
                     String line = dataIn.readUTF();
                     if ("END_HEADER".equals(line)) break;
-
                     if (line.startsWith("PI_NAME:")) {
                         piName = line.substring("PI_NAME:".length());
+
+                        System.out.println(piName);
                     } else if (line.startsWith("FILE_SIZE:")) {
                         fileSize = Long.parseLong(line.substring("FILE_SIZE:".length()));
                     }

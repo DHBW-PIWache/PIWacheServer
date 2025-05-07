@@ -215,7 +215,7 @@ public class FeatureControllerImpl implements FeatureController {
 
     model.addFlashAttribute("message", deletedCount + " Videos wurden gelöscht.");
 
-    return "redirect:/features/datastorage";
+    return "redirect:/features/dataStorage";
     }
 
 
