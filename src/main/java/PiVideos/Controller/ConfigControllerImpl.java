@@ -151,7 +151,7 @@ public class ConfigControllerImpl implements ConfigController{
     public String stopServer(HttpSession session, Model model) {
         Network network = (Network) session.getAttribute("network");
 
-        socketSerivce.stopServer();
+        socketSerivce.stopServerForNetwork(network);
         model.addAttribute("countVids", featureService.countVids(network));
 
         session.setAttribute("socket", false);

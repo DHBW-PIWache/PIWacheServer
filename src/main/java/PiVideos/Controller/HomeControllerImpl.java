@@ -102,7 +102,7 @@ public class HomeControllerImpl implements HomeController{
         session.setAttribute("currentDate", LocalDate.now().format(formatter));
 
 
-        if(socketSerivce.isServerRunning()){
+        if(socketSerivce.isServerRunning(network)){
             session.setAttribute("socket", true);
         } else{
             session.setAttribute("socket",false);
