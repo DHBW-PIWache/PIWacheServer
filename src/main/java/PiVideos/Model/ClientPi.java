@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Setter
@@ -29,6 +30,8 @@ public class ClientPi {
     private String location;
 
     private String comment;
+
+    private LocalDateTime date;
 
 
     @ManyToOne

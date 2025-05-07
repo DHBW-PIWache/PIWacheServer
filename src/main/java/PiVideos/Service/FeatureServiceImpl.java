@@ -105,6 +105,8 @@ public class FeatureServiceImpl implements FeatureService {
     }
 
 
+
+
     //Noch vielleicht als Boolean umschreiben
     @Override
     public void deleteClientPiById(Integer id) {

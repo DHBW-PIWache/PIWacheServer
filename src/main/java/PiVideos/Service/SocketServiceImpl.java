@@ -7,7 +7,6 @@ import PiVideos.Repository.ClientPiRepository;
 import PiVideos.Repository.NetworkRepository;
 import PiVideos.Repository.VideoRepository;
 import jakarta.annotation.PreDestroy;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,22 +16,14 @@ import java.net.Socket;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-/*******************************************************************************************************
- Autor: Julian Hecht
- Datum letzte Änderung: 22.04.2025
- Änderung: Kommentare hinzugefügt
- *******************************************************************************************************/
 
 @Service
 public class SocketServiceImpl implements SocketSerivce {
 
-    // port sollte dynamsich gemacht werden, je nach netzwerk
-    private int port;
-    private ServerSocket serverSocket;
-    private ExecutorService executorService;
-    private boolean running = false;
+    private final ConcurrentHashMap<Integer, ServerHandle> servers = new ConcurrentHashMap<>();
 
     @Autowired
     NetworkRepository networkRepository;
@@ -49,43 +40,46 @@ public class SocketServiceImpl implements SocketSerivce {
         this.videoRepository = videoRepository;
     }
 
-
-    /// Socket Server starten, mit port des Netzwerkes
-    /// !!!!!! Falls der Port schon belegt ist, fehlermeldung ausgeben
-    /// !!!!!! Mussw noch eingebaut werden
     public synchronized void startServer(Network network) {
-        if (running) {
-            System.out.println("Server läuft bereits!");
+        Integer networkId = network.get_id();
+
+        if (servers.containsKey(networkId)) {
+            System.out.println("Server für Netzwerk " + network.getName() + " läuft bereits!");
             return;
         }
-        executorService = Executors.newFixedThreadPool(10);
-        running = true;
+
         int port = network.getPort();
-        executorService.submit(() -> {
-            try {
-                serverSocket = new ServerSocket(port);
-                System.out.println("Socket-Server läuft auf Port " + port);
+        ExecutorService executorService = Executors.newFixedThreadPool(10);
 
+        try {
+            ServerSocket serverSocket = new ServerSocket(port);
+            ServerHandle handle = new ServerHandle(serverSocket, executorService);
+            servers.put(networkId, handle);
+
+            System.out.println("Socket-Server für Netzwerk " + network.getName() + " läuft auf Port " + port);
+
+            executorService.submit(() -> {
                 while (!serverSocket.isClosed()) {
-                    Socket clientSocket = serverSocket.accept();
-                    System.out.println("Neuer Client verbunden: " + clientSocket.getInetAddress());
-
-                    executorService.submit(() -> handleClient(clientSocket, network));
+                    try {
+                        Socket clientSocket = serverSocket.accept();
+                        System.out.println("Neuer Client verbunden auf Netzwerk " + network.getName() + ": " + clientSocket.getInetAddress());
+                        executorService.submit(() -> handleClient(clientSocket, network));
+                    } catch (IOException e) {
+                        if (!serverSocket.isClosed()) {
+                            e.printStackTrace();
+                        }
+                    }
                 }
-            } catch (IOException e) {
-                if (!serverSocket.isClosed()) {
-                    e.printStackTrace();
-                }
-            }
-        });
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-
-    //Client Anfrage annehmen
     public void handleClient(Socket clientSocket, Network network) {
         try (
-            DataInputStream dataIn = new DataInputStream(clientSocket.getInputStream());
-            DataOutputStream dataOut = new DataOutputStream(clientSocket.getOutputStream())
+                DataInputStream dataIn = new DataInputStream(clientSocket.getInputStream());
+                DataOutputStream dataOut = new DataOutputStream(clientSocket.getOutputStream())
         ) {
             String command = dataIn.readUTF();
             System.out.println("Empfangen: " + command);
@@ -96,7 +90,6 @@ public class SocketServiceImpl implements SocketSerivce {
                 String piName = "unknown";
                 long fileSize = 0;
 
-                // Header verarbeiten -> PiName ist notwendig für Dateiverwaltung
                 while (true) {
                     String line = dataIn.readUTF();
                     if ("END_HEADER".equals(line)) break;
@@ -108,16 +101,15 @@ public class SocketServiceImpl implements SocketSerivce {
                         fileSize = Long.parseLong(line.substring("FILE_SIZE:".length()));
                     }
                 }
-                
 
-                //Client prüfen und anlegen
-                if(!checkClient(piName, network)){
+                if (!checkClient(piName, network)) {
                     ClientPi clientPi = new ClientPi();
                     clientPi.setName(piName);
                     clientPi.setNetwork(network);
                     clientPi.setLocation("unknown");
+                    clientPi.setDate(LocalDateTime.now(ZoneId.of("GMT+02:00")));
                     clientPiRepository.save(clientPi);
-                } 
+                }
 
                 receiveVideo(dataIn, piName, fileSize, network);
                 dataOut.writeUTF("VIDEO_RECEIVED");
@@ -134,8 +126,6 @@ public class SocketServiceImpl implements SocketSerivce {
         }
     }
 
-    ///  Video annehmen, auf datenbank speichern und auf storage
-    ///  Metadaten verwenden um File richtig zu speichern
     public void receiveVideo(DataInputStream dataIn, String piName, long fileSize, Network network) {
         File videoDir = new File(network.getRootPath() + piName);
         if (!videoDir.exists()) {
@@ -164,7 +154,7 @@ public class SocketServiceImpl implements SocketSerivce {
             video.setName(finalName);
             video.setPath(finalFile.getAbsolutePath());
             video.setRelativePath(piName + "/" + finalName);
-            video.setBytes(finalFile.length());
+            video.setMb((double) finalFile.length() / (1024 * 1024));
             videoRepository.save(video);
 
             System.out.println("Video gespeichert unter: " + finalFile.getAbsolutePath());
@@ -175,31 +165,53 @@ public class SocketServiceImpl implements SocketSerivce {
     }
 
     @PreDestroy
-    public synchronized void stopServer() {
-        if (!running) {
-            System.out.println("Server ist bereits gestoppt!");
-            return;
-        }
-        try {
-            if (serverSocket != null && !serverSocket.isClosed()) {
-                serverSocket.close();
-                System.out.println("Socket-Server gestoppt.");
+    public synchronized void stopAllServers() {
+        servers.forEach((networkId, handle) -> {
+            try {
+                handle.stop();
+                System.out.println("Server für Netzwerk " + networkId + " gestoppt.");
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            executorService.shutdown();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            running = false;
+        });
+        servers.clear();
+    }
+
+    public synchronized void stopServerForNetwork(Network network) {
+        long networkId = network.get_id();
+        ServerHandle handle = servers.remove(networkId);
+        if (handle != null) {
+            try {
+                handle.stop();
+                System.out.println("Server für Netzwerk " + network.getName() + " gestoppt.");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            System.out.println("Kein laufender Server für Netzwerk " + network.getName());
         }
     }
 
-    public boolean checkClient(String clientName, Network network){
+    public boolean checkClient(String clientName, Network network) {
         return clientPiRepository.findByNameAndNetwork(clientName, network).isPresent();
     }
 
-    // Ping server
-    public synchronized boolean isServerRunning() {
-        return running;
+    public synchronized boolean isServerRunning(Network network) {
+        return servers.containsKey(network.get_id());
+    }
+}
+
+class ServerHandle {
+    private final ServerSocket serverSocket;
+    private final ExecutorService executorService;
+
+    public ServerHandle(ServerSocket serverSocket, ExecutorService executorService) {
+        this.serverSocket = serverSocket;
+        this.executorService = executorService;
     }
 
+    public void stop() throws IOException {
+        serverSocket.close();
+        executorService.shutdown();
+    }
 }

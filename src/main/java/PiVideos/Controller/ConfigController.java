@@ -6,6 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /******************************************************************************************************* 
 Autor: Julian Hecht
@@ -28,8 +29,8 @@ public interface ConfigController {
     //Sockets Starten und Stoppen
     // !!!! Muss noch dynamisch gemacht werden, damit mehrere Netzwerke
     // auf verschiedenen Ports laufen können
-    public String startServer(HttpSession session, Model model );
-    public String stopServer(HttpSession session, Model Model);
+    public String startServer(HttpSession session, RedirectAttributes model );
+    public String stopServer(HttpSession session, RedirectAttributes Model);
 
 
 }

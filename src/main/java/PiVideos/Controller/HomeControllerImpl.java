@@ -2,6 +2,7 @@ package PiVideos.Controller;
 
 
 import PiVideos.Model.Network;
+import PiVideos.Model.Video;
 import PiVideos.Repository.NetworkRepository;
 import PiVideos.Service.FeatureService;
 import PiVideos.Service.SocketSerivce;
@@ -94,15 +95,19 @@ public class HomeControllerImpl implements HomeController{
     @GetMapping("/")
     public String getHome(HttpSession session, Model model){
         Network network = (Network) session.getAttribute("network");
+        Video newestVid = featureService.getNewestVideo(network);
 
-        model.addAttribute("video", featureService.getNewestVideo(network));
+
+        model.addAttribute("video", newestVid);
+
+
         model.addAttribute("countVids", featureService.countVids(network));
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         session.setAttribute("currentDate", LocalDate.now().format(formatter));
 
 
-        if(socketSerivce.isServerRunning()){
+        if(socketSerivce.isServerRunning(network)){
             session.setAttribute("socket", true);
         } else{
             session.setAttribute("socket",false);

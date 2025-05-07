@@ -137,25 +137,20 @@ public class ConfigControllerImpl implements ConfigController{
     // !!!! Muss noch dynamisch gemacht werden, damit mehrere Netzwerke
     // auf verschiedenen Ports laufen können
     @PostMapping("/startServer")
-    public String startServer(HttpSession session, Model model) {
+    public String startServer(HttpSession session, RedirectAttributes model) {
         Network network = (Network) session.getAttribute("network");
-        model.addAttribute("countVids", featureService.countVids(network));
-
         socketSerivce.startServer(network);
         session.setAttribute("socket", true);
-        return "index.html";
+        return "redirect:/";
     }
 
     @Override
     @PostMapping("/stopServer")
-    public String stopServer(HttpSession session, Model model) {
+    public String stopServer(HttpSession session, RedirectAttributes model) {
         Network network = (Network) session.getAttribute("network");
-
-        socketSerivce.stopServer();
-        model.addAttribute("countVids", featureService.countVids(network));
-
+        socketSerivce.stopServerForNetwork(network);
         session.setAttribute("socket", false);
-        return "index.html";
+        return "redirect:/";
     }
 
 
