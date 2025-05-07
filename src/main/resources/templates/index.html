@@ -58,7 +58,7 @@
                     </div>
 
                     <div class="box">
-                        <p class="heading">Speicherbelastung</p>
+                        <p class="heading">Speicherbelastung Netzwerk</p>
                         <div class="level">
                             <div class="level-item">
                                 <div>
@@ -100,35 +100,39 @@
                 </div>
             </div>
 
-            <!-- Neue Panels -->
+
             <div class="columns mt-5">
-                <!-- Panel: Aktuellstes Video -->
+
                 <div class="column is-6">
                     <article class="panel is-info">
                         <p class="panel-heading">
                             Aktuellstes Video
                         </p>
                         <div class="panel-block">
-                            <div>
-                                <p><strong>Titel:</strong> <span th:text="${video.name}">Kein Video verfügbar</span></p>
-                                <p><strong>Erstellt am:</strong> <span th:text="${video.date}">Datum</span></p>
-                                <p><strong>Dauer:</strong> <span th:text="${video.duration}">0:00</span></p>
+                            <div th:if="${video != null}">
+                                <p class="has-text-black"><strong class="has-text-black">Titel:</strong> <span th:text="${video.name}">Titel</span></p>
+                                <p class="has-text-black"><strong class="has-text-black">Erstellt am:</strong> <span th:text="${#temporals.format(video.date, 'dd.MM.yyyy HH:mm')}">Datum</span></p>
+                                <p class="has-text-black"><strong class="has-text-black">Dauer:</strong> <span th:text="${video.duration}">0:00</span></p>
+                            </div>
+                            <div th:if="${video == null}">
+                                <p class="has-text-black">Noch kein Video</p>
                             </div>
                         </div>
                     </article>
                 </div>
 
-                <!-- Panel: Aktuellster Client -->
+
+
                 <div class="column is-6">
-                    <article class="panel is-warning">
+                    <article class="panel is-info">
                         <p class="panel-heading">
                             Aktuellster Client
                         </p>
                         <div class="panel-block">
                             <div>
-                                <p><strong>Name:</strong> <span >Kein Client verfügbar</span></p>
-                                <p><strong>Verbunden am:</strong> <span >Datum</span></p>
-                                <p><strong>Status:</strong> <span>Unbekannt</span></p>
+                                <p class="has-text-black" ><strong class="has-text-black">Name:</strong> <span >Kein Client verfügbar</span></p>
+                                <p class="has-text-black"><strong class="has-text-black">Verbunden am:</strong> <span >Datum</span></p>
+                                <p class="has-text-black"><strong class="has-text-black">Status:</strong> <span>Unbekannt</span></p>
                             </div>
                         </div>
                     </article>
