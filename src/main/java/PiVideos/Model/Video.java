@@ -28,7 +28,7 @@ public class Video {
     private LocalDateTime date;
 
 
-    private long bytes;
+    private double mb;
 
     private float duration;
 
@@ -46,13 +46,13 @@ public class Video {
     public Video() {
     }
 
-    public Video(Integer _id, String name, String path, String relativePath, LocalDateTime date, long bytes, float duration, boolean favorite, String comment, ClientPi clientPi) {
+    public Video(Integer _id, String name, String path, String relativePath, LocalDateTime date, double mb, float duration, boolean favorite, String comment, ClientPi clientPi) {
         this._id = _id;
         this.name = name;
         this.path = path;
         this.relativePath = relativePath;
         this.date = date;
-        this.bytes = bytes;
+        this.mb = mb;
         this.duration = duration;
         this.favorite = favorite;
         this.comment = comment;

@@ -115,7 +115,7 @@
                                 <p class="has-text-black"><strong class="has-text-black">Pfad:</strong> <span th:text="${video.path}">/media/video.mp4</span></p>
                                 <p class="has-text-black"><strong class="has-text-black">Erstellt am:</strong> <span th:text="${#temporals.format(video.date, 'dd.MM.yyyy HH:mm')}">Datum</span></p>
                                 <p class="has-text-black"><strong class="has-text-black">Dauer:</strong> <span th:text="${video.duration}">0:00</span></p>
-                                <p class="has-text-black"><strong class="has-text-black">Größe:</strong> <span th:text="${video.bytes} + ' Bytes'">1048576 Bytes</span></p>
+                                <p class="has-text-black"><strong class="has-text-black">Größe:</strong> <span th:text="${video.mb} + ' MB'">1048576 MB</span></p>
                                 <p class="has-text-black"><strong class="has-text-black">Favorit:</strong> <span th:text="${video.favorite ? 'Ja' : 'Nein'}">Nein</span></p>
                                 <p class="has-text-black"><strong class="has-text-black">Kommentar:</strong> <span th:text="${video.comment}">Kein Kommentar vorhanden</span></p>
 

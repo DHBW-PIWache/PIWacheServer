@@ -106,6 +106,7 @@ public class SocketServiceImpl implements SocketSerivce {
                     clientPi.setName(piName);
                     clientPi.setNetwork(network);
                     clientPi.setLocation("unknown");
+                    clientPi.setDate(LocalDateTime.now(ZoneId.of("GMT+02:00")));
                     clientPiRepository.save(clientPi);
                 }
 
@@ -152,7 +153,7 @@ public class SocketServiceImpl implements SocketSerivce {
             video.setName(finalName);
             video.setPath(finalFile.getAbsolutePath());
             video.setRelativePath(piName + "/" + finalName);
-            video.setBytes(finalFile.length());
+            video.setMb((double) finalFile.length() / (1024 * 1024));
             videoRepository.save(video);
 
             System.out.println("Video gespeichert unter: " + finalFile.getAbsolutePath());
