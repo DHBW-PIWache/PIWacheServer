@@ -96,6 +96,7 @@ public class HomeControllerImpl implements HomeController{
         Network network = (Network) session.getAttribute("network");
 
         model.addAttribute("video", featureService.getNewestVideo(network));
+
         model.addAttribute("countVids", featureService.countVids(network));
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");

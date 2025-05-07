@@ -40,8 +40,21 @@
                 <!-- Netzwerk & Speicher -->
                 <div class="column is-6">
                     <div class="box mb-4">
-                        <p class="heading">Aktuelles Netzwerk</p>
-                        <p class="title is-6" th:text="${session.network.name + ' (ID: ' + session.network._id + ')'}">Netzwerkname</p>
+                        <div class="columns">
+                            <div class="column">
+                                <p class="heading is-5">Netzwerk</p>
+                                <p class="title is-6" th:text="${session.network.name + ' (ID: ' + session.network._id + ')'}">Netzwerkname</p>
+                            </div>
+                            <div class="column">
+                                <p class="heading is-5">Port</p>
+                                <p class="title is-6" th:text="${session.network.port}">Port</p>
+                            </div>
+                        </div>
+
+                        <div class="field mt-4">
+                            <p class="heading is-5">Verzeichnis</p>
+                            <p class="title is-6" th:text="${session.network.rootPath}">/pfad/</p>
+                        </div>
                     </div>
 
                     <div class="box">
@@ -50,10 +63,8 @@
                             <div class="level-item">
                                 <div>
                                     <p class="heading" th:text="${'Anzahl Videos: '+ countVids}">Anzahl Videos</p>
-
                                 </div>
                             </div>
-                           
                         </div>
                     </div>
                 </div>
@@ -88,9 +99,42 @@
                     </div>
                 </div>
             </div>
-        </div>
-        </div>
 
+            <!-- Neue Panels -->
+            <div class="columns mt-5">
+                <!-- Panel: Aktuellstes Video -->
+                <div class="column is-6">
+                    <article class="panel is-info">
+                        <p class="panel-heading">
+                            Aktuellstes Video
+                        </p>
+                        <div class="panel-block">
+                            <div>
+                                <p><strong>Titel:</strong> <span th:text="${video.name}">Kein Video verfügbar</span></p>
+                                <p><strong>Erstellt am:</strong> <span th:text="${video.date}">Datum</span></p>
+                                <p><strong>Dauer:</strong> <span th:text="${video.duration}">0:00</span></p>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+
+                <!-- Panel: Aktuellster Client -->
+                <div class="column is-6">
+                    <article class="panel is-warning">
+                        <p class="panel-heading">
+                            Aktuellster Client
+                        </p>
+                        <div class="panel-block">
+                            <div>
+                                <p><strong>Name:</strong> <span >Kein Client verfügbar</span></p>
+                                <p><strong>Verbunden am:</strong> <span >Datum</span></p>
+                                <p><strong>Status:</strong> <span>Unbekannt</span></p>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </div>
     </main>
 </div>
 
