@@ -15,7 +15,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -84,7 +83,9 @@ public class SocketServiceImpl implements SocketSerivce {
             String command = dataIn.readUTF();
             System.out.println("Empfangen: " + command);
 
-            if ("SEND_VIDEO".equalsIgnoreCase(command)) {
+            if ("REGISTER_CLIENT".equalsIgnoreCase(command)) {
+                handleRegisterClient(dataIn, dataOut, network);
+            } else if ("SEND_VIDEO".equalsIgnoreCase(command)) {
                 dataOut.writeUTF("READY_TO_RECEIVE");
 
                 String piName = "unknown";
@@ -95,20 +96,13 @@ public class SocketServiceImpl implements SocketSerivce {
                     if ("END_HEADER".equals(line)) break;
                     if (line.startsWith("PI_NAME:")) {
                         piName = line.substring("PI_NAME:".length());
-
-                        System.out.println(piName);
                     } else if (line.startsWith("FILE_SIZE:")) {
                         fileSize = Long.parseLong(line.substring("FILE_SIZE:".length()));
                     }
                 }
 
-                if (!checkClient(piName, network)) {
-                    ClientPi clientPi = new ClientPi();
-                    clientPi.setName(piName);
-                    clientPi.setNetwork(network);
-                    clientPi.setLocation("unknown");
-                    clientPi.setDate(LocalDateTime.now(ZoneId.of("GMT+02:00")));
-                    clientPiRepository.save(clientPi);
+                if (checkClient(piName, network)) {
+                    createNewClient(piName, network);
                 }
 
                 receiveVideo(dataIn, piName, fileSize, network);
@@ -124,6 +118,36 @@ public class SocketServiceImpl implements SocketSerivce {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void handleRegisterClient(DataInputStream dataIn, DataOutputStream dataOut, Network network) throws IOException {
+        String piName = "unknown";
+
+        while (true) {
+            String line = dataIn.readUTF();
+            if ("END_HEADER".equals(line)) break;
+            if (line.startsWith("PI_NAME:")) {
+                piName = line.substring("PI_NAME:".length());
+            }
+        }
+
+        if (checkClient(piName, network)) {
+            createNewClient(piName, network);
+            System.out.println("Neuer Client registriert: " + piName);
+        } else {
+            System.out.println("Client bereits registriert: " + piName);
+        }
+
+        dataOut.writeUTF("CLIENT_REGISTERED");
+    }
+
+    private void createNewClient(String piName, Network network) {
+        ClientPi clientPi = new ClientPi();
+        clientPi.setName(piName);
+        clientPi.setNetwork(network);
+        clientPi.setLocation("unknown");
+        clientPi.setDate(LocalDateTime.now(ZoneId.of("GMT+02:00")));
+        clientPiRepository.save(clientPi);
     }
 
     public void receiveVideo(DataInputStream dataIn, String piName, long fileSize, Network network) {
@@ -193,7 +217,7 @@ public class SocketServiceImpl implements SocketSerivce {
     }
 
     public boolean checkClient(String clientName, Network network) {
-        return clientPiRepository.findByNameAndNetwork(clientName, network).isPresent();
+        return clientPiRepository.findByNameAndNetwork(clientName, network).isEmpty();
     }
 
     public synchronized boolean isServerRunning(Network network) {
