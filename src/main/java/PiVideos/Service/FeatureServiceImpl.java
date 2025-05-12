@@ -113,6 +113,10 @@ public class FeatureServiceImpl implements FeatureService {
         return clientPiRepository.getLatestVideo(network.get_id(),clientPi.get_id());
     }
 
+    public double totalMBForNetwork(Network network){
+        return networkRepository.totalMBForNetwork(network.get_id());
+    }
+
     //Noch vielleicht als Boolean umschreiben
     @Override
     public void deleteClientPiById(Integer id) {

@@ -51,19 +51,22 @@
                             </div>
                         </div>
 
-                        <div class="field mt-4">
-                            <p class="heading is-5">Verzeichnis</p>
-                            <p class="title is-6" th:text="${session.network.rootPath}">/pfad/</p>
+                        <div class="columns">
+                            <div class="column">
+                                <p class="heading is-5">Verzeichnis</p>
+                                <p class="title is-6" th:text="${session.network.rootPath}">/pfad/</p>
+                            </div>
+                            <div class="column">
+                                <p class="heading is-5">Anzahl Videos: </p>
+                                <p class="title is-6"th:text="${countVids}">1</p>
+                            </div>
                         </div>
-                    </div>
-
-                    <div class="box">
-                        <p class="heading">Speicherbelastung Netzwerk</p>
-                        <div class="level">
-                            <div class="level-item">
-                                <div>
-                                    <p class="heading" th:text="${'Anzahl Videos: '+ countVids}">Anzahl Videos</p>
-                                </div>
+                        <div class="columns">
+                            <div class="column">
+                                <p class="heading is-5">Speicherbelastung</p>
+                                <p class="title is-6" th:text="${#numbers.formatDecimal(totalMb, 1, 2)} + ' MB'">1mb</p>
+                            </div>
+                            <div class="column">
                             </div>
                         </div>
                     </div>
@@ -110,15 +113,21 @@
                         </p>
                         <div class="panel-block">
                             <div th:if="${video != null}">
-                                <p class="has-text-black"><strong class="has-text-black">Titel:</strong> <span th:text="${video.name}">Titel</span></p>
-                                <p class="has-text-black"><strong class="has-text-black">ID:</strong> <span th:text="${video._id}">ID</span></p>
-                                <p class="has-text-black"><strong class="has-text-black">Pfad:</strong> <span th:text="${video.path}">/media/video.mp4</span></p>
-                                <p class="has-text-black"><strong class="has-text-black">Erstellt am:</strong> <span th:text="${#temporals.format(video.date, 'dd.MM.yyyy HH:mm')}">Datum</span></p>
-                                <p class="has-text-black"><strong class="has-text-black">Dauer:</strong> <span th:text="${video.duration}">0:00</span></p>
-                                <p class="has-text-black"><strong class="has-text-black">Größe:</strong> <span th:text="${video.mb} + ' MB'">1048576 MB</span></p>
-                                <p class="has-text-black"><strong class="has-text-black">Favorit:</strong> <span th:text="${video.favorite ? 'Ja' : 'Nein'}">Nein</span></p>
-                                <p class="has-text-black"><strong class="has-text-black">Kommentar:</strong> <span th:text="${video.comment}">Kein Kommentar vorhanden</span></p>
-
+                                <div class="columns is-multiline">
+                                    <div class="column is-5">
+                                        <p class="has-text-black"><strong class="has-text-black">ID:</strong> <span th:text="${video._id}">ID</span></p>
+                                        <p class="has-text-black"><strong class="has-text-black">Favorit:</strong> <span th:text="${video.favorite ? 'Ja' : 'Nein'}">Nein</span></p>
+                                        <p class="has-text-black"><strong class="has-text-black">Kommentar:</strong> <span th:text="${video.comment}">Kein Kommentar vorhanden</span></p>
+                                    </div>
+                                    <div class="column">
+                                        <p class="has-text-black"><strong class="has-text-black">Dauer:</strong> <span th:text="${video.duration}">0:00</span></p>
+                                        <p class="has-text-black"><strong class="has-text-black">Größe:</strong> <span th:text="${#numbers.formatDecimal(video.mb, 1, 2)} + ' MB'">1048576 MB</span></p>
+                                        <p class="has-text-black"><strong class="has-text-black">Erstellt am:</strong> <span th:text="${#temporals.format(video.date, 'dd.MM.yyyy HH:mm')}">Datum</span></p>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p class="has-text-black"><strong class="has-text-black">Pfad:</strong> <span th:text="${video.path}">/media/video.mp4</span></p>
+                                </div>
                                 <div class="buttons mt-3">
                                     <a class="button is-small is-success mr-2" th:href="@{/features/live/{id}(id=${video._id})}">
                                         <span class="icon"><i class="fas fa-play"></i></span>

@@ -43,4 +43,6 @@ public interface FeatureService {
 
    public LocalDateTime getLatestVideo(Network network, ClientPi clientPi);
 
+   public double totalMBForNetwork(Network network);
+
 }
