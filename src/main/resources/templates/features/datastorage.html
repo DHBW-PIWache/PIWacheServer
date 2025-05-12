@@ -35,12 +35,22 @@
         <div class="field is-grouped">
           <div class="control">
             <div class="select is-rounded">
-              <select id="clientSelect" onchange="filterVideosByClient()">
+              <select id="clientSelect" onchange="filterVideos()">
                 <option value="all">Alle Clients</option>
                 <option th:each="client : ${clients}" th:value="${client._id}" th:text="${client.name}">Client A</option>
               </select>
             </div>
           </div>
+          <div class="control ml-3">
+            <div class="select is-rounded">
+              <select id="favoriteSelect" onchange="filterVideos()">
+                <option value="all">Favoriten</option>
+                <option value="true">Ja</option>
+                <option value="false">Nein</option>
+              </select>
+            </div>
+          </div>
+
         </div>
       </div>
 
@@ -67,7 +77,7 @@
           </thead>
           <tbody>
           <th:block th:each="video : ${videos}">
-            <tr class="has-background-white" th:data-client-id="${video.clientPi._id}">
+            <tr class="has-background-white" th:data-client-id="${video.clientPi._id}" th:attrappend="data-favorite=${video.favorite}">
               <td><input type="checkbox" name="selectedVideos" th:value="${video._id}"></td>
               <td class="has-text-black" th:text="${video._id}">1</td>
               <td class="has-text-black" th:text="${video.name}">Beispielvideo.mp4</td>
@@ -178,16 +188,34 @@
 </div>
 
 <script>
-  function filterVideosByClient() {
+  function filterVideos() {
     const selectedClientId = document.getElementById("clientSelect").value;
+    const favoriteFilter = document.getElementById("favoriteSelect").value;
     const rows = document.querySelectorAll("#videoTable tbody tr");
 
-    rows.forEach(row => {
-      const clientId = row.getAttribute("data-client-id");
-      row.style.display = (selectedClientId === "all" || clientId === selectedClientId) ? "" : "none";
-    });
+    for (let i = 0; i < rows.length; i += 2) {
+      const mainRow = rows[i];
+      const commentRow = rows[i + 1];
+
+      const clientId = mainRow.getAttribute("data-client-id");
+      const favorite = mainRow.getAttribute("data-favorite");
+
+      const matchesClient = (selectedClientId === "all" || clientId === selectedClientId);
+      const matchesFavorite =
+      favoriteFilter === "all" ||
+      (favoriteFilter === "true" && favorite === "true") ||
+      (favoriteFilter === "false" && favorite === "false");
+
+      const shouldShow = matchesClient && matchesFavorite;
+
+      mainRow.style.display = shouldShow ? "" : "none";
+      if (commentRow) {
+        commentRow.style.display = shouldShow ? "" : "none";
+      }
+    }
   }
 </script>
+
 
 </body>
 </html>
