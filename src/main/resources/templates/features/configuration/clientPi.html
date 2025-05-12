@@ -52,8 +52,8 @@
                             <td class="has-text-black" th:text="${client._id}">1</td>
                             <td class="has-text-black" th:text="${client.name}">Beispielname</td>
                             <td class="has-text-black" th:text="${client.location}">location</td>
-                            <td class="has-text-black">0</td>
-                            <td class="has-text-black">0</td>
+                            <td class="has-text-black" th:text="${videoCounts[client._id]}">0</td>
+                            <td class="has-text-black" th:text="${#temporals.format(latestVids[client._id], 'dd.MM.yyyy HH:mm')}">0</td>
                             <td>
                                 <button class="button is-small is-info mr-2"
                                         th:attr="onclick=|document.getElementById('modal-edit-client-${client._id}').classList.add('is-active')|">

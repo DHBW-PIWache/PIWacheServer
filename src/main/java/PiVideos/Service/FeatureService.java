@@ -5,6 +5,7 @@ import PiVideos.Model.ClientPi;
 import PiVideos.Model.Network;
 import PiVideos.Model.Video;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,5 +38,9 @@ public interface FeatureService {
    public boolean updateClient(ClientPi clientPi);
 
    public void deleteNetworkByID(Integer id);
+
+   public int countVidsForClient(Network network, ClientPi clientPi);
+
+   public LocalDateTime getLatestVideo(Network network, ClientPi clientPi);
 
 }

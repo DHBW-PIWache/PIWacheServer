@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -104,8 +105,13 @@ public class FeatureServiceImpl implements FeatureService {
         return videoRepository.countAllVids(network.get_id());
     }
 
+    public int countVidsForClient(Network network, ClientPi clientPi){
+        return clientPiRepository.countAllVideosForClient(network.get_id(),clientPi.get_id());
+    }
 
-
+    public LocalDateTime getLatestVideo(Network network, ClientPi clientPi){
+        return clientPiRepository.getLatestVideo(network.get_id(),clientPi.get_id());
+    }
 
     //Noch vielleicht als Boolean umschreiben
     @Override

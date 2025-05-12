@@ -13,6 +13,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 
@@ -26,16 +31,11 @@ Datum letzte Änderung: 24.04.2025
 @RequestMapping("features/config")
 public class ConfigControllerImpl implements ConfigController{
 
-
     SocketSerivce socketSerivce;
-
-
     FeatureService featureService;
 
     //!!!! Sollte mit einem Service ersetzt werden
-
     NetworkRepository networkRepository;
-
 
     public ConfigControllerImpl(SocketSerivce socketSerivce, FeatureService featureService, NetworkRepository networkRepository) {
         this.socketSerivce = socketSerivce;
@@ -51,10 +51,25 @@ public class ConfigControllerImpl implements ConfigController{
     public String getConfigClient(HttpSession session, Model model) {
         Network network = (Network) session.getAttribute("network");
 
-        model.addAttribute("clients", featureService.getAllClientPis(network));
-        model.addAttribute("clientPi",new ClientPi());
+        List<ClientPi> clients = featureService.getAllClientPis(network);
+        Map<Integer, Integer> videoCounts = new HashMap<>();
+        Map<Integer, LocalDateTime> latestVids = new HashMap<>();
+
+        for (ClientPi client : clients) {
+            int count = featureService.countVidsForClient(network, client);
+            LocalDateTime latestVideo = featureService.getLatestVideo(network,client);
+            videoCounts.put(client.get_id(), count);
+            latestVids.put(client.get_id(), latestVideo);
+        }
+
+        model.addAttribute("clients", clients);
+        model.addAttribute("videoCounts", videoCounts);
+        model.addAttribute("latestVids",latestVids);
+        model.addAttribute("clientPi", new ClientPi());
+
         return "features/configuration/clientPi.html";
     }
+
 
     // Neuen Client speichern
     @Override

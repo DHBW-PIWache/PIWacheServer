@@ -158,7 +158,9 @@ public class FeatureControllerImpl implements FeatureController {
 
         model.addAttribute("clients", featureService.getAllClientPis(network));
         model.addAttribute("videos", featureService.getAllVideosForNetwork(network));
+
         return "features/datastorage.html";
+
     }
 
     @PostMapping("/dataStorage/delete/{_id}")
