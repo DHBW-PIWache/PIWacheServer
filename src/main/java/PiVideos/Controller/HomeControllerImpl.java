@@ -54,15 +54,12 @@ public class HomeControllerImpl implements HomeController{
     }
 
     /// Register Seite holen
-    /// !!! Noch nicht fertig, muss noch Netzwerke registieren können
-    ///
     @GetMapping("/register")
     public String getRegister(Model model){
         model.addAttribute("network", new Network());
         return "register.html";
     }
     /// Register Network Seite
-    /// !!! Noch nicht fertig, muss noch Netzwerke registieren können
     @PostMapping("/register")
     public String postRegister(@ModelAttribute Network network,Model model, RedirectAttributes redirectAttributes){
         networkRepository.save(network);
@@ -73,7 +70,6 @@ public class HomeControllerImpl implements HomeController{
 
     /// Netzwerk Anmeldung und Abmeldung.
     ///  Netzwerk wird in einer HTTP Session gespeichert
-    ///
     @PostMapping("/login")
     public String postLogin(@ModelAttribute Network networkOpt, HttpSession session, Model model){
         Network network = networkRepository.findById(networkOpt.get_id()).get();

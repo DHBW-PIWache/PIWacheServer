@@ -23,8 +23,8 @@ import java.util.Optional;
 
 /******************************************************************************************************* 
 Autor: Julian Hecht
-Datum letzte Änderung: 24.04.2025
-Änderung: Clients anlegen + löschen
+Datum letzte Änderung: 12.05.2025
+Änderung: Refactoring für Redirects
 *******************************************************************************************************/
 
 @Controller
@@ -45,7 +45,6 @@ public class ConfigControllerImpl implements ConfigController{
 
 
     // Übersicht über Clients und Mögichkeit zum Anlegen neuer Clients
-    // !! CLients müssen noch gelöscht werden können !!
     @Override
     @GetMapping("/client")
     public String getConfigClient(HttpSession session, Model model) {
@@ -66,7 +65,6 @@ public class ConfigControllerImpl implements ConfigController{
         model.addAttribute("videoCounts", videoCounts);
         model.addAttribute("latestVids",latestVids);
         model.addAttribute("clientPi", new ClientPi());
-
         return "features/configuration/clientPi.html";
     }
 
@@ -74,15 +72,11 @@ public class ConfigControllerImpl implements ConfigController{
     // Neuen Client speichern
     @Override
     @PostMapping("/client/save")
-    public String saveConfigClient(@ModelAttribute ClientPi clientPi,HttpSession session ,Model model) {
+    public String saveConfigClient(@ModelAttribute ClientPi clientPi,HttpSession session) {
         Network network = (Network) session.getAttribute("network");
-
         clientPi.setNetwork(network);
         featureService.saveClient(clientPi);
-
-        model.addAttribute("networks", featureService.getAllNetworks());
-        model.addAttribute("clients", featureService.getAllClientPis(network));
-        return "features/configuration/clientPi.html";
+        return "redirect:/features/config/client";
     }
 
 
@@ -96,7 +90,6 @@ public class ConfigControllerImpl implements ConfigController{
     @PostMapping("/client/update/{_id}")
     public String updateConfigClient(@PathVariable("_id") Integer _id,RedirectAttributes redirectAttributes, @RequestParam String location, @RequestParam String comment){
         Optional<ClientPi> optClient = featureService.getClientBy_id(_id);
-
         if(optClient.isPresent()){
             ClientPi clientPi = optClient.get();
             clientPi.setLocation(location);
