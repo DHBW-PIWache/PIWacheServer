@@ -42,35 +42,30 @@
                     <div class="box mb-4">
                         <div class="columns">
                             <div class="column">
-                                <p class="heading is-5">Netzwerk</p>
-                                <p class="title is-6" th:text="${session.network.name + ' (ID: ' + session.network._id + ')'}">Netzwerkname</p>
+                                <p class="has-text-black"><strong class="has-text-black">Netzwerk:</strong> <span th:text="${session.network.name + ' (ID: ' + session.network._id + ')'}">Netzwerkname</span></p>
                             </div>
                             <div class="column">
-                                <p class="heading is-5">Port</p>
-                                <p class="title is-6" th:text="${session.network.port}">Port</p>
+                                <p class="has-text-black"><strong class="has-text-black">Port:</strong> <span th:text="${session.network.port}">Port</span></p>
                             </div>
                         </div>
 
                         <div class="columns">
                             <div class="column">
-                                <p class="heading is-5">Verzeichnis</p>
-                                <p class="title is-6" th:text="${session.network.rootPath}">/pfad/</p>
-                            </div>
-                            <div class="column">
-                                <p class="heading is-5">Anzahl Videos: </p>
-                                <p class="title is-6"th:text="${countVids}">1</p>
+                                <p class="has-text-black"><strong class="has-text-black">Verzeichnis:</strong> <span th:text="${session.network.rootPath}">/pfad/</span></p>
                             </div>
                         </div>
+
                         <div class="columns">
                             <div class="column">
-                                <p class="heading is-5">Speicherbelastung</p>
-                                <p class="title is-6" th:text="${#numbers.formatDecimal(totalMb, 1, 2)} + ' MB'">1mb</p>
+                                <p class="has-text-black"><strong class="has-text-black">Speicherbelastung:</strong> <span th:text="${#numbers.formatDecimal(totalMb, 1, 2)} + ' MB'">1 MB</span></p>
                             </div>
                             <div class="column">
+                                <p class="has-text-black"><strong class="has-text-black">Anzahl Videos:</strong> <span th:text="${countVids}">1</span></p>
                             </div>
                         </div>
                     </div>
                 </div>
+
 
                 <!-- Socketstatus -->
                 <div class="column is-6">
