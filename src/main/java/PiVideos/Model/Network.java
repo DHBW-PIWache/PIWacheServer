@@ -22,6 +22,8 @@ public class Network {
 
     private String name;
 
+ 
+
     private String rootPath;
 
     private int port;
@@ -42,4 +44,6 @@ public class Network {
         this.port = port;
         this.clientPis = clientPis;
     }
+
+    
 }

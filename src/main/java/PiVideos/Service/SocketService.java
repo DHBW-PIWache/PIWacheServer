@@ -5,7 +5,7 @@ import jakarta.servlet.http.HttpSession;
 
 import java.net.Socket;
 
-public interface SocketSerivce {
+public interface SocketService {
 
     void startServer(Network network);
     void handleClient(Socket clientSocket,Network network);

@@ -20,7 +20,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @Service
-public class SocketServiceImpl implements SocketSerivce {
+public class SocketServiceImpl implements SocketService {
 
     private final ConcurrentHashMap<Integer, ServerHandle> servers = new ConcurrentHashMap<>();
 
@@ -202,7 +202,7 @@ public class SocketServiceImpl implements SocketSerivce {
     }
 
     public synchronized void stopServerForNetwork(Network network) {
-        long networkId = network.get_id();
+        int networkId = network.get_id();
         ServerHandle handle = servers.remove(networkId);
         if (handle != null) {
             try {

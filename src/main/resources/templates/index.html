@@ -138,20 +138,59 @@
                 </div>
 
                 <!-- Aktuellster Client -->
-                <div class="column is-6">
-                    <article class="panel is-info">
-                        <p class="panel-heading">
-                            Aktuellster Client
-                        </p>
-                        <div class="panel-block">
-                            <div>
-                                <p class="has-text-black" ><strong class="has-text-black">Name:</strong> <span >Kein Client verfügbar</span></p>
-                                <p class="has-text-black"><strong class="has-text-black">Verbunden am:</strong> <span >Datum</span></p>
-                                <p class="has-text-black"><strong class="has-text-black">Status:</strong> <span>Unbekannt</span></p>
-                            </div>
-                        </div>
-                    </article>
-                </div>
+       <!-- Aktuellste Clients -->
+<!-- Aktuellste Clients -->
+<div class="column is-6">
+    <article class="panel is-info">
+        <p class="panel-heading">
+            Clients
+        </p>
+        <div class="panel-block is-block">
+            <div class="table-container">
+                <table class="table is-fullwidth" style="background-color: white;">
+                    <thead>
+                        <tr>
+                            <th class="has-text-black">Status</th>
+                            <th class="has-text-black">ClientID</th>
+                            <th class="has-text-black">Name</th>
+                            <th class="has-text-black">Aktionen</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <th:block th:each="client : ${clients}">
+                            <tr>
+                                <td class="has-text-black"  th:text="${clientStatusMap[client._id] ? 'Aktiv' : 'Inaktiv'}">Status</td>
+                                <td class="has-text-black" th:text="${client._id}">1</td>
+                                <td class="has-text-black" th:text="${client.name}">Beispielname</td>
+                              
+
+                                <td>
+                                    <form th:action="@{/features/config/client/start/{_id}(_id=${client._id})}" method="post" style="display:inline;">
+                                        <button class="button is-small is-success" type="submit">
+                                            <span class="icon"><i class="fas fa-play"></i></span>
+                                            <span>Start</span>
+                                        </button>
+                                    </form>
+                                </td>
+                                <td>
+                                    <form th:action="@{/features/config/client/stop/{_id}(_id=${client._id})}" method="post" style="display:inline;">
+                                        <button class="button is-small is-danger" type="submit">
+                                            <span class="icon"><i class="fas fa-play"></i></span>
+                                            <span>Stop</span>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        </th:block>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </article>
+</div>
+
+
+
             </div>
         </div>
     </main>

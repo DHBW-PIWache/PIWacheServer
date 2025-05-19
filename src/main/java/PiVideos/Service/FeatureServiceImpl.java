@@ -9,6 +9,10 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.jcraft.jsch.ChannelExec;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.Session;
+
 import java.io.File;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -135,4 +139,7 @@ public class FeatureServiceImpl implements FeatureService {
     public boolean updateClient(ClientPi clientPi){
         return clientPiRepository.save(clientPi).equals(clientPi);
     }
+
+ 
+    
 }

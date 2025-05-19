@@ -3,8 +3,9 @@ package PiVideos.Controller;
 import PiVideos.Model.ClientPi;
 import PiVideos.Model.Network;
 import PiVideos.Repository.NetworkRepository;
+import PiVideos.Service.ClientService;
 import PiVideos.Service.FeatureService;
-import PiVideos.Service.SocketSerivce;
+import PiVideos.Service.SocketService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
@@ -31,16 +32,18 @@ Datum letzte Änderung: 12.05.2025
 @RequestMapping("features/config")
 public class ConfigControllerImpl implements ConfigController{
 
-    SocketSerivce socketSerivce;
+    SocketService socketSerivce;
     FeatureService featureService;
+    ClientService clientService;
 
     //!!!! Sollte mit einem Service ersetzt werden
     NetworkRepository networkRepository;
 
-    public ConfigControllerImpl(SocketSerivce socketSerivce, FeatureService featureService, NetworkRepository networkRepository) {
+    public ConfigControllerImpl(SocketService socketSerivce, FeatureService featureService, NetworkRepository networkRepository, ClientService clientService) {
         this.socketSerivce = socketSerivce;
         this.featureService = featureService;
         this.networkRepository = networkRepository;
+        this.clientService = clientService;
     }
 
 
@@ -104,6 +107,27 @@ public class ConfigControllerImpl implements ConfigController{
         return "redirect:/features/config/client";
     }
 
+
+    @PostMapping("/client/start/{_id}")
+    public String startClient(@PathVariable("_id") String _id, RedirectAttributes redirectAttributes){
+        Integer id = Integer.parseInt(_id);
+        Optional<ClientPi> optClient = featureService.getClientBy_id(id);
+        if(optClient.isPresent()){
+            ClientPi clientPi = optClient.get();
+            clientService.startClient(clientPi);
+        }
+             return "redirect:/";
+    }
+
+
+
+
+
+
+
+
+
+
     @Override
     @GetMapping("/network")
     public String getNetworkConifg(Model model) {
@@ -137,9 +161,6 @@ public class ConfigControllerImpl implements ConfigController{
         redirectAttributes.addFlashAttribute("message","Netzwerk mit ID: "+ id+ " gelöscht");
         return "redirect:/login";
     }
-
-
-
 
     // Socket für das Netzwerk Starten und Stoppen
     // !!!! Muss noch dynamisch gemacht werden, damit mehrere Netzwerke

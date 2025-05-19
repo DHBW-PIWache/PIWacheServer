@@ -3,9 +3,11 @@ package PiVideos.Controller;
 
 import PiVideos.Model.Network;
 import PiVideos.Model.Video;
+import PiVideos.Model.ClientPi;
 import PiVideos.Repository.NetworkRepository;
+import PiVideos.Service.ClientService;
 import PiVideos.Service.FeatureService;
-import PiVideos.Service.SocketSerivce;
+import PiVideos.Service.SocketService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,6 +21,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 /*******************************************************************************************************
@@ -34,14 +39,16 @@ public class HomeControllerImpl implements HomeController{
     // !!!! Sollte mit einem Service Ersetzt werden!
 
     NetworkRepository networkRepository;
-    SocketSerivce socketSerivce;
+    SocketService socketSerivce;
     FeatureService featureService;
+    ClientService clientService;
 
 
-    public HomeControllerImpl(NetworkRepository networkRepository, SocketSerivce socketSerivce, FeatureService featureService) {
+    public HomeControllerImpl(NetworkRepository networkRepository, SocketService socketSerivce, FeatureService featureService, ClientService clientService) {
         this.networkRepository = networkRepository;
         this.socketSerivce = socketSerivce;
         this.featureService = featureService;
+        this.clientService = clientService;
     }
 
     // Login Seite holen
@@ -92,6 +99,18 @@ public class HomeControllerImpl implements HomeController{
     public String getHome(HttpSession session, Model model){
         Network network = (Network) session.getAttribute("network");
         Video newestVid = featureService.getNewestVideo(network);
+        
+        List<ClientPi> clients = featureService.getAllClientPis(network);
+        Map<Integer, Boolean> clientStatusMap = new HashMap<>();
+        for(ClientPi client : clients){
+         boolean isActive = clientService.isClientActive(client); // Deine Logik
+        clientStatusMap.put(client.get_id(), isActive);
+        }
+
+        model.addAttribute("clients", clients);
+        model.addAttribute("clientStatusMap", clientStatusMap);
+
+
 
         model.addAttribute("video", newestVid);
         model.addAttribute("countVids", featureService.countVids(network));
