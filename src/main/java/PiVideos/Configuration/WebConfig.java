@@ -1,7 +1,9 @@
 package PiVideos.Configuration;
 
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -16,6 +18,10 @@ Datum letzte Änderung: 21.04.2025
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
 
     //SessionInterceptor leitet alles auf Login seite weiter außer angegebene Seiten
     @Override

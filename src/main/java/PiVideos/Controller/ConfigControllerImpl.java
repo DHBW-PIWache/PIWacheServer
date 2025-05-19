@@ -3,18 +3,16 @@ package PiVideos.Controller;
 import PiVideos.Model.ClientPi;
 import PiVideos.Model.Network;
 import PiVideos.Repository.NetworkRepository;
-import PiVideos.Service.ClientService;
 import PiVideos.Service.FeatureService;
 import PiVideos.Service.SocketService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -34,16 +32,18 @@ public class ConfigControllerImpl implements ConfigController{
 
     SocketService socketSerivce;
     FeatureService featureService;
-    ClientService clientService;
+
+    @Autowired
+    private RestTemplate restTemplate;
 
     //!!!! Sollte mit einem Service ersetzt werden
     NetworkRepository networkRepository;
 
-    public ConfigControllerImpl(SocketService socketSerivce, FeatureService featureService, NetworkRepository networkRepository, ClientService clientService) {
+    public ConfigControllerImpl(SocketService socketSerivce, FeatureService featureService, NetworkRepository networkRepository) {
         this.socketSerivce = socketSerivce;
         this.featureService = featureService;
         this.networkRepository = networkRepository;
-        this.clientService = clientService;
+
     }
 
 
@@ -107,17 +107,23 @@ public class ConfigControllerImpl implements ConfigController{
         return "redirect:/features/config/client";
     }
 
-
-    @PostMapping("/client/start/{_id}")
-    public String startClient(@PathVariable("_id") String _id, RedirectAttributes redirectAttributes){
-        Integer id = Integer.parseInt(_id);
-        Optional<ClientPi> optClient = featureService.getClientBy_id(id);
-        if(optClient.isPresent()){
-            ClientPi clientPi = optClient.get();
-            clientService.startClient(clientPi);
-        }
-             return "redirect:/";
+    @PostMapping("/client/start/{id}")
+    public String startClient(@PathVariable String id) {
+        ClientPi client = featureService.getClientBy_id(Integer.parseInt(id)).get(); // DB-Abfrage
+        String url = "http://" + client.getName() + ":5000/start";
+        restTemplate.postForObject(url, null, String.class);
+        return "redirect:/"; // zurück zur UI
     }
+
+    @PostMapping("/client/stop/{id}")
+    public String stopClient(@PathVariable String id) {
+        ClientPi client = featureService.getClientBy_id(Integer.parseInt(id)).get();
+        String url = "http://" + client.getName()  + ":5000/stop";
+        restTemplate.postForObject(url, null, String.class);
+        return "redirect:/";
+    }
+
+
 
 
 

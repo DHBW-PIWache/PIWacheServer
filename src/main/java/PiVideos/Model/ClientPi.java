@@ -13,7 +13,7 @@ import java.util.List;
 @Getter
 @Entity
 @Table(
-        name = "clientPi",
+        name = "client_pi",
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = {"name", "network_id"})
         }
