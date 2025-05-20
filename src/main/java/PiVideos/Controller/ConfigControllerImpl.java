@@ -87,6 +87,7 @@ public class ConfigControllerImpl implements ConfigController{
     public String deleteConfigClient(@PathVariable("_id") Integer _id, RedirectAttributes redirectAttributes) {
         featureService.deleteClientPiById(_id);
         redirectAttributes.addFlashAttribute(   "message", "ClientPi mit ID: " +_id +"  und alle zugehörigen Videos gelöscht");
+
         return "redirect:/features/config/client";
     }
 
@@ -107,21 +108,35 @@ public class ConfigControllerImpl implements ConfigController{
         return "redirect:/features/config/client";
     }
 
+
     @PostMapping("/client/start/{id}")
-    public String startClient(@PathVariable String id) {
-        ClientPi client = featureService.getClientBy_id(Integer.parseInt(id)).get(); // DB-Abfrage
-        String url = "http://" + client.getName() + ":5000/start";
-        restTemplate.postForObject(url, null, String.class);
-        return "redirect:/"; // zurück zur UI
+    public String startClient(@PathVariable String id, RedirectAttributes redirectAttributes) {
+        try {
+            ClientPi client = featureService.getClientBy_id(Integer.parseInt(id)).orElseThrow();
+            String url = "http://" + client.getName() + ":5000/start";
+            restTemplate.postForObject(url, null, String.class);
+            redirectAttributes.addFlashAttribute("success", "Client erfolgreich gestartet.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Fehler beim Starten des Client: Client Agent starten!" );
+        }
+        redirectAttributes.addFlashAttribute("stoppedClientId", id);
+        return "redirect:/?startedClientId=" + id;
     }
 
     @PostMapping("/client/stop/{id}")
-    public String stopClient(@PathVariable String id) {
-        ClientPi client = featureService.getClientBy_id(Integer.parseInt(id)).get();
-        String url = "http://" + client.getName()  + ":5000/stop";
-        restTemplate.postForObject(url, null, String.class);
-        return "redirect:/";
+    public String stopClient(@PathVariable String id, RedirectAttributes redirectAttributes) {
+        try {
+            ClientPi client = featureService.getClientBy_id(Integer.parseInt(id)).orElseThrow();
+            String url = "http://" + client.getName() + ":5000/stop";
+            restTemplate.postForObject(url, null, String.class);
+            redirectAttributes.addFlashAttribute("success", "Client erfolgreich gestoppt.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Fehler beim Stoppen des Clients: Client Agent starten!");
+        }
+        redirectAttributes.addFlashAttribute("stoppedClientId", id);
+        return "redirect:/?stoppedClientId=" + id;
     }
+
 
 
 

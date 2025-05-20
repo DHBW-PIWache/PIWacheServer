@@ -56,10 +56,10 @@
                         </div>
 
                         <div class="columns">
-                            <div class="column">
+                            <div class="column" th:if="${totalMb != null}">
                                 <p class="has-text-black"><strong class="has-text-black">Speicherbelastung:</strong> <span th:text="${#numbers.formatDecimal(totalMb, 1, 2)} + ' MB'">1 MB</span></p>
                             </div>
-                            <div class="column">
+                            <div class="column" th:if="${countVids != null}">
                                 <p class="has-text-black"><strong class="has-text-black">Anzahl Videos:</strong> <span th:text="${countVids}">1</span></p>
                             </div>
                         </div>
@@ -143,9 +143,12 @@
 <div class="column is-6">
     <article class="panel is-info">
         <p class="panel-heading">
-            Clients
+            Steuerung Bewegungserkennung
         </p>
         <div class="panel-block is-block">
+            <div th:if="${success}" class="has-text-success" th:text="${success}"></div>
+            <div th:if="${error}" class="has-text-danger" th:text="${error}"></div>
+            <div th:if="${error2}" class="has-text-danger" th:text="${error2}"></div>
             <div class="table-container">
                 <table class="table is-fullwidth" style="background-color: white;">
                     <thead>
@@ -153,7 +156,8 @@
                             <th class="has-text-black">Status</th>
                             <th class="has-text-black">ClientID</th>
                             <th class="has-text-black">Name</th>
-                            <th class="has-text-black">Aktionen</th>
+                            <th class="has-text-black">Starten</th>
+                            <th class="has-text-black">Stoppen</th>
                         </tr>
                     </thead>
                     <tbody>

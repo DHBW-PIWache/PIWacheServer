@@ -49,7 +49,6 @@ public class FeatureServiceImpl implements FeatureService {
     }
 
     public void deleteNetworkByID(Integer id){
-
         Network network = networkRepository.findById(id).orElseThrow();
         for(ClientPi c : network.getClientPis()){
             deleteClientPiById(c.get_id());
@@ -128,6 +127,7 @@ public class FeatureServiceImpl implements FeatureService {
         for(Video v : client.getVideos()){
             deleteVideoByID(v.get_id());
         }
+        client.getVideos().clear();
         clientPiRepository.delete(client);
     }
 

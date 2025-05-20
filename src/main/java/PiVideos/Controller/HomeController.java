@@ -2,6 +2,7 @@ package PiVideos.Controller;
 
 import jakarta.servlet.http.HttpSession;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestParam;
 
 
 /*******************************************************************************************************
@@ -11,7 +12,10 @@ import org.springframework.ui.Model;
  *******************************************************************************************************/
 public interface HomeController {
 
-    public String getHome(HttpSession session, Model model);
+    public String getHome(@RequestParam(name = "stoppedClientId", required = false)String stoppedClientId,
+                          @RequestParam(name = "startedClientId", required = false)String startedClientId,
+                          HttpSession session,
+                          Model model);
     public String getError(Model model);
 
 

@@ -84,3 +84,5 @@ function filterVideosByClient() {
         row.style.display = (selectedClientId === "all" || clientId === selectedClientId) ? "" : "none";
     });
 }
+
+

@@ -13,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -93,7 +94,11 @@ public class HomeControllerImpl implements HomeController{
 
     //Index seite
     @GetMapping("/")
-    public String getHome(HttpSession session, Model model){
+    public String getHome(@RequestParam(name = "stoppedClientId", required = false)String stoppedClientId,
+                          @RequestParam(name = "startedClientId", required = false)String startedClientId,
+                          HttpSession session,
+                          Model model){
+
         Network network = (Network) session.getAttribute("network");
         Video newestVid = featureService.getNewestVideo(network);
         
@@ -101,35 +106,36 @@ public class HomeControllerImpl implements HomeController{
         Map<Integer, Boolean> clientStatusMap = new HashMap<>();
         RestTemplate restTemplate = new RestTemplate();
 
-        for (ClientPi client : clients) {
-            boolean isActive = false;
-            try {
-                String hostname = client.getName();  // z.B. raspberrypi.local
-                String url = "http://" + hostname + ":5000/status";
-
-                // Wir erwarten JSON wie {"status":"running"}
-                Map<String, String> response = restTemplate.getForObject(url, Map.class);
-
-                if (response != null && "running".equalsIgnoreCase(response.get("status"))) {
-                    isActive = true;
+        if(stoppedClientId != null){
+            clientStatusMap.put(featureService.getClientBy_id(Integer.parseInt(stoppedClientId)).get().get_id(), false);
+        } else if (startedClientId != null ) {
+            clientStatusMap.put(featureService.getClientBy_id(Integer.parseInt(startedClientId)).get().get_id(), true);
+        } else{
+            for (ClientPi client : clients) {
+                boolean isActive = false;
+                try {
+                    String hostname = client.getName();  // z.B. raspberrypi.local
+                    String url = "http://" + hostname + ":5000/status";
+                    // Wir erwarten JSON wie {"status":"running"}
+                    Map<String, String> response = restTemplate.getForObject(url, Map.class);
+                    if (response != null && "running".equalsIgnoreCase(response.get("status"))) {
+                        isActive = true;
+                    }
+                } catch (Exception e) {
+                    // Fehler beim Abrufen heißt: Client nicht erreichbar oder aus
+                    isActive = false;
                 }
-            } catch (Exception e) {
-                // Fehler beim Abrufen heißt: Client nicht erreichbar oder aus
-                isActive = false;
+                clientStatusMap.put(client.get_id(), isActive);
             }
-            clientStatusMap.put(client.get_id(), isActive);
         }
-
 
         model.addAttribute("clients", clients);
         model.addAttribute("clientStatusMap", clientStatusMap);
-
-
-
         model.addAttribute("video", newestVid);
-        model.addAttribute("countVids", featureService.countVids(network));
-        model.addAttribute("totalMb",featureService.totalMBForNetwork(network));
-
+        if(featureService.countVids(network) != 0) {
+            model.addAttribute("countVids", featureService.countVids(network));
+            model.addAttribute("totalMb", featureService.totalMBForNetwork(network));
+        }
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         session.setAttribute("currentDate", LocalDate.now().format(formatter));
 
