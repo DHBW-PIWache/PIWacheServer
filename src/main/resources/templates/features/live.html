@@ -93,6 +93,10 @@
               <th>Größe</th>
               <td th:text="${#numbers.formatDecimal(video.mb, 1, 2)} + ' MB'">1.00 MB</td>
             </tr>
+            <tr>
+              <th>Dauer</th>
+              <td th:text="${video.duration} + ' MB'">1.00 MB</td>
+            </tr>
             </tbody>
           </table>
         </div>

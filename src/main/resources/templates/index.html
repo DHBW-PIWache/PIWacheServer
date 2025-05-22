@@ -111,11 +111,10 @@
                                 <div class="columns is-multiline">
                                     <div class="column is-5">
                                         <p class="has-text-black"><strong class="has-text-black">ID:</strong> <span th:text="${video._id}">ID</span></p>
-                                        <p class="has-text-black"><strong class="has-text-black">Favorit:</strong> <span th:text="${video.favorite ? 'Ja' : 'Nein'}">Nein</span></p>
-                                        <p class="has-text-black"><strong class="has-text-black">Kommentar:</strong> <span th:text="${video.comment}">Kein Kommentar vorhanden</span></p>
+                                        <p class="has-text-black"><strong class="has-text-black">Client:</strong> <span th:text="${video.clientPi.name}">client</span></p>
                                     </div>
                                     <div class="column">
-                                        <p class="has-text-black"><strong class="has-text-black">Dauer:</strong> <span th:text="${video.duration}">0:00</span></p>
+                                        <p class="has-text-black"><strong class="has-text-black">Dauer:</strong> <span th:text="${video.duration} + ' sek'">0:00</span></p>
                                         <p class="has-text-black"><strong class="has-text-black">Größe:</strong> <span th:text="${#numbers.formatDecimal(video.mb, 1, 2)} + ' MB'">1048576 MB</span></p>
                                         <p class="has-text-black"><strong class="has-text-black">Erstellt am:</strong> <span th:text="${#temporals.format(video.date, 'dd.MM.yyyy HH:mm')}">Datum</span></p>
                                     </div>

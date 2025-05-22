@@ -30,7 +30,7 @@ public class Video {
 
     private double mb;
 
-    private float duration;
+    private double duration;
 
     private boolean favorite;
 
@@ -46,7 +46,7 @@ public class Video {
     public Video() {
     }
 
-    public Video(Integer _id, String name, String path, String relativePath, LocalDateTime date, double mb, float duration, boolean favorite, String comment, ClientPi clientPi) {
+    public Video(Integer _id, String name, String path, String relativePath, LocalDateTime date, double mb, double duration, boolean favorite, String comment, ClientPi clientPi) {
         this._id = _id;
         this.name = name;
         this.path = path;

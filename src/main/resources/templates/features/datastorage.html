@@ -70,6 +70,7 @@
             <th>Pfad</th>
             <th>Datum</th>
             <th>Größe</th>
+            <th>Dauer</th>
             <th>Favorit</th>
             <th>Client</th>
             <th>Aktionen</th>
@@ -84,6 +85,7 @@
               <td class="has-text-black" th:text="${video.path}">/media/video.mp4</td>
               <td class="has-text-black" th:text="${#temporals.format(video.date, 'dd.MM.yyyy HH:mm')}">01.01.2024</td>
               <td class="has-text-black" th:text="${#numbers.formatDecimal(video.mb, 1, 2)} + ' MB'">1.00 MB</td>
+              <td class="has-text-black" th:text="${video.duration} + ' sek'">1</td>
               <td class="has-text-black" th:text="${video.favorite ? 'Ja' : 'Nein'}">Ja</td>
               <td class="has-text-black" th:text="${video.clientPi.name}">ClientPi01</td>
               <td>
@@ -100,7 +102,7 @@
             </tr>
 
             <tr class="has-background-light" th:data-client-id="${video.clientPi._id}">
-              <td colspan="9" class="has-text-black">
+              <td colspan="10" class="has-text-black">
                 <strong class="has-text-black">Kommentar:</strong> <span th:text="${video.comment}">Kein Kommentar vorhanden</span>
               </td>
             </tr>

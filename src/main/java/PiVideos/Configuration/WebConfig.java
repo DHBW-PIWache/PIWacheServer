@@ -48,7 +48,7 @@ public class WebConfig implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry
             .addResourceHandler("/videos/**") 
-            .addResourceLocations("file:/home/berry/videostorage/"); 
+            .addResourceLocations("file:C:/Users/hecht/Desktop/Videospiwacheserver/");
     }
                 
 }

@@ -106,28 +106,30 @@ public class HomeControllerImpl implements HomeController{
         Map<Integer, Boolean> clientStatusMap = new HashMap<>();
         RestTemplate restTemplate = new RestTemplate();
 
-        if(stoppedClientId != null){
-            clientStatusMap.put(featureService.getClientBy_id(Integer.parseInt(stoppedClientId)).get().get_id(), false);
-        } else if (startedClientId != null ) {
-            clientStatusMap.put(featureService.getClientBy_id(Integer.parseInt(startedClientId)).get().get_id(), true);
-        } else{
+        
             for (ClientPi client : clients) {
                 boolean isActive = false;
-                try {
-                    String hostname = client.getName();  // z.B. raspberrypi.local
-                    String url = "http://" + hostname + ":5000/status";
-                    // Wir erwarten JSON wie {"status":"running"}
-                    Map<String, String> response = restTemplate.getForObject(url, Map.class);
-                    if (response != null && "running".equalsIgnoreCase(response.get("status"))) {
-                        isActive = true;
+                if(stoppedClientId != null && !model.containsAttribute("error") ){
+                    clientStatusMap.put(featureService.getClientBy_id(Integer.parseInt(stoppedClientId)).get().get_id(), false);
+                } else if (startedClientId != null && !model.containsAttribute("error") ) {
+                    clientStatusMap.put(featureService.getClientBy_id(Integer.parseInt(startedClientId)).get().get_id(), true);
+                } else{
+                    try {
+                        String hostname = client.getName();  // z.B. raspberrypi.local
+                        String url = "http://" + hostname + ":5000/status";
+                        // Wir erwarten JSON wie {"status":"running"}
+                        Map<String, String> response = restTemplate.getForObject(url, Map.class);
+                        if (response != null && "running".equalsIgnoreCase(response.get("status"))) {
+                            isActive = true;
+                        }
+                    } catch (Exception e) {
+                        // Fehler beim Abrufen heißt: Client nicht erreichbar oder aus
+                        isActive = false;
                     }
-                } catch (Exception e) {
-                    // Fehler beim Abrufen heißt: Client nicht erreichbar oder aus
-                    isActive = false;
                 }
                 clientStatusMap.put(client.get_id(), isActive);
             }
-        }
+        
 
         model.addAttribute("clients", clients);
         model.addAttribute("clientStatusMap", clientStatusMap);

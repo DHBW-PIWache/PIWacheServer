@@ -7,6 +7,8 @@ import PiVideos.Repository.ClientPiRepository;
 import PiVideos.Repository.NetworkRepository;
 import PiVideos.Repository.VideoRepository;
 import jakarta.annotation.PreDestroy;
+
+import org.mp4parser.IsoFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -179,8 +181,20 @@ public class SocketServiceImpl implements SocketService {
             video.setPath(finalFile.getAbsolutePath());
             video.setRelativePath(piName + "/" + finalName);
             video.setMb((double) finalFile.length() / (1024 * 1024));
-            videoRepository.save(video);
 
+
+            try (FileInputStream fis = new FileInputStream(finalFile)) {
+            IsoFile isoFile = new IsoFile(fis.getChannel());
+            double durationInSeconds = (double) isoFile.getMovieBox().getMovieHeaderBox().getDuration()
+                / isoFile.getMovieBox().getMovieHeaderBox().getTimescale();
+                video.setDuration(durationInSeconds); // <--- setter vorausgesetzt
+                isoFile.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.out.println("Fehler beim Berechnen der Videodauer");
+            }
+            
+            videoRepository.save(video);
             System.out.println("Video gespeichert unter: " + finalFile.getAbsolutePath());
 
         } catch (IOException e) {

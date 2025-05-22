@@ -30,6 +30,14 @@
     	<artifactId>jsch</artifactId>
     	<version>0.1.55</version>
 		</dependency>
+		
+		
+		<dependency>
+    		<groupId>org.mp4parser</groupId>
+    		<artifactId>isoparser</artifactId>
+   			 <version>1.9.41</version>
+		</dependency>
+
 
 		<dependency>
 			<groupId>org.projectlombok</groupId>
