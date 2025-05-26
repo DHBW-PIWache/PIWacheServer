@@ -43,12 +43,5 @@ public class WebConfig implements WebMvcConfigurer {
                 .exposedHeaders("Authorization");  
     }
     
-    // Resource Mapper für die Videos, damit sie auf der Website integrierbar sind 
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry
-            .addResourceHandler("/videos/**") 
-            .addResourceLocations("file:C:/Users/hecht/Desktop/Videospiwacheserver/");
-    }
                 
 }

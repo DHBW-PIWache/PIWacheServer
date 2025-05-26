@@ -62,7 +62,7 @@
       <div class="column is-6">
         <div class="box">
           <video width="100%" height="auto" controls>
-            <source th:src="@{${videopath}}" type="video/mp4">
+            <source th:src="@{'/videos/' + ${video.name} + '?fullPath=' + ${video.path}}" type="video/mp4">
             Fehler beim Laden des Videos.
           </video>
         </div>
