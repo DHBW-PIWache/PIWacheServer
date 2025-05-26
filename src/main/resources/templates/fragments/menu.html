@@ -19,6 +19,7 @@
             <ul class="menu-list has-background-info" >
                 <li><a class="has-text-black has-background-info" href="/">Dashboard</a></li>
                 <li><a th:if="${session.network != null}" class="has-text-black has-background-info" href="/features/live">Überwachung</a></li>
+                <li><a th:if="${session.network != null}" class="has-text-black has-background-info" href="/features/livestream">Livestream</a></li>
                 <li><a th:if="${session.network != null}" class="has-text-black has-background-info" href="/features/dataStorage">Dateiverwaltung</a></li>
             </ul>
             <p class="menu-label">

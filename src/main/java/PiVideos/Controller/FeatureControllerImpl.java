@@ -8,6 +8,8 @@ import PiVideos.Service.FeatureService;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import jakarta.servlet.http.HttpSession;
@@ -224,6 +226,58 @@ public class FeatureControllerImpl implements FeatureController {
     }
 
 
+    @GetMapping("/livestream")
+    public String getLiveStream(HttpSession session,Model model)    {
+        Network network = (Network) session.getAttribute("network");
+        List<ClientPi> clients = featureService.getAllClientPis(network);
+
+        model.addAttribute("clients",clients);
+        return "features/livestream.html";
+    }
+
+    @PostMapping("/livestream/{id}")
+    public String postLiveStreanForClient(@PathVariable("id") Integer id, HttpSession session,RedirectAttributes model){
+        ClientPi liveClient = featureService.getClientBy_id(id).get();
+        RestTemplate restTemplate = new RestTemplate();
+        boolean isActive = false;
+        boolean error = false;
+
+        try {
+            String hostname = liveClient.getName();  // z.B. raspberrypi.local
+            String url = "http://" + hostname + ":5000/status";
+            Map<String, String> response = restTemplate.getForObject(url, Map.class);
+            if (response != null && "running".equalsIgnoreCase(response.get("detection"))) {
+                isActive = true;
+            }
+        } catch (Exception e) {
+            model.addFlashAttribute("error","Client nicht erreichbar!");
+            error =true;
+            isActive = false;
+        }
+
+        if(isActive){
+            model.addFlashAttribute("message","Bewegungserkennung für Client '" + liveClient.getName() +"' abgeschalten!");
+        }
+        if(!isActive && !error){
+            model.addFlashAttribute("message","Bewegungserkennung für Client " + liveClient.getName() +" war nicht an!");
+        }
+
+        return "redirect:/features/livestream/" + id;
+    }
+
+    @GetMapping("/livestream/{id}")
+    public String getLiveStreamForClient(@PathVariable("id") Integer id, HttpSession session,Model model)    {
+
+
+        Network network = (Network) session.getAttribute("network");
+        List<ClientPi> clients = featureService.getAllClientPis(network);
+        ClientPi liveClient = featureService.getClientBy_id(id).get();
+        model.addAttribute("clients",clients);
+        model.addAttribute("liveclient",liveClient);
+
+
+        return "features/livestream.html";
+    }
 
 
 
