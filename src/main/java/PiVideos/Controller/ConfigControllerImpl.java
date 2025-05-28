@@ -164,10 +164,12 @@ public class ConfigControllerImpl implements ConfigController{
                                 HttpSession session,
                                 RedirectAttributes redirectAttributes) {
         Network net = networkRepository.findById(id).orElseThrow();
+
+        //featureService.
         net.setName(name);
         net.setRootPath(rootPath);
         net.setPort(port);
-        networkRepository.save(net);
+        featureService.saveNetwork(net);
         session.setAttribute("network", net);
 
         redirectAttributes.addFlashAttribute("message","Netzwerk mit ID: "+ id+ " geändert");

@@ -48,6 +48,7 @@ public class FeatureServiceImpl implements FeatureService {
         networkRepository.save(network);
     }
 
+
     public void deleteNetworkByID(Integer id){
         Network network = networkRepository.findById(id).orElseThrow();
         for(ClientPi c : network.getClientPis()){
@@ -57,6 +58,18 @@ public class FeatureServiceImpl implements FeatureService {
         networkRepository.deleteById(id);
 
     }
+
+    public boolean updateNetwork(Network network, String newPath){
+
+
+
+
+
+        return false;
+    }
+
+
+
 
     public List<Network> getAllNetworks(){
         return networkRepository.getAllNetworks();

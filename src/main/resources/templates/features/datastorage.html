@@ -109,6 +109,25 @@
           </th:block>
           </tbody>
         </table>
+        <nav class="pagination is-centered" role="navigation" aria-label="pagination">
+          <a class="pagination-previous has-text-black is-white"
+             th:href="@{/features/dataStorage(page=${currentPage - 1}, size=10)}"
+             th:if="${currentPage > 0}">Zurück</a>
+
+          <a class="pagination-next has-text-black is-white" th:href="@{/features/dataStorage(page=${currentPage + 1}, size=10)}"
+             th:if="${currentPage + 1 < totalPages}">Weiter</a>
+
+          <ul class="pagination-list">
+            <li th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+              <a th:href="@{/features/dataStorage(page=${i}, size=10)}"
+                 th:classappend="${i == currentPage} ? ' is-current' : ''"
+                 class="pagination-link has-text-black"
+                 th:text="${i + 1}">1</a>
+            </li>
+          </ul>
+        </nav>
+
+
 
         <!-- Massenlöschung Modal -->
         <div id="modal-mass-delete" class="modal">

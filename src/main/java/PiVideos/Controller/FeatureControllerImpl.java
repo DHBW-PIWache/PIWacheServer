@@ -156,17 +156,32 @@ public class FeatureControllerImpl implements FeatureController {
 
 
 
-    @Override
     @GetMapping("/dataStorage")
-    public String getDataStorage(HttpSession session,Model model) {
+    public String getDataStorage(
+            HttpSession session,
+            Model model,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
         Network network = (Network) session.getAttribute("network");
 
-        model.addAttribute("clients", featureService.getAllClientPis(network));
-        model.addAttribute("videos", featureService.getAllVideosForNetwork(network));
+        List<ClientPi> clients = featureService.getAllClientPis(network);
+        List<Video> allVideos = featureService.getAllVideosForNetwork(network);
+
+        int start = page * size;
+        int end = Math.min(start + size, allVideos.size());
+        List<Video> pagedVideos = allVideos.subList(start, end);
+
+        int totalPages = (int) Math.ceil((double) allVideos.size() / size);
+
+        model.addAttribute("clients", clients);
+        model.addAttribute("videos", pagedVideos);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", totalPages);
 
         return "features/datastorage.html";
-
     }
+
 
     @PostMapping("/dataStorage/delete/{_id}")
     public String dataStorageDeleteVideo(@PathVariable("_id") Integer _id, Model model, HttpSession session) {
