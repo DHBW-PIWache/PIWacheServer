@@ -7,6 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="/styles.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
   <script src="/main.js"></script>
 </head>
 <body>
@@ -32,26 +33,70 @@
       <div class="is-flex is-justify-content-space-between is-align-items-center mb-4">
         <h2 class="title has-text-black">Vorhandene Videos</h2>
 
-        <div class="field is-grouped">
+        <form id="filterForm" method="get" action="/features/dataStorage" class="field is-grouped">
+          <input type="hidden" name="page" th:value="${currentPage}" />
+        
+          <!-- Client Auswahl -->
           <div class="control">
             <div class="select is-rounded">
-              <select id="clientSelect" onchange="filterVideos()">
-                <option value="all">Alle Clients</option>
-                <option th:each="client : ${clients}" th:value="${client._id}" th:text="${client.name}">Client A</option>
+              <select name="clientId" onchange="this.form.submit()">
+                <option value="">Alle Clients</option>
+                <option th:each="client : ${clients}"
+                        th:value="${client._id}"
+                        th:text="${client.name}"
+                        th:selected="${client._id == selectedClientId}">
+                  Client
+                </option>
               </select>
             </div>
           </div>
+        
+          <!-- Favoriten Auswahl -->
           <div class="control ml-3">
             <div class="select is-rounded">
-              <select id="favoriteSelect" onchange="filterVideos()">
-                <option value="all">Favoriten</option>
-                <option value="true">Ja</option>
-                <option value="false">Nein</option>
+              <select name="favorite" onchange="this.form.submit()">
+                <option value="">Favoriten</option>
+                <option value="true" th:selected="${'true' == favorite}">Ja</option>
+                <option value="false" th:selected="${'false' == favorite}">Nein</option>
               </select>
             </div>
           </div>
+        
+            <!-- Von-Datum -->
+  <div class="control ml-3 has-icons-left">
+    <input
+      class="input is-rounded"
+      type="text"
+      id="fromDate"
+      name="fromDate"
+      placeholder="Von Datum"
+      onchange="this.form.submit()"
+      th:value="${fromDate != null} ? ${#temporals.format(fromDate, 'yyyy-MM-dd HH:mm')}"
+    />
+    <span class="icon is-small is-left" style="pointer-events:none;">
+      <i class="fas fa-calendar-alt" style="color: white;"></i>
+    </span>
+  </div>
 
-        </div>
+  <!-- Bis-Datum -->
+  <div class="control ml-3 has-icons-left">
+    <input
+      class="input is-rounded"
+      type="text"
+      id="toDate"
+      name="toDate"
+      placeholder="Bis Datum"
+      onchange="this.form.submit()"
+      th:value="${toDate != null} ? ${#temporals.format(toDate, 'yyyy-MM-dd HH:mm')}"
+    />
+    <span class="icon is-small is-left" style="pointer-events:none;">
+      <i class="fas fa-calendar-alt" style="color: white;"></i>
+    </span>
+  </div>
+
+        </form>
+        
+      
       </div>
 
       <div class="table-container">
@@ -109,22 +154,24 @@
           </th:block>
           </tbody>
         </table>
+
         <nav class="pagination is-centered" role="navigation" aria-label="pagination">
           <a class="pagination-previous has-text-black is-white"
-             th:href="@{/features/dataStorage(page=${currentPage - 1}, size=10)}"
-             th:if="${currentPage > 0}">Zurück</a>
+            th:href="@{/features/dataStorage(page=${currentPage - 1}, size=10, clientId=${selectedClientId}, favorite=${favorite} , fromDate=${fromDate}, toDate=${toDate})}"
+            th:if="${currentPage > 0}">Zurück</a>
 
-          <a class="pagination-next has-text-black is-white" th:href="@{/features/dataStorage(page=${currentPage + 1}, size=10)}"
-             th:if="${currentPage + 1 < totalPages}">Weiter</a>
+            <a class="pagination-next has-text-black is-white"
+            th:href="@{/features/dataStorage(page=${currentPage + 1}, size=10, clientId=${selectedClientId}, favorite=${favorite},  fromDate=${fromDate}, toDate=${toDate})}"
+            th:if="${currentPage + 1 < totalPages}">Weiter</a>
 
-          <ul class="pagination-list">
-            <li th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
-              <a th:href="@{/features/dataStorage(page=${i}, size=10)}"
-                 th:classappend="${i == currentPage} ? ' is-current' : ''"
-                 class="pagination-link has-text-black"
-                 th:text="${i + 1}">1</a>
+            <ul class="pagination-list">
+         <li th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+            <a th:href="@{/features/dataStorage(page=${i}, size=10, clientId=${selectedClientId}, favorite=${favorite}, fromDate=${fromDate}, toDate=${toDate})}"
+             th:classappend="${i == currentPage} ? ' is-current' : ''"
+            class="pagination-link has-text-black"
+             th:text="${i + 1}">1</a>
             </li>
-          </ul>
+            </ul>
         </nav>
 
 
@@ -208,35 +255,25 @@
   </main>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script>
-  function filterVideos() {
-    const selectedClientId = document.getElementById("clientSelect").value;
-    const favoriteFilter = document.getElementById("favoriteSelect").value;
-    const rows = document.querySelectorAll("#videoTable tbody tr");
+flatpickr("#fromDate", {
+  enableTime: true,
+  dateFormat: "Y-m-d\\TH:i",  
+  altInput: true,             
+  altFormat: "d.m.Y H:i",     
+  time_24hr: true,
+});
 
-    for (let i = 0; i < rows.length; i += 2) {
-      const mainRow = rows[i];
-      const commentRow = rows[i + 1];
+flatpickr("#toDate", {
+  enableTime: true,
+  dateFormat: "Y-m-d\\TH:i",
+  altInput: true,
+  altFormat: "d.m.Y H:i",
+  time_24hr: true,
+});
 
-      const clientId = mainRow.getAttribute("data-client-id");
-      const favorite = mainRow.getAttribute("data-favorite");
-
-      const matchesClient = (selectedClientId === "all" || clientId === selectedClientId);
-      const matchesFavorite =
-      favoriteFilter === "all" ||
-      (favoriteFilter === "true" && favorite === "true") ||
-      (favoriteFilter === "false" && favorite === "false");
-
-      const shouldShow = matchesClient && matchesFavorite;
-
-      mainRow.style.display = shouldShow ? "" : "none";
-      if (commentRow) {
-        commentRow.style.display = shouldShow ? "" : "none";
-      }
-    }
-  }
 </script>
-
 
 </body>
 </html>

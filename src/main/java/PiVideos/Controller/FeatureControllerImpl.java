@@ -8,12 +8,14 @@ import PiVideos.Service.FeatureService;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -156,31 +158,72 @@ public class FeatureControllerImpl implements FeatureController {
 
 
 
-    @GetMapping("/dataStorage")
-    public String getDataStorage(
-            HttpSession session,
-            Model model,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
-    ) {
-        Network network = (Network) session.getAttribute("network");
-
-        List<ClientPi> clients = featureService.getAllClientPis(network);
-        List<Video> allVideos = featureService.getAllVideosForNetwork(network);
-
-        int start = page * size;
-        int end = Math.min(start + size, allVideos.size());
-        List<Video> pagedVideos = allVideos.subList(start, end);
-
-        int totalPages = (int) Math.ceil((double) allVideos.size() / size);
-
-        model.addAttribute("clients", clients);
-        model.addAttribute("videos", pagedVideos);
-        model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", totalPages);
-
-        return "features/datastorage.html";
+   @GetMapping("/dataStorage")
+public String getDataStorage(
+        HttpSession session,
+        Model model,
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "10") int size,
+        @RequestParam(required = false) Integer clientId,
+        @RequestParam(required = false) String favorite,
+        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fromDate,
+        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime toDate
+) {
+    Network network = (Network) session.getAttribute("network");
+    if (network == null) {
+        return "redirect:/login";
     }
+
+    List<ClientPi> clients = featureService.getAllClientPis(network);
+    List<Video> filteredVideos = featureService.getAllVideosForNetwork(network);
+
+    if (clientId != null) {
+        filteredVideos = filteredVideos.stream()
+            .filter(video -> video.getClientPi() != null && clientId.equals(video.getClientPi().get_id()))
+            .toList();
+    }
+
+    if (favorite != null && !favorite.isBlank()) {
+        boolean favBool = Boolean.parseBoolean(favorite);
+        filteredVideos = filteredVideos.stream()
+            .filter(video -> video.isFavorite() == favBool)
+            .toList();
+    }
+
+    // ✅ Datumsfilter
+    if (fromDate != null) {
+        filteredVideos = filteredVideos.stream()
+            .filter(video -> video.getDate() != null && !video.getDate().isBefore(fromDate))
+            .toList();
+    }
+
+    if (toDate != null) {
+        filteredVideos = filteredVideos.stream()
+            .filter(video -> video.getDate() != null && !video.getDate().isAfter(toDate))
+            .toList();
+    }
+
+    int totalVideos = filteredVideos.size();
+    int totalPages = (int) Math.ceil((double) totalVideos / size);
+    page = Math.max(0, Math.min(page, totalPages - 1));
+
+    int fromIndex = page * size;
+    int toIndex = Math.min(fromIndex + size, totalVideos);
+    List<Video> pagedVideos = filteredVideos.subList(fromIndex, toIndex);
+
+    model.addAttribute("clients", clients);
+    model.addAttribute("videos", pagedVideos);
+    model.addAttribute("currentPage", page);
+    model.addAttribute("totalPages", totalPages);
+    model.addAttribute("selectedClientId", clientId);
+    model.addAttribute("favorite", favorite);
+    model.addAttribute("fromDate", fromDate);
+    model.addAttribute("toDate", toDate);
+
+    return "features/datastorage.html";
+}
+    
+    
 
 
     @PostMapping("/dataStorage/delete/{_id}")
@@ -271,7 +314,7 @@ public class FeatureControllerImpl implements FeatureController {
         }
 
         if(isActive){
-            model.addFlashAttribute("message","Bewegungserkennung für Client '" + liveClient.getName() +"' abgeschalten!");
+            model.addFlashAttribute("message","Bewegungserkennung für Client '" + liveClient.getName() +"' abgeschalten! Kann länger dauern!");
         }
         if(!isActive && !error){
             model.addFlashAttribute("message","Bewegungserkennung für Client " + liveClient.getName() +" war nicht an!");

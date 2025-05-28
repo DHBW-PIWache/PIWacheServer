@@ -2,6 +2,9 @@ package PiVideos.Repository;
 
 import PiVideos.Model.ClientPi;
 import PiVideos.Model.Video;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -50,8 +53,6 @@ public interface VideoRepository extends CrudRepository<Video,Integer> {
     public int countAllVids(@Param("network_id") Integer network_id);
 
     public Video findByName(String name);
-
-
 
 
 }
