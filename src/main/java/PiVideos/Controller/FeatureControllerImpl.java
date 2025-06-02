@@ -159,7 +159,7 @@ public class FeatureControllerImpl implements FeatureController {
 
 
    @GetMapping("/dataStorage")
-public String getDataStorage(
+    public String getDataStorage(
         HttpSession session,
         Model model,
         @RequestParam(defaultValue = "0") int page,
@@ -227,22 +227,19 @@ public String getDataStorage(
 
 
     @PostMapping("/dataStorage/delete/{_id}")
-    public String dataStorageDeleteVideo(@PathVariable("_id") Integer _id, Model model, HttpSession session) {
+    public String dataStorageDeleteVideo(@PathVariable("_id") Integer _id, RedirectAttributes model, HttpSession session) {
         Network network = (Network) session.getAttribute("network");
 
         if(featureService.deleteVideoByID(_id)){
-            model.addAttribute("message", "Video mit der ID " + _id + " wurde gelöscht.");
+            model.addFlashAttribute("message", "Video mit der ID " + _id + " wurde gelöscht.");
         } else{
-            model.addAttribute("error", "Video mit der ID " + _id + " konnte nicht gelöscht werden (nicht gefunden?).");
+            model.addFlashAttribute("error", "Video mit der ID " + _id + " konnte nicht gelöscht werden (nicht gefunden?).");
         }
-
-        model.addAttribute("clients", featureService.getAllClientPis(network));
-        model.addAttribute("videos", featureService.getAllVideosForNetwork(network));
-        return "features/datastorage.html";
+        return "redirect:/features/dataStorage";
     }
 
     @PostMapping("/dataStorage/update/{_id}")
-    public String dataStorageUpdateVideo(@PathVariable("_id") Integer _id, HttpSession session,Model model, @RequestParam String comment, @RequestParam(required = false) Boolean favorite) {
+    public String dataStorageUpdateVideo(@PathVariable("_id") Integer _id, HttpSession session,RedirectAttributes model, @RequestParam String comment, @RequestParam(required = false) Boolean favorite) {
         Network network = (Network) session.getAttribute("network");
         Optional<Video> existingVideo = featureService.getVideoBy_id(_id);
         
@@ -252,15 +249,13 @@ public String getDataStorage(
         video.setFavorite(favorite != null && favorite);
 
         if(featureService.updateVideo(video)){
-            model.addAttribute("message", "Video mit der ID " + _id + " wurde geändert.");
+            model.addFlashAttribute("message", "Video mit der ID " + _id + " wurde geändert.");
         } else{
-            model.addAttribute("error", "Video mit der ID " + _id + " konnte nicht geändert werden (nicht gefunden?).");
+            model.addFlashAttribute("error", "Video mit der ID " + _id + " konnte nicht geändert werden (nicht gefunden?).");
         }
 
         }
-        model.addAttribute("clients", featureService.getAllClientPis(network));
-        model.addAttribute("videos", featureService.getAllVideosForNetwork(network));
-        return "features/datastorage.html";
+        return "redirect:/features/dataStorage";
     }
 
     @PostMapping("/dataStorage/deleteMultiple")
