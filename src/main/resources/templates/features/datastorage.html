@@ -204,7 +204,7 @@
           <div class="modal-card">
             <header class="modal-card-head has-background-info">
               <p class="modal-card-title has-text-black">Video bearbeiten</p>
-              <button class="delete" aria-label="close"></button>
+              <button class="delete" aria-label="close"  th:attr="onclick=|document.getElementById('modal-edit-${video._id}').classList.remove('is-active')|"></button>
             </header>
             <form th:action="@{/features/dataStorage/update/{_id}(_id=${video._id})}" method="post">
               <section class="modal-card-body">
@@ -223,7 +223,7 @@
               </section>
               <footer class="modal-card-foot">
                 <button class="button is-info" type="submit">Speichern</button>
-                <button class="button" type="button">Abbrechen</button>
+                <button class="button" type="button" th:attr="onclick=|document.getElementById('modal-edit-${video._id}').classList.remove('is-active')|">Abbrechen</button>
               </footer>
             </form>
           </div>
@@ -235,7 +235,7 @@
           <div class="modal-card">
             <header class="modal-card-head has-background-danger">
               <p class="modal-card-title has-text-black">Video löschen</p>
-              <button class="delete" aria-label="close"></button>
+              <button class="delete" aria-label="close" th:attr="onclick=|document.getElementById('modal-delete-${video._id}').classList.remove('is-active')|"></button>
             </header>
             <section class="modal-card-body">
               <p class="has-text-white">Möchtest du Video mit ID <strong th:text="${video._id}"></strong> wirklich löschen?</p>
@@ -244,7 +244,7 @@
               <form th:action="@{/features/dataStorage/delete/{_id}(_id=${video._id})}" method="post">
                 <button class="button is-danger" type="submit">Löschen</button>
               </form>
-              <button class="button" type="button">Abbrechen</button>
+              <button class="button" type="button" th:attr="onclick=|document.getElementById('modal-delete-${video._id}').classList.remove('is-active')|">Abbrechen</button>
             </footer>
           </div>
         </div>

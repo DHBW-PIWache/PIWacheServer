@@ -55,6 +55,10 @@
                             <td class="has-text-black" th:text="${videoCounts[client._id]}">0</td>
                             <td class="has-text-black" th:text="${#temporals.format(latestVids[client._id], 'dd.MM.yyyy HH:mm')}">0</td>
                             <td>
+                                <button class="button is-small is-success"
+                                        th:attr="onclick=|document.getElementById('modal-restart-client-${client._id}').classList.add('is-active')|">
+                                    <span class="icon"><i class="fas fa-power-off"></i></span>
+                                </button>
                                 <button class="button is-small is-info mr-2"
                                         th:attr="onclick=|document.getElementById('modal-edit-client-${client._id}').classList.add('is-active')|">
                                     <span class="icon"><i class="fas fa-edit"></i></span>
@@ -81,6 +85,31 @@
 
         <!-- Modale für alle Clients -->
         <div th:each="client : ${clients}">
+            <!-- Restart Modal -->
+            <div class="modal" th:attr="id='modal-restart-client-' + ${client._id}">
+                <div class="modal-background"
+                     th:attr="onclick=|document.getElementById('modal-restart-client-${client._id}').classList.remove('is-active')|"></div>
+                <div class="modal-card">
+                    <header class="modal-card-head has-background-info">
+                        <p class="modal-card-title has-text-black">Client neustarten</p>
+                        <button class="delete" aria-label="close"
+                                th:attr="onclick=|document.getElementById('modal-restart-client-${client._id}').classList.remove('is-active')|"></button>
+                    </header>
+                    <form th:action="@{/features/config/client/restart/{id}(id=${client._id})}" method="post">
+                        <section class="modal-card-body">
+                            <p class="has-text-white">Möchtest du den Client <strong th:text="${client.name}">Client</strong> wirklich neustarten?</p>
+                        
+                        </section>
+                        <footer class="modal-card-foot">
+                            <form th:action="@{/features/config/client/restart/{id}(id=${client._id})}" method="post">
+                                <button class="button is-success" type="submit">Neustarten</button>
+                            </form>
+                            <button class="button" type="button"
+                                    th:attr="onclick=|document.getElementById('modal-edit-client-${client._id}').classList.remove('is-active')|">Abbrechen</button>
+                        </footer>
+                    </form>
+                </div>
+            </div>
 
             <!-- Edit Modal -->
             <div class="modal" th:attr="id='modal-edit-client-' + ${client._id}">

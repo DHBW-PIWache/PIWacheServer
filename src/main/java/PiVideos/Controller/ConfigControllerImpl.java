@@ -137,6 +137,20 @@ public class ConfigControllerImpl implements ConfigController{
         return "redirect:/?stoppedClientId=" + id;
     }
 
+    @PostMapping("/client/restart/{id}")
+    public String restartClient(@PathVariable String id, RedirectAttributes redirectAttributes) {
+        try {
+            ClientPi client = featureService.getClientBy_id(Integer.parseInt(id)).orElseThrow();
+            String url = "http://" + client.getName() + ":5000/restart";
+            restTemplate.postForObject(url, null, String.class);
+            redirectAttributes.addFlashAttribute("message", "Client "+ client.getName() +" erfolgreich neu gestartet.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Fehler beim Neustarten des Clients: Client Agent starten!");
+        }
+        redirectAttributes.addFlashAttribute("stoppedClientId", id);
+        return "redirect:/features/config/client";
+    }
+
 
 
 
