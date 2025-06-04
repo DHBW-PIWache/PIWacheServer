@@ -35,12 +35,7 @@ public class SocketServiceImpl implements SocketService {
     @Autowired
     VideoRepository videoRepository;
 
-    public SocketServiceImpl(NetworkRepository networkRepository, ClientPiRepository clientPiRepository, VideoRepository videoRepository) {
-        this.networkRepository = networkRepository;
-        this.clientPiRepository = clientPiRepository;
-        this.videoRepository = videoRepository;
-    }
-
+    // Startet den Socket-Server für ein bestimmtes Netzwerk
     public synchronized void startServer(Network network) {
         Integer networkId = network.get_id();
 
@@ -63,7 +58,8 @@ public class SocketServiceImpl implements SocketService {
                 while (!serverSocket.isClosed()) {
                     try {
                         Socket clientSocket = serverSocket.accept();
-                        System.out.println("Neuer Client verbunden auf Netzwerk " + network.getName() + ": " + clientSocket.getInetAddress());
+                        System.out.println("Neuer Client verbunden auf Netzwerk " + network.getName() + ": "
+                                + clientSocket.getInetAddress());
                         executorService.submit(() -> handleClient(clientSocket, network));
                     } catch (IOException e) {
                         if (!serverSocket.isClosed()) {
@@ -77,11 +73,11 @@ public class SocketServiceImpl implements SocketService {
         }
     }
 
+    // Verarbeitet eingehende Client-Verbindungen
     public void handleClient(Socket clientSocket, Network network) {
         try (
                 DataInputStream dataIn = new DataInputStream(clientSocket.getInputStream());
-                DataOutputStream dataOut = new DataOutputStream(clientSocket.getOutputStream())
-        ) {
+                DataOutputStream dataOut = new DataOutputStream(clientSocket.getOutputStream())) {
             String command = dataIn.readUTF();
             System.out.println("Empfangen: " + command);
 
@@ -95,7 +91,8 @@ public class SocketServiceImpl implements SocketService {
 
                 while (true) {
                     String line = dataIn.readUTF();
-                    if ("END_HEADER".equals(line)) break;
+                    if ("END_HEADER".equals(line))
+                        break;
                     if (line.startsWith("PI_NAME:")) {
                         piName = line.substring("PI_NAME:".length());
                     } else if (line.startsWith("FILE_SIZE:")) {
@@ -122,12 +119,15 @@ public class SocketServiceImpl implements SocketService {
         }
     }
 
-    private void handleRegisterClient(DataInputStream dataIn, DataOutputStream dataOut, Network network) throws IOException {
+    // Registriert einen neuen Client, wenn er noch nicht existiert
+    private void handleRegisterClient(DataInputStream dataIn, DataOutputStream dataOut, Network network)
+            throws IOException {
         String piName = "unknown";
 
         while (true) {
             String line = dataIn.readUTF();
-            if ("END_HEADER".equals(line)) break;
+            if ("END_HEADER".equals(line))
+                break;
             if (line.startsWith("PI_NAME:")) {
                 piName = line.substring("PI_NAME:".length());
             }
@@ -143,6 +143,7 @@ public class SocketServiceImpl implements SocketService {
         dataOut.writeUTF("CLIENT_REGISTERED");
     }
 
+    // Erstellt einen neuen ClientPi Eintrag in der Datenbank
     private void createNewClient(String piName, Network network) {
         ClientPi clientPi = new ClientPi();
         clientPi.setName(piName);
@@ -152,6 +153,7 @@ public class SocketServiceImpl implements SocketService {
         clientPiRepository.save(clientPi);
     }
 
+    // Empfängt ein Video von einem Client und speichert es in der Datenbank
     public void receiveVideo(DataInputStream dataIn, String piName, long fileSize, Network network) {
         File videoDir = new File(network.getRootPath() + piName);
         if (!videoDir.exists()) {
@@ -172,7 +174,8 @@ public class SocketServiceImpl implements SocketService {
 
             while (totalRead < fileSize) {
                 int bytesRead = dataIn.read(buffer, 0, (int) Math.min(buffer.length, fileSize - totalRead));
-                if (bytesRead == -1) break;
+                if (bytesRead == -1)
+                    break;
                 fileOut.write(buffer, 0, bytesRead);
                 totalRead += bytesRead;
             }
@@ -182,18 +185,17 @@ public class SocketServiceImpl implements SocketService {
             video.setRelativePath(piName + "/" + finalName);
             video.setMb((double) finalFile.length() / (1024 * 1024));
 
-
             try (FileInputStream fis = new FileInputStream(finalFile)) {
-            IsoFile isoFile = new IsoFile(fis.getChannel());
-            double durationInSeconds = (double) isoFile.getMovieBox().getMovieHeaderBox().getDuration()
-                / isoFile.getMovieBox().getMovieHeaderBox().getTimescale();
+                IsoFile isoFile = new IsoFile(fis.getChannel());
+                double durationInSeconds = (double) isoFile.getMovieBox().getMovieHeaderBox().getDuration()
+                        / isoFile.getMovieBox().getMovieHeaderBox().getTimescale();
                 video.setDuration(durationInSeconds); // <--- setter vorausgesetzt
                 isoFile.close();
             } catch (Exception e) {
                 e.printStackTrace();
                 System.out.println("Fehler beim Berechnen der Videodauer");
             }
-            
+
             videoRepository.save(video);
             System.out.println("Video gespeichert unter: " + finalFile.getAbsolutePath());
 
@@ -202,6 +204,7 @@ public class SocketServiceImpl implements SocketService {
         }
     }
 
+    // Stoppt alle laufenden Server beim Beenden der Anwendung
     @PreDestroy
     public synchronized void stopAllServers() {
         servers.forEach((networkId, handle) -> {
@@ -215,6 +218,7 @@ public class SocketServiceImpl implements SocketService {
         servers.clear();
     }
 
+    // Stoppt den Server für ein bestimmtes Netzwerk
     public synchronized void stopServerForNetwork(Network network) {
         int networkId = network.get_id();
         ServerHandle handle = servers.remove(networkId);
@@ -230,15 +234,18 @@ public class SocketServiceImpl implements SocketService {
         }
     }
 
+    // Überprüft, ob ein ClientPi mit dem angegebenen Namen im Netzwerk existiert
     public boolean checkClient(String clientName, Network network) {
         return clientPiRepository.findByNameAndNetwork(clientName, network).isEmpty();
     }
 
+    // Überprüft, ob der Server für ein bestimmtes Netzwerk läuft
     public synchronized boolean isServerRunning(Network network) {
         return servers.containsKey(network.get_id());
     }
 }
 
+// Interne Klasse zum Verwalten des Server-Sockets und des ExecutorService
 class ServerHandle {
     private final ServerSocket serverSocket;
     private final ExecutorService executorService;

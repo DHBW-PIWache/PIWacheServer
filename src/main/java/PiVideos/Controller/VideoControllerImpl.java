@@ -1,37 +1,35 @@
 package PiVideos.Controller;
 
-
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
+import PiVideos.Model.Network;
+import jakarta.servlet.http.HttpSession;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.io.File;
-import java.io.IOException;
 import java.net.MalformedURLException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.List;
 
 @RestController
 @RequestMapping("/videos")
 public class VideoControllerImpl {
 
-   
+    // Wird gebraucht, um Videos anzuzeigen
+    // Diese Klasse dient dazu, Videos von einem bestimmten Pfad zu servieren.
     @GetMapping("/{filename:.+}")
-    public ResponseEntity<Resource> serveVideo(@PathVariable String filename, @RequestParam(required = false) String fullPath) {
+    public ResponseEntity<Resource> serveVideo(@PathVariable String filename,
+            @RequestParam(required = false) String fullPath, HttpSession session) {
+        Network network = (Network) session.getAttribute("network");
         try {
             Path filePath;
 
-          
             if (fullPath != null && !fullPath.isBlank()) {
                 filePath = Paths.get(fullPath);
             } else {
-            
-                filePath = Paths.get("/home/berry/videostorage/piwacheserver").resolve(filename);
+
+                filePath = Paths.get(network.getRootPath()).resolve(filename);
             }
 
             Resource resource = new UrlResource(filePath.toUri());

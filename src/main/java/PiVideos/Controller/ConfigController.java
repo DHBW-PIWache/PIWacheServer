@@ -1,35 +1,47 @@
 package PiVideos.Controller;
+
 import PiVideos.Model.ClientPi;
-import PiVideos.Model.Network;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-/******************************************************************************************************* 
-Autor: Julian Hecht
-Datum letzte Änderung: 12.05.2025
-Änderung: Kommentare entfernt
-*******************************************************************************************************/
 public interface ConfigController {
 
+    // Clients anzeigen
+    String getConfigClient(HttpSession session, Model model);
 
-    @GetMapping("/client")
-    public String getConfigClient(HttpSession session, Model model);
+    // Neuen Client speichern
+    String saveConfigClient(ClientPi clientPi, HttpSession session);
 
-    @PostMapping("/client/save")
-    public String saveConfigClient(@ModelAttribute ClientPi clientPi,HttpSession session);
+    // Client löschen
+    String deleteConfigClient(Integer _id, RedirectAttributes redirectAttributes);
 
-    @GetMapping("/network")
-    public String getNetworkConifg(Model model);
+    // Client aktualisieren
+    String updateConfigClient(Integer _id, RedirectAttributes redirectAttributes, String location, String comment);
 
+    // Client starten
+    String startClient(String id, RedirectAttributes redirectAttributes);
 
-    //Sockets Starten und Stoppen
+    // Client stoppen
+    String stopClient(String id, RedirectAttributes redirectAttributes);
 
-    public String startServer(HttpSession session, RedirectAttributes model );
-    public String stopServer(HttpSession session, RedirectAttributes Model);
+    // Client neustarten
+    String restartClient(String id, RedirectAttributes redirectAttributes);
 
+    // Netzwerkseite anzeigen
+    String getNetworkConifg(Model model);
+
+    // Netzwerk aktualisieren
+    String updateNetwork(Integer id, String name, String rootPath, int port, HttpSession session,
+            RedirectAttributes redirectAttributes);
+
+    // Netzwerk löschen
+    String deleteNetwork(Integer id, HttpSession session, RedirectAttributes redirectAttributes);
+
+    // Socket starten
+    String startServer(HttpSession session, RedirectAttributes model);
+
+    // Socket stoppen
+    String stopServer(HttpSession session, RedirectAttributes model);
 
 }

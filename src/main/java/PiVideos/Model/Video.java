@@ -1,13 +1,12 @@
 package PiVideos.Model;
 
 import jakarta.persistence.*;
-import jdk.jfr.Enabled;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.sql.Timestamp;
+
 import java.time.LocalDateTime;
-import java.util.Date;
+
 
 @Setter
 @Getter

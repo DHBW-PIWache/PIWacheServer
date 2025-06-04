@@ -85,6 +85,7 @@
 
         <!-- Modale für alle Clients -->
         <div th:each="client : ${clients}">
+
             <!-- Restart Modal -->
             <div class="modal" th:attr="id='modal-restart-client-' + ${client._id}">
                 <div class="modal-background"
@@ -105,7 +106,7 @@
                                 <button class="button is-success" type="submit">Neustarten</button>
                             </form>
                             <button class="button" type="button"
-                                    th:attr="onclick=|document.getElementById('modal-edit-client-${client._id}').classList.remove('is-active')|">Abbrechen</button>
+                                    th:attr="onclick=|document.getElementById('modal-restart-client-${client._id}').classList.remove('is-active')|">Abbrechen</button>
                         </footer>
                     </form>
                 </div>

@@ -1,13 +1,12 @@
 package PiVideos.Controller;
 
-
 import PiVideos.Model.Network;
 import PiVideos.Model.Video;
 import PiVideos.Model.ClientPi;
-import PiVideos.Repository.NetworkRepository;
 import PiVideos.Service.FeatureService;
 import PiVideos.Service.SocketService;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,94 +22,81 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 /*******************************************************************************************************
- Autor: Julian Hecht
- Datum letzte Änderung: 22.04.2025
- Änderung: Kommentare hinzugefügt
+ * Autor: Julian Hecht
+ * Datum letzte Änderung: 22.04.2025
+ * Änderung: Kommentare hinzugefügt
  *******************************************************************************************************/
 
 @Controller
-public class HomeControllerImpl implements HomeController{
+public class HomeControllerImpl implements HomeController {
 
-
-    // !!!! Sollte mit einem Service Ersetzt werden!
-
-    NetworkRepository networkRepository;
+    @Autowired
     SocketService socketSerivce;
+    @Autowired
     FeatureService featureService;
-
-
-
-    public HomeControllerImpl(NetworkRepository networkRepository, SocketService socketSerivce, FeatureService featureService) {
-        this.networkRepository = networkRepository;
-        this.socketSerivce = socketSerivce;
-        this.featureService = featureService;
-
-    }
 
     // Login Seite holen
     @GetMapping("/login")
-    public String getLogin(Model model){
-        model.addAttribute("networks",networkRepository.getAllNetworks());
-        model.addAttribute("network",new Network());
+    public String getLogin(Model model) {
+        model.addAttribute("networks", featureService.getAllNetworks());
+        model.addAttribute("network", new Network());
 
         return "login.html";
     }
 
     /// Register Seite holen
     @GetMapping("/register")
-    public String getRegister(Model model){
+    public String getRegister(Model model) {
         model.addAttribute("network", new Network());
         return "register.html";
     }
-    /// Register Network Seite
+
+    /// Neues Netzwerk anlegen
     @PostMapping("/register")
-    public String postRegister(@ModelAttribute Network network,Model model, RedirectAttributes redirectAttributes){
-        networkRepository.save(network);
-        redirectAttributes.addFlashAttribute("message","Netzwerk mit ID:" + network.get_id() + " angelegt");
+    public String postRegister(@ModelAttribute Network network, RedirectAttributes redirectAttributes) {
+        if(featureService.saveNetwork(network)){
+            redirectAttributes.addFlashAttribute("message", "Netzwerk mit ID:" + network.get_id() + " angelegt");
+        } else {
+            redirectAttributes.addFlashAttribute("error", "Fehler beim Anlegen des Netzwerks. Bitte versuchen Sie es erneut.");
+        }
         return "redirect:/login";
     }
 
-
-    /// Netzwerk Anmeldung und Abmeldung.
-    ///  Netzwerk wird in einer HTTP Session gespeichert
+    // Login eines Netzwerks
     @PostMapping("/login")
-    public String postLogin(@ModelAttribute Network networkOpt, HttpSession session, Model model){
-        Network network = networkRepository.findById(networkOpt.get_id()).get();
-        session.setAttribute("network",network);
-
+    public String postLogin(@ModelAttribute Network networkOpt, HttpSession session) {
+        Network network = featureService.getNetworkById(networkOpt.get_id());
+        session.setAttribute("network", network);
         return "redirect:/";
     }
 
+    // Logout eines Netzwerks
     @PostMapping("/logout")
-    public String postLogout(@ModelAttribute Network network, HttpSession session,Model model){
-        model.addAttribute("networks",networkRepository.getAllNetworks());
+    public String postLogout(@ModelAttribute Network network, HttpSession session, Model model) {
+        model.addAttribute("networks", featureService.getAllNetworks());
         session.removeAttribute("network");
         return "login.html";
     }
 
-
-
-    //Index seite
+    // Dashboard seite
     @GetMapping("/")
-    public String getHome(@RequestParam(name = "stoppedClientId", required = false)String stoppedClientId,
-                          @RequestParam(name = "startedClientId", required = false)String startedClientId,
-                          HttpSession session,
-                          Model model){
+    public String getHome(@RequestParam(name = "stoppedClientId", required = false) String stoppedClientId,
+            @RequestParam(name = "startedClientId", required = false) String startedClientId,
+            HttpSession session,
+            Model model) {
 
         Network network = (Network) session.getAttribute("network");
         Video newestVid = featureService.getNewestVideo(network);
-        
+
         List<ClientPi> clients = featureService.getAllClientPis(network);
         Map<Integer, Boolean> clientStatusMap = new HashMap<>();
         RestTemplate restTemplate = new RestTemplate();
 
-
         for (ClientPi client : clients) {
             boolean isActive = false;
             try {
-                String hostname = client.getName();  // z.B. raspberrypi.local
+                String hostname = client.getName(); // z.B. raspberrypi.local
                 String url = "http://" + hostname + ":5000/status";
                 Map<String, String> response = restTemplate.getForObject(url, Map.class);
                 if (response != null && "running".equalsIgnoreCase(response.get("detection"))) {
@@ -122,34 +108,28 @@ public class HomeControllerImpl implements HomeController{
             }
             clientStatusMap.put(client.get_id(), isActive);
         }
-
-
-
         model.addAttribute("clients", clients);
         model.addAttribute("clientStatusMap", clientStatusMap);
         model.addAttribute("video", newestVid);
-        if(featureService.countVids(network) != 0) {
+        if (featureService.countVids(network) != 0) {
             model.addAttribute("countVids", featureService.countVids(network));
             model.addAttribute("totalMb", featureService.totalMBForNetwork(network));
         }
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         session.setAttribute("currentDate", LocalDate.now().format(formatter));
 
-
-        if(socketSerivce.isServerRunning(network)){
+        if (socketSerivce.isServerRunning(network)) {
             session.setAttribute("socket", true);
-        } else{
-            session.setAttribute("socket",false);
+        } else {
+            session.setAttribute("socket", false);
         }
         return "index.html";
     }
 
-    //Error seite
+    // Error seite
     @GetMapping("/error")
-    public String getError(Model model){
+    public String getError(Model model) {
         return "error.html";
     }
-
-
 
 }

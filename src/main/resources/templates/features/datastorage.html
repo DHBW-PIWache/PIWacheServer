@@ -155,23 +155,50 @@
           </tbody>
         </table>
 
+      <!-- Pagination -->
         <nav class="pagination is-centered" role="navigation" aria-label="pagination">
           <a class="pagination-previous has-text-black is-white"
-            th:href="@{/features/dataStorage(page=${currentPage - 1}, size=10, clientId=${selectedClientId}, favorite=${favorite} , fromDate=${fromDate}, toDate=${toDate})}"
-            th:if="${currentPage > 0}">Zurück</a>
-
-            <a class="pagination-next has-text-black is-white"
-            th:href="@{/features/dataStorage(page=${currentPage + 1}, size=10, clientId=${selectedClientId}, favorite=${favorite},  fromDate=${fromDate}, toDate=${toDate})}"
-            th:if="${currentPage + 1 < totalPages}">Weiter</a>
-
-            <ul class="pagination-list">
-         <li th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
-            <a th:href="@{/features/dataStorage(page=${i}, size=10, clientId=${selectedClientId}, favorite=${favorite}, fromDate=${fromDate}, toDate=${toDate})}"
-             th:classappend="${i == currentPage} ? ' is-current' : ''"
-            class="pagination-link has-text-black"
-             th:text="${i + 1}">1</a>
+             th:href="@{/features/dataStorage(page=${currentPage - 1}, size=10, clientId=${selectedClientId}, favorite=${favorite} , fromDate=${fromDate}, toDate=${toDate})}"
+             th:if="${currentPage > 0}">Zurück</a>
+        
+          <a class="pagination-next has-text-black is-white"
+             th:href="@{/features/dataStorage(page=${currentPage + 1}, size=10, clientId=${selectedClientId}, favorite=${favorite},  fromDate=${fromDate}, toDate=${toDate})}"
+             th:if="${currentPage + 1 < totalPages}">Weiter</a>
+        
+          <ul class="pagination-list">
+        
+            
+            <li th:if="${currentPage > 5}">
+              <a class="pagination-link has-text-black"
+                 th:href="@{/features/dataStorage(page=0, size=10, clientId=${selectedClientId}, favorite=${favorite}, fromDate=${fromDate}, toDate=${toDate})}">1</a>
             </li>
-            </ul>
+        
+            
+            <li th:if="${currentPage > 6}">
+              <span class="pagination-ellipsis">&hellip;</span>
+            </li>
+        
+           
+            <li th:each="i : ${#numbers.sequence((currentPage - 4 > 0 ? currentPage - 4 : 0), (currentPage + 5 < totalPages ? currentPage + 5 : totalPages - 1))}">
+              <a class="pagination-link has-text-black"
+                 th:classappend="${i == currentPage} ? ' is-current' : ''"
+                 th:href="@{/features/dataStorage(page=${i}, size=10, clientId=${selectedClientId}, favorite=${favorite}, fromDate=${fromDate}, toDate=${toDate})}"
+                 th:text="${i + 1}">1</a>
+            </li>
+        
+            
+            <li th:if="${currentPage + 5 < totalPages - 2}">
+              <span class="pagination-ellipsis">&hellip;</span>
+            </li>
+        
+            
+            <li th:if="${currentPage + 5 < totalPages - 1}">
+              <a class="pagination-link has-text-black"
+                 th:href="@{/features/dataStorage(page=${totalPages - 1}, size=10, clientId=${selectedClientId}, favorite=${favorite}, fromDate=${fromDate}, toDate=${toDate})}"
+                 th:text="${totalPages}">999</a>
+            </li>
+        
+          </ul>
         </nav>
 
 

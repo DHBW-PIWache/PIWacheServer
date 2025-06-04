@@ -1,6 +1,5 @@
 package PiVideos.Service;
 
-
 import PiVideos.Model.ClientPi;
 import PiVideos.Model.Network;
 import PiVideos.Model.Video;
@@ -9,44 +8,45 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.data.domain.Page;
-
 public interface FeatureService {
 
-   public void saveNetwork(Network network);
-   public List<Network> getAllNetworks();
+    // Netzwerk Methoden
+    boolean saveNetwork(Network network);
 
-   public void saveClient(ClientPi clientPi);
+    Network getNetworkById(Integer id);
 
-   public List<ClientPi> getAllClientPis(Network network);
+    boolean deleteNetworkByID(Integer id);
 
-   public List<Video> getAllVideos();
-   public List<Video> getAllVideosForNetwork(Network network);
+    List<Network> getAllNetworks();
 
-   public boolean deleteVideoByID(Integer _id);
+    double totalMBForNetwork(Network network);
 
-   public boolean updateVideo(Video video);
+    // Client Methoden
+    List<ClientPi> getAllClientPis(Network network);
 
-   public Optional<Video> getVideoBy_id(Integer _id);
+    boolean saveClient(ClientPi clientPi);
 
-   public Video getNewestVideo(Network network);
+    boolean deleteClientPiById(Integer id);
 
-   public int countVids(Network network);
+    Optional<ClientPi> getClientBy_id(Integer _id);
 
-   public void deleteClientPiById(Integer id);
+    boolean updateClient(ClientPi clientPi);
 
-   public Optional<ClientPi> getClientBy_id(Integer _id);
+    // Video Methoden
+    List<Video> getAllVideosForNetwork(Network network);
 
-   public boolean updateClient(ClientPi clientPi);
+    boolean deleteVideoByID(Integer _id);
 
-   public void deleteNetworkByID(Integer id);
+    boolean updateVideo(Video video);
 
-   public int countVidsForClient(Network network, ClientPi clientPi);
+    Optional<Video> getVideoBy_id(Integer _id);
 
-   public LocalDateTime getLatestVideo(Network network, ClientPi clientPi);
+    Video getNewestVideo(Network network);
 
-   public double totalMBForNetwork(Network network);
+    int countVids(Network network);
 
+    int countVidsForClient(Network network, ClientPi clientPi);
 
+    LocalDateTime getLatestVideo(Network network, ClientPi clientPi);
 
 }

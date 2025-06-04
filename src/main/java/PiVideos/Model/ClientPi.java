@@ -43,9 +43,6 @@ public class ClientPi {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private List<Video> videos;
 
-
-
-
     public ClientPi() {
     }
 
