@@ -77,7 +77,7 @@ fi
 echo "✅ SDKMAN wird initialisiert..."
 set +u  # Deaktiviere 'unbound variable' Fehler
 source "$HOME/.sdkman/bin/sdkman-init.sh"
-set -u  # Danach wieder aktivieren
+
 
 
 # Maven Build
