@@ -82,7 +82,7 @@ source "$HOME/.sdkman/bin/sdkman-init.sh"
 
 # Maven Build
 echo "⚙️ Installiere Maven..."
-sdk install maven
+sudo apt install maven
 
 echo "⚙️ Baue Spring Boot Projekt..."
 cd "$PROJECT_DIR"
