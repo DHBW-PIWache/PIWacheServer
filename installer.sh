@@ -68,6 +68,10 @@ else
     echo "👉 Bitte die Datei anpassen: nano $CONFIG_FILE"
 fi
 
+# SDKMAN installieren
+echo "📦 Installiere SDKMAN..."
+curl -s "https://get.sdkman.io/" | bash
+source "$HOME/.sdkman/bin/sdkman-init.sh"
 # Maven Build
 echo "⚙️ Installiere Maven..."
 sdk install maven
