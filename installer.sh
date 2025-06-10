@@ -124,4 +124,7 @@ sudo systemctl start spring.service
 # Service Status anzeigen
 sudo systemctl status spring.service
 
+sudo systemctl restart spring.service
+sudo systemctl status spring.service
+
 echo "✅ Setup abgeschlossen! Der Spring Boot Service läuft."
