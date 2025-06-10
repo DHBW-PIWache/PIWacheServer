@@ -69,9 +69,16 @@ else
 fi
 
 # SDKMAN installieren
-echo "📦 Installiere SDKMAN..."
-curl -s "https://get.sdkman.io/" | bash
-source "$HOME/.sdkman/bin/sdkman-init.sh"
+# SDKMAN installieren, wenn nicht vorhanden
+if [ ! -d "$HOME/.sdkman" ]; then
+    echo "📦 Installiere SDKMAN..."
+    curl -s "https://get.sdkman.io/" | bash
+    source "$HOME/.sdkman/bin/sdkman-init.sh"
+else
+    echo "✅ SDKMAN ist bereits installiert."
+    source "$HOME/.sdkman/bin/sdkman-init.sh"
+fi
+
 # Maven Build
 echo "⚙️ Installiere Maven..."
 sdk install maven
