@@ -69,6 +69,9 @@ else
 fi
 
 # Maven Build
+echo "⚙️ Installiere Maven..."
+sdk install maven
+
 echo "⚙️ Baue Spring Boot Projekt..."
 cd "$PROJECT_DIR"
 mvn clean package
