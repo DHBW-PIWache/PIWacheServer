@@ -33,6 +33,11 @@ echo "Reload privilege tables now? [Y/n] Y"
 read -p "👉 Drücke ENTER, um 'sudo mysql_secure_installation' zu starten..."
 sudo mysql_secure_installation
 
+echo "🛢️ Erstelle Datenbank 'piVideos'..."
+sudo mysql -e "CREATE DATABASE IF NOT EXISTS piVideos CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
+echo "✅ Datenbank 'piVideos' wurde erstellt."
+
+
 # PHPMyAdmin installieren
 echo "💻 Installiere PHPMyAdmin..."
 sudo apt install -y phpmyadmin
