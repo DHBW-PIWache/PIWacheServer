@@ -69,15 +69,16 @@ else
 fi
 
 # SDKMAN installieren
-# SDKMAN installieren, wenn nicht vorhanden
 if [ ! -d "$HOME/.sdkman" ]; then
     echo "📦 Installiere SDKMAN..."
     curl -s "https://get.sdkman.io/" | bash
-    source "$HOME/.sdkman/bin/sdkman-init.sh"
-else
-    echo "✅ SDKMAN ist bereits installiert."
-    source "$HOME/.sdkman/bin/sdkman-init.sh"
 fi
+
+echo "✅ SDKMAN wird initialisiert..."
+set +u  # Deaktiviere 'unbound variable' Fehler
+source "$HOME/.sdkman/bin/sdkman-init.sh"
+set -u  # Danach wieder aktivieren
+
 
 # Maven Build
 echo "⚙️ Installiere Maven..."
