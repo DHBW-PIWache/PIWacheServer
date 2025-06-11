@@ -39,7 +39,7 @@
           <div class="column is-6">
             <div class="box">
               <div th:if="${liveclient != null}">
-                <img th:src="${'http://' + liveclient.name + ':5000/video'}" alt="Fehler beim Stream"/>
+                <img th:src="${'http://' + liveclient.name + '.local:5000/video'}" alt="Fehler beim Stream"/>
               </div>
               <div th:if="${liveclient == null}">
                 <p>Wähle einen Client zur Überwachung aus!</p>
