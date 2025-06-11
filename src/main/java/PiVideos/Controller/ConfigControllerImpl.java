@@ -112,7 +112,7 @@ public class ConfigControllerImpl implements ConfigController {
     public String startClient(@PathVariable String id, RedirectAttributes redirectAttributes) {
         try {
             ClientPi client = featureService.getClientBy_id(Integer.parseInt(id)).orElseThrow();
-            String url = "http://" + client.getName() + ":5000/start";
+            String url = "http://" + client.getName() + ".local:5000/start";
             restTemplate.postForObject(url, null, String.class);
             redirectAttributes.addFlashAttribute("success", "Client erfolgreich gestartet.");
         } catch (Exception e) {
@@ -129,7 +129,7 @@ public class ConfigControllerImpl implements ConfigController {
     public String stopClient(@PathVariable String id, RedirectAttributes redirectAttributes) {
         try {
             ClientPi client = featureService.getClientBy_id(Integer.parseInt(id)).orElseThrow();
-            String url = "http://" + client.getName() + ":5000/stop";
+            String url = "http://" + client.getName() + ".local:5000/stop";
             restTemplate.postForObject(url, null, String.class);
             redirectAttributes.addFlashAttribute("success", "Client erfolgreich gestoppt.");
         } catch (Exception e) {
@@ -146,7 +146,7 @@ public class ConfigControllerImpl implements ConfigController {
     public String restartClient(@PathVariable String id, RedirectAttributes redirectAttributes) {
         try {
             ClientPi client = featureService.getClientBy_id(Integer.parseInt(id)).orElseThrow();
-            String url = "http://" + client.getName() + ":5000/restart";
+            String url = "http://" + client.getName() + ".local:5000/restart";
             restTemplate.postForObject(url, null, String.class);
             redirectAttributes.addFlashAttribute("message",
                     "Client " + client.getName() + " erfolgreich neu gestartet.");

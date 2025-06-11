@@ -97,7 +97,7 @@ public class HomeControllerImpl implements HomeController {
             boolean isActive = false;
             try {
                 String hostname = client.getName(); // z.B. raspberrypi.local
-                String url = "http://" + hostname + ":5000/status";
+                String url = "http://" + hostname + ".local:5000/status";
                 Map<String, String> response = restTemplate.getForObject(url, Map.class);
                 if (response != null && "running".equalsIgnoreCase(response.get("detection"))) {
                     isActive = true;

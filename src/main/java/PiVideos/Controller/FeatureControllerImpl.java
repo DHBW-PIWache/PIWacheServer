@@ -287,8 +287,8 @@ public class FeatureControllerImpl implements FeatureController {
         boolean isActive = false;
         boolean error = false;
         try {
-            String hostname = liveClient.getName(); // z.B. raspberrypi.local
-            String url = "http://" + hostname + ":5000/status";
+            String hostname = liveClient.getName(); // z.B. raspberrypi
+            String url = "http://" + hostname + ".local:5000/status";
             Map<String, String> response = restTemplate.getForObject(url, Map.class);
             if (response != null && "running".equalsIgnoreCase(response.get("detection"))) {
                 isActive = true;
