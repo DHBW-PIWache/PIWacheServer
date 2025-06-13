@@ -51,9 +51,6 @@ sudo ln -s /usr/share/phpmyadmin /var/www/html/phpmyadmin
 echo "🔄 Starte Apache Webserver neu..."
 sudo systemctl restart apache2
 
-# Hinweis für Datenbankzugriff
-echo "🌐 PHPMyAdmin ist erreichbar unter: http://<HostnameServer>.local/phpmyadmin"
-echo "👉 Bitte erstelle dort die Datenbank 'piVideos'!"
 
 # Projektpfad definieren
 PROJECT_DIR="/home/berry/PiWacheServer"
@@ -72,6 +69,17 @@ if [ ! -f "$CONFIG_FILE" ]; then
 else
     echo "✅ Konfigurationsdatei gefunden: $CONFIG_FILE"
     echo "👉 Bitte die Datei anpassen: nano $CONFIG_FILE"
+fi
+# Konfigurationsdatei prüfen
+CONFIG_FILE="$PROJECT_DIR/src/main/resources/application.properties"
+
+if [ ! -f "$CONFIG_FILE" ]; then
+    echo "⚠️ Konfigurationsdatei $CONFIG_FILE nicht gefunden!"
+    echo "Bitte manuell anlegen oder kopieren."
+else
+    echo "✅ Konfigurationsdatei gefunden: $CONFIG_FILE"
+    echo "🔧 Öffne Konfigurationsdatei zur Bearbeitung..."
+    nano "$CONFIG_FILE"
 fi
 
 # SDKMAN installieren
